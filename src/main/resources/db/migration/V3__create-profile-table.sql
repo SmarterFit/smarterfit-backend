@@ -1,0 +1,11 @@
+CREATE TABLE SF_PROFILE (
+    id UUID PRIMARY KEY,
+    full_name VARCHAR(255) ,
+    cpf VARCHAR(11) UNIQUE,
+    phone VARCHAR(13),
+    dt_birth_date DATE,
+    gender VARCHAR(20) ,
+    dt_created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    dt_updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_profile_user FOREIGN KEY (id) REFERENCES SF_USER(id)
+);
