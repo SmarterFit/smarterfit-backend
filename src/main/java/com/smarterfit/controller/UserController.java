@@ -3,6 +3,7 @@ package com.smarterfit.controller;
 import com.smarterfit.dto.request.UserRequestDTO;
 import com.smarterfit.dto.response.UserResponseDTO;
 import com.smarterfit.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +23,7 @@ public class UserController {
     }
 
     @PostMapping("/cadastrar")
-    public ResponseEntity<UserResponseDTO> createUser(@RequestBody UserRequestDTO userRequest){
+    public ResponseEntity<UserResponseDTO> createUser(@RequestBody @Valid UserRequestDTO userRequest){
         UserResponseDTO responseDTO = userService.createUser(userRequest);
         return ResponseEntity.status(201).body(responseDTO);
     }

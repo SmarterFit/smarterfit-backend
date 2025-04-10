@@ -3,6 +3,7 @@ package com.smarterfit.controller;
 import com.smarterfit.dto.request.ProfileRequestDTO;
 import com.smarterfit.dto.response.ProfileResponseDTO;
 import com.smarterfit.service.ProfileService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +27,7 @@ public class ProfileController {
 
     @PutMapping("/{username}")
     public ResponseEntity<ProfileResponseDTO> updateProfile(@PathVariable String username,
-                                                            @RequestBody ProfileRequestDTO requestDTO) {
+                                                            @RequestBody @Valid ProfileRequestDTO requestDTO) {
         return ResponseEntity.ok(profileService.updateProfile(username, requestDTO));
     }
 }

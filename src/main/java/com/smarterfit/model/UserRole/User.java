@@ -21,14 +21,14 @@ public class User{
     @Id @GeneratedValue(strategy = GenerationType.UUID)
     UUID id;
 
-    @Column(name = "no_email", nullable = false, unique = true)
+    @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(name = "no_username", nullable = false, unique = true)
+    @Column(nullable = false, unique = true)
     private String username;
 
 
-    @Column(name = "no_password", nullable = false)
+    @Column(nullable = false)
     private String password;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)

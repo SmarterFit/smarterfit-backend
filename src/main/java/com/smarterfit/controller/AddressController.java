@@ -3,6 +3,7 @@ package com.smarterfit.controller;
 import com.smarterfit.dto.request.AddressRequestDTO;
 import com.smarterfit.dto.response.AddressResponseDTO;
 import com.smarterfit.service.AddressService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +27,7 @@ public class AddressController {
 
     @PutMapping("/{username}")
     public ResponseEntity<AddressResponseDTO> updateAddress(@PathVariable String username,
-                                                            @RequestBody AddressRequestDTO dto) {
+                                                            @RequestBody @Valid AddressRequestDTO dto) {
         return ResponseEntity.ok(addressService.updateAddressByUsername(username, dto));
     }
 }

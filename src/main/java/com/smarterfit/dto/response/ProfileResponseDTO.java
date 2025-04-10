@@ -4,6 +4,7 @@ import com.smarterfit.enums.Gender;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 public record ProfileResponseDTO(
         String fullName,
@@ -11,5 +12,6 @@ public record ProfileResponseDTO(
         String phone,
         LocalDate birthDate,
         Gender gender,
-        AddressResponseDTO address
+        AddressResponseDTO address,
+        UUID ID
 ) {}

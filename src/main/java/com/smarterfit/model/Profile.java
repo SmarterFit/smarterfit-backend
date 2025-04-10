@@ -34,11 +34,9 @@ public class Profile {
 
     private String phone;
 
-
     @JsonFormat(pattern = "yyyy-MM-dd")
     @Column(name = "dt_birth_date")
     private LocalDate birthDate;
-
 
     @Enumerated(EnumType.STRING)
     @Column(name = "gender")

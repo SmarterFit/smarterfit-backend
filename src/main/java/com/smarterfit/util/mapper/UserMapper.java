@@ -35,14 +35,25 @@ public class UserMapper {
         } else {
             userRoles = getRolesFromDTO(dto, user);
         }
+
         user.setRoles(userRoles);
+
+        // Profile
+        Profile profile = user.getProfile();
+        if (profile == null) {
+            profile = new Profile();
+            profile.setUser(user);
+        }
+
+        profile.setCpf(dto.cpf());
+        user.setProfile(profile);
 
         return user;
     }
 
     public static UserResponseDTO toResponse(User user){
         Set<String> roles = user.getRoles().stream().map(u -> u.getRoleType().toString()).collect(Collectors.toSet());
-        return new UserResponseDTO(user.getEmail(), user.getUsername(),  roles);
+        return new UserResponseDTO(user.getEmail(), user.getUsername(), roles,  user.getId());
     }
 
     public static Set<UserRole> getRolesFromDTO(UserRequestDTO dto, User user) {

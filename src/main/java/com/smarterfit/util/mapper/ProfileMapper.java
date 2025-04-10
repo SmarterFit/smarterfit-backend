@@ -12,8 +12,6 @@ public class ProfileMapper {
             profile = new Profile();
         }
 
-
-
         profile.setFullName(dto.fullName());
         profile.setCpf(dto.cpf());
         profile.setPhone(dto.phone());
@@ -36,7 +34,8 @@ public class ProfileMapper {
                 profile.getPhone(),
                 profile.getBirthDate(),
                 profile.getGender(),
-                AddressMapper.toResponse(profile.getAddress())
+                AddressMapper.toResponse(profile.getAddress()),
+                profile.getId()
         );
     }
 }

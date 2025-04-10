@@ -6,26 +6,27 @@ import com.smarterfit.model.Address;
 import com.smarterfit.model.Profile;
 import com.smarterfit.model.UserRole.User;
 import com.smarterfit.repository.AddressRepository;
-import com.smarterfit.repository.UserRepository;
 import com.smarterfit.util.mapper.AddressMapper;
+import com.smarterfit.util.validation.UserValidation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class AddressService {
 
     private final AddressRepository addressRepository;
-    private final UserRepository userRepository;
+    private final UserValidation userValidation;
 
     @Autowired
-    public AddressService(AddressRepository addressRepository, UserRepository userRepository) {
+    public AddressService(AddressRepository addressRepository, UserValidation userValidation) {
         this.addressRepository = addressRepository;
-        this.userRepository = userRepository;
+        this.userValidation = userValidation;
     }
 
+    @Transactional(readOnly = true)
     public AddressResponseDTO getAddressByUsername(String username) {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        User user = userValidation.validateUserByUsername(username);
 
         Profile profile = user.getProfile();
         Address address = profile.getAddress();
@@ -33,16 +34,13 @@ public class AddressService {
         return AddressMapper.toResponse(address);
     }
 
+    @Transactional
     public AddressResponseDTO updateAddressByUsername(String username, AddressRequestDTO requestDTO) {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        User user = userValidation.validateUserByUsername(username);
 
         Profile profile = user.getProfile();
-
-        Address address = profile.getAddress();
-        address = AddressMapper.toEntity(requestDTO, address);
-        address.setProfile(profile); // garantir vínculo
-
+        Address address = AddressMapper.toEntity(requestDTO, profile.getAddress());
+        address.setProfile(profile);
         addressRepository.save(address);
 
         return AddressMapper.toResponse(address);
