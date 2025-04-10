@@ -18,6 +18,11 @@ public class ProfileValidation {
         this.profileRepository = profileRepository;
     }
 
+    public void validateCpfAvailability(String cpf) {
+        profileRepository.findByCpf(cpf).ifPresent(p -> {
+            throw new BusinessException("CPF is already in use.");
+        });
+    }
     public void validateCpfAvailability(String cpf, UUID currentProfileId) {
         profileRepository.findByCpf(cpf).ifPresent(existing -> {
             if (!existing.getId().equals(currentProfileId)) {
