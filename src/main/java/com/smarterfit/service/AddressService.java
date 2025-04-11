@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.UUID;
+
 @Service
 public class AddressService {
 
@@ -25,8 +27,8 @@ public class AddressService {
     }
 
     @Transactional(readOnly = true)
-    public AddressResponseDTO getAddressByUsername(String username) {
-        User user = userValidation.validateUserByUsername(username);
+    public AddressResponseDTO getAddressByUserId(UUID id) {
+        User user = userValidation.validateUserById(id);
 
         Profile profile = user.getProfile();
         Address address = profile.getAddress();
@@ -35,8 +37,8 @@ public class AddressService {
     }
 
     @Transactional
-    public AddressResponseDTO updateAddressByUsername(String username, AddressRequestDTO requestDTO) {
-        User user = userValidation.validateUserByUsername(username);
+    public AddressResponseDTO updateAddressByUserId(UUID id, AddressRequestDTO requestDTO) {
+        User user = userValidation.validateUserById(id);
 
         Profile profile = user.getProfile();
         Address address = AddressMapper.toEntity(requestDTO, profile.getAddress());

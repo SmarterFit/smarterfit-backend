@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.UUID;
+
 @Service
 public class ProfileService {
 
@@ -30,8 +32,8 @@ public class ProfileService {
 
 
     @Transactional(readOnly = true)
-    public ProfileResponseDTO getProfileByUsername(String username) {
-        User user = findUserByUsername(username);
+    public ProfileResponseDTO getProfileById(UUID id) {
+        User user = findUserById(id);
         Profile profile = user.getProfile();
 
         if (profile == null) {
@@ -42,8 +44,8 @@ public class ProfileService {
     }
 
     @Transactional
-    public ProfileResponseDTO updateProfile(String username, ProfileRequestDTO requestDTO) {
-        User user = findUserByUsername(username);
+    public ProfileResponseDTO updateProfile(UUID id, ProfileRequestDTO requestDTO) {
+        User user = findUserById(id);
 
         Profile profile = user.getProfile();
         if (profile == null) {
@@ -61,8 +63,8 @@ public class ProfileService {
     }
 
 
-    private User findUserByUsername(String username) {
-        return userRepository.findByUsername(username)
+    private User findUserById(UUID id) {
+        return userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Profile not found."));
     }
 

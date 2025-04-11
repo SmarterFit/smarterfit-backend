@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/perfis")
 @CrossOrigin
@@ -20,14 +22,14 @@ public class ProfileController {
         this.profileService = profileService;
     }
 
-    @GetMapping("/{username}")
-    public ResponseEntity<ProfileResponseDTO> getProfile(@PathVariable String username) {
-        return ResponseEntity.ok(profileService.getProfileByUsername(username));
+    @GetMapping("/{id}")
+    public ResponseEntity<ProfileResponseDTO> getProfile(@PathVariable UUID id) {
+        return ResponseEntity.ok(profileService.getProfileById(id));
     }
 
-    @PutMapping("/{username}")
-    public ResponseEntity<ProfileResponseDTO> updateProfile(@PathVariable String username,
+    @PutMapping("/{id}")
+    public ResponseEntity<ProfileResponseDTO> updateProfile(@PathVariable UUID id,
                                                             @RequestBody @Valid ProfileRequestDTO requestDTO) {
-        return ResponseEntity.ok(profileService.updateProfile(username, requestDTO));
+        return ResponseEntity.ok(profileService.updateProfile(id, requestDTO));
     }
 }

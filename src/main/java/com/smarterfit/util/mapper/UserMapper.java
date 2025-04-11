@@ -22,7 +22,6 @@ public class UserMapper {
         }
         user.setEmail(dto.email());
         user.setPassword(dto.password());
-        user.setUsername(dto.username());
 
         Set<UserRole> userRoles = new HashSet<>();
 
@@ -53,7 +52,7 @@ public class UserMapper {
 
     public static UserResponseDTO toResponse(User user){
         Set<String> roles = user.getRoles().stream().map(u -> u.getRoleType().toString()).collect(Collectors.toSet());
-        return new UserResponseDTO(user.getEmail(), user.getUsername(), roles,  user.getId());
+        return new UserResponseDTO(user.getEmail(), roles,  user.getId());
     }
 
     public static Set<UserRole> getRolesFromDTO(UserRequestDTO dto, User user) {

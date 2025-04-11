@@ -17,8 +17,8 @@ public class UserValidation {
         this.userRepository = userRepository;
     }
 
-    public User validateUserByUsername(String username) {
-        return userRepository.findByUsername(username)
+    public User validateUserById(UUID id) {
+        return userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found."));
     }
 
@@ -33,11 +33,6 @@ public class UserValidation {
         });
     }
 
-    public void validateUsernameAvailability(String username) {
-        userRepository.findByUsername(username).ifPresent(user -> {
-            throw new BusinessException("Username is already in use.");
-        });
-    }
 
     public void validatePasswords(String password, String confirmPassword) {
         if (!password.equals(confirmPassword)) {

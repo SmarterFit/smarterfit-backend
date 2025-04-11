@@ -25,10 +25,6 @@ public record UserRequestDTO(
         @CPF(message = "Invalid CPF")
         String cpf,
 
-        @NotBlank(message = "user must not be blank")
-        @Size(min = 8, max = 50, message = "username must have at least 8 characters")
-        String username,
-
         @NotEmpty(message = "At least one role must be provided")
         Set<@NotBlank(message = "Role cannot be blank") String> roles
 ) {

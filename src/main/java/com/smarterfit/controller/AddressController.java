@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/enderecos")
 @CrossOrigin
@@ -20,14 +22,14 @@ public class AddressController {
         this.addressService = addressService;
     }
 
-    @GetMapping("/{username}")
-    public ResponseEntity<AddressResponseDTO> getAddress(@PathVariable String username) {
-        return ResponseEntity.ok(addressService.getAddressByUsername(username));
+    @GetMapping("/{id}")
+    public ResponseEntity<AddressResponseDTO> getAddress(@PathVariable UUID ID) {
+        return ResponseEntity.ok(addressService.getAddressByUserId(ID));
     }
 
-    @PutMapping("/{username}")
-    public ResponseEntity<AddressResponseDTO> updateAddress(@PathVariable String username,
+    @PutMapping("/{ID}")
+    public ResponseEntity<AddressResponseDTO> updateAddress(@PathVariable UUID ID,
                                                             @RequestBody @Valid AddressRequestDTO dto) {
-        return ResponseEntity.ok(addressService.updateAddressByUsername(username, dto));
+        return ResponseEntity.ok(addressService.updateAddressByUserId(ID, dto));
     }
 }

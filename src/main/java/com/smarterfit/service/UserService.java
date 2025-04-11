@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,7 +37,6 @@ public class UserService {
 
         userValidation.validatePasswords(userRequestDTO.password(), userRequestDTO.confirmPassword());
         userValidation.validateEmailAvailability(userRequestDTO.email());
-        userValidation.validateUsernameAvailability(userRequestDTO.username());
         profileValidation.validateCpfAvailability(userRequestDTO.cpf());
 
         User user = UserMapper.toEntity(userRequestDTO, null);
@@ -46,14 +46,14 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public UserResponseDTO getUserByUsername(String username) {
-        User user = findUserByUsername(username);
+    public UserResponseDTO getUserById(UUID id) {
+        User user = findUserById(id);
         return UserMapper.toResponse(user);
     }
 
     @Transactional
-    public UserResponseDTO updateUserByUsername(String username, UserRequestDTO requestDTO) {
-        User existingUser = findUserByUsername(username);
+    public UserResponseDTO updateUserById(UUID id, UserRequestDTO requestDTO) {
+        User existingUser = findUserById(id);
 
         if (!existingUser.getEmail().equals(requestDTO.email())) {
             userValidation.validateEmailAvailability(requestDTO.email());
@@ -66,8 +66,8 @@ public class UserService {
     }
 
     @Transactional
-    public void deleteUserByUsername(String username) {
-        User user = findUserByUsername(username);
+    public void deleteUserById(UUID id) {
+        User user = findUserById(id);
         userRepository.delete(user);
     }
 
@@ -79,8 +79,8 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
-    private User findUserByUsername(String username) {
-        return userRepository.findByUsername(username)
+    private User findUserById(UUID id) {
+        return userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Profile not found."));
     }
 

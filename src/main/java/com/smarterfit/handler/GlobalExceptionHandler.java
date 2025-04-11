@@ -27,7 +27,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
     }
 
-    // 🔴 Erros de enum inválido, ou tipo errado no JSON
+    // Erros de enum inválido, ou tipo errado no JSON
     @ExceptionHandler({ HttpMessageNotReadableException.class, MethodArgumentTypeMismatchException.class })
     public ResponseEntity<String> handleInvalidEnumOrType(Exception ex) {
         return ResponseEntity
@@ -35,7 +35,7 @@ public class GlobalExceptionHandler {
                 .body("Invalid input: " + ex.getMessage());
     }
 
-//    // 🔁 Tipo errado no path param, query param, etc
+//    // Tipo errado no path param, query param, etc
 //    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
 //    public ResponseEntity<String> handleArgumentTypeMismatch(MethodArgumentTypeMismatchException ex) {
 //        return ResponseEntity
@@ -43,7 +43,7 @@ public class GlobalExceptionHandler {
 //                .body("Invalid value for field: " + ex.getName());
 //    }
 
-    // 🔐 Violação de unicidade: email, cpf duplicado, etc
+    // Violação de unicidade: email, cpf duplicado, etc
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<String> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
         return ResponseEntity
@@ -51,7 +51,7 @@ public class GlobalExceptionHandler {
                 .body("Data already exists or violates unique constraint.");
     }
 
-    // 🌐 Erros de validação manual com ConstraintViolation
+    // Erros de validação manual com ConstraintViolation
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<String> handleConstraintViolation(ConstraintViolationException ex) {
         return ResponseEntity
@@ -59,7 +59,7 @@ public class GlobalExceptionHandler {
                 .body("Validation error: " + ex.getMessage());
     }
 
-    // 🧨 Fallback genérico
+    // Fallback genérico
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleGenericError(Exception ex) {
         return ResponseEntity
