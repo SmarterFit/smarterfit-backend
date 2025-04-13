@@ -1,6 +1,5 @@
 package com.smarterfit.handler;
 
-
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.*;
@@ -35,13 +34,14 @@ public class GlobalExceptionHandler {
                 .body("Invalid input: " + ex.getMessage());
     }
 
-//    // Tipo errado no path param, query param, etc
-//    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-//    public ResponseEntity<String> handleArgumentTypeMismatch(MethodArgumentTypeMismatchException ex) {
-//        return ResponseEntity
-//                .badRequest()
-//                .body("Invalid value for field: " + ex.getName());
-//    }
+    // // Tipo errado no path param, query param, etc
+    // @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    // public ResponseEntity<String>
+    // handleArgumentTypeMismatch(MethodArgumentTypeMismatchException ex) {
+    // return ResponseEntity
+    // .badRequest()
+    // .body("Invalid value for field: " + ex.getName());
+    // }
 
     // Violação de unicidade: email, cpf duplicado, etc
     @ExceptionHandler(DataIntegrityViolationException.class)

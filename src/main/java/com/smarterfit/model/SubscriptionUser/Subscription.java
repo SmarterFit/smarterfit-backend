@@ -1,0 +1,96 @@
+package com.smarterfit.model.SubscriptionUser;
+
+import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.smarterfit.enums.SubscriptionStatus;
+import com.smarterfit.model.Plan;
+import com.smarterfit.model.UserRole.User;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Entity(name = "subscription")
+@Table(name = "SF_SUBSCRIPTION")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@EqualsAndHashCode(of = "id")
+public class Subscription {
+   @Id
+   @GeneratedValue(strategy = GenerationType.UUID)
+   private UUID id;
+
+   @ManyToOne(fetch = FetchType.LAZY)
+   @JoinColumn(name = "owner_id", nullable = false)
+   private User ownerUser;
+
+   @OneToMany(mappedBy = "subscription")
+   @Builder.Default
+   private Set<SubscriptionUser> subscriptionUsers = new HashSet<>();
+
+   @ManyToOne(fetch = FetchType.LAZY)
+   @JoinColumn(name = "plan_id", nullable = false)
+   private Plan plan;
+
+   @Column(name = "dt_started_in")
+   @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+   private LocalDateTime startedIn;
+
+   @Column(name = "dt_renewed_in")
+   @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+   private LocalDateTime renewedIn;
+
+   @Column(name = "dt_ended_in")
+   @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+   private LocalDateTime endedIn;
+
+   @Column(name = "status", nullable = false)
+   @Enumerated(EnumType.STRING)
+   private SubscriptionStatus status;
+
+   @Column(name = "available_members", nullable = false)
+   private Integer availableMembers;
+
+   @Column(name = "dt_created_at", nullable = false, updatable = false)
+   @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+   private LocalDateTime createdAt;
+
+   @Column(name = "dt_updated_at", nullable = false)
+   @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+   private LocalDateTime updatedAt;
+
+   @PrePersist
+   public void onPrePersist() {
+      this.createdAt = LocalDateTime.now();
+      this.updatedAt = LocalDateTime.now();
+   }
+
+   @PreUpdate
+   public void onPreUpdate() {
+      this.updatedAt = LocalDateTime.now();
+   }
+}

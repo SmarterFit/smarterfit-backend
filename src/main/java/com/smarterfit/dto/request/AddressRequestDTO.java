@@ -3,7 +3,6 @@ package com.smarterfit.dto.request;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-
 public record AddressRequestDTO(
         @NotBlank(message = "Street must not be blank")
         @Size(max = 100, message = "Street must be at most 100 characters long")

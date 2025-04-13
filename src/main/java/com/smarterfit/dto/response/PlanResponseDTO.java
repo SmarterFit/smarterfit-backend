@@ -6,9 +6,9 @@ public record PlanResponseDTO(
    UUID id,
    String name,
    String description,
-   double price,
-   int duration,
-   int maxUsers
+   Double price,
+   Integer duration,
+   Integer maxUsers
 ) {
 
 }
