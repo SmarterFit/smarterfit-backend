@@ -12,25 +12,22 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
-@Entity(name = "address")
-@Table(name = "SF_ADDRESS")
-public class Address {
+@Entity(name = "Plan_Modality")
+@Table(name = "SF_PROFILE")
+public class PlanModality {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @Id @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    private String street;
-    private String number;
-    private String neighborhood;
-    private String city;
-    private String state;
-    private String cep;
+    private String name;
 
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "plan_id", nullable = false)
+//    private Plan plan;
 
-    @OneToOne
-    @JoinColumn(name = "profile_id", nullable = false)
-    private Profile profile;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "modality_id", nullable = false)
+    private Modality modality;
 
     @Column(name = "dt_created_at", nullable = false, updatable = false)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -51,5 +48,4 @@ public class Address {
     public void onPreUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
-
 }

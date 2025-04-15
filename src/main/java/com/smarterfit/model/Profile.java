@@ -42,7 +42,7 @@ public class Profile {
     @Column(name = "gender")
     private Gender gender;
 
-    @OneToOne(mappedBy = "profile",  cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "profile", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Address address;
 
     @Column(name = "dt_created_at", nullable = false, updatable = false)

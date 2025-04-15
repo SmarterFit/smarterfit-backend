@@ -7,12 +7,10 @@ import java.io.Serializable;
 import java.util.Objects;
 import java.util.UUID;
 
-
+@Embeddable
 public class UserRoleId implements Serializable {
     private UUID user;
     private RoleType roleType;
-
-    // construtores, equals, hashCode
 
     public UserRoleId() {}
 
@@ -31,6 +29,6 @@ public class UserRoleId implements Serializable {
 
     @Override
     public int hashCode() {
-        return user.hashCode() + roleType.hashCode();
+        return Objects.hash(user, roleType);
     }
 }

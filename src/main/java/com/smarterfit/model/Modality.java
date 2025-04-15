@@ -12,25 +12,16 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
-@Entity(name = "address")
-@Table(name = "SF_ADDRESS")
-public class Address {
+@Entity(name = "modality")
+@Table(name = "SF_PROFILE")
+public class Modality {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @Id @GeneratedValue(strategy = GenerationType.UUID)
+    UUID id;
 
-    private String street;
-    private String number;
-    private String neighborhood;
-    private String city;
-    private String state;
-    private String cep;
+    @Column(nullable = false)
+    String name;
 
-
-    @OneToOne
-    @JoinColumn(name = "profile_id", nullable = false)
-    private Profile profile;
 
     @Column(name = "dt_created_at", nullable = false, updatable = false)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
