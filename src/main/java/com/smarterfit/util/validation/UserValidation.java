@@ -22,17 +22,11 @@ public class UserValidation {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found."));
     }
 
-    public User validateUserByById(UUID id) {
-        return userRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found."));
-    }
-
     public void validateEmailAvailability(String email) {
         userRepository.findByEmail(email).ifPresent(user -> {
             throw new BusinessException("E-mail is already in use.");
         });
     }
-
 
     public void validatePasswords(String password, String confirmPassword) {
         if (!password.equals(confirmPassword)) {
@@ -41,4 +35,3 @@ public class UserValidation {
     }
 
 }
-

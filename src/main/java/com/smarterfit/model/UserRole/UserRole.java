@@ -4,13 +4,11 @@ import com.smarterfit.enums.RoleType;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.UUID;
-
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(of = {"user", "roleType"})
+@EqualsAndHashCode(of = { "user", "roleType" })
 @IdClass(UserRoleId.class)
 @Entity
 @Table(name = "SF_USER_ROLE")

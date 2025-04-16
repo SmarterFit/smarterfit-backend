@@ -1,10 +1,8 @@
 package com.smarterfit.model.UserRole;
 
 import com.smarterfit.enums.RoleType;
-import jakarta.persistence.Embeddable;
 
 import java.io.Serializable;
-import java.util.Objects;
 import java.util.UUID;
 
 

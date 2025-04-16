@@ -37,9 +37,9 @@ public class User {
     private Set<UserRole> roles = new HashSet<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<SubscriptionUser> subscriptionUsers = new HashSet<>();
+    private Set<SubscriptionUser> participatingSubscriptions = new HashSet<>();
 
-    @OneToMany(mappedBy = "ownerUser", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Subscription> ownedSubscriptions = new HashSet<>();
 
     @Column(name = "dt_created_at", nullable = false, updatable = false)

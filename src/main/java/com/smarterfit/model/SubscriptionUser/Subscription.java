@@ -10,6 +10,7 @@ import com.smarterfit.enums.SubscriptionStatus;
 import com.smarterfit.model.Plan;
 import com.smarterfit.model.UserRole.User;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -46,11 +47,11 @@ public class Subscription {
 
    @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "owner_id", nullable = false)
-   private User ownerUser;
+   private User owner;
 
-   @OneToMany(mappedBy = "subscription")
+   @OneToMany(mappedBy = "subscription", cascade = CascadeType.ALL, orphanRemoval = true)
    @Builder.Default
-   private Set<SubscriptionUser> subscriptionUsers = new HashSet<>();
+   private Set<SubscriptionUser> participants = new HashSet<>();
 
    @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "plan_id", nullable = false)

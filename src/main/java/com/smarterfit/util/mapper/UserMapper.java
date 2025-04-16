@@ -1,7 +1,9 @@
 package com.smarterfit.util.mapper;
 
 import com.smarterfit.dto.request.UserRequestDTO;
+import com.smarterfit.dto.response.SubscriptionShortResponseDTO;
 import com.smarterfit.dto.response.UserResponseDTO;
+import com.smarterfit.dto.response.UserShortResponseDTO;
 import com.smarterfit.enums.RoleType;
 import com.smarterfit.model.Profile;
 import com.smarterfit.model.UserRole.User;
@@ -14,10 +16,38 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class UserMapper {
+    private static Set<String> getRoleStrings(Set<UserRole> roles) {
+        return roles.stream().map(u -> u.getRoleType().toString()).collect(Collectors.toSet());
+    }
 
+    public static UserShortResponseDTO toShortResponse(User user) {
+        Set<String> roles = getRoleStrings(user.getRoles());
+        return new UserShortResponseDTO(user.getId(), user.getEmail(), roles);
+    }
+
+    public static UserResponseDTO toResponse(User user) {
+        if (user == null) {
+            return null;
+        }
+
+        Set<String> roles = getRoleStrings(user.getRoles());
+
+        Set<SubscriptionShortResponseDTO> ownedSubscriptions = user.getOwnedSubscriptions().stream()
+                .map(SubscriptionMapper::toShortResponse).collect(Collectors.toSet());
+        Set<SubscriptionShortResponseDTO> participatingSubscriptions = user.getParticipatingSubscriptions().stream()
+                .map(participation -> SubscriptionMapper.toShortResponse(participation.getSubscription()))
+                .collect(Collectors.toSet());
+
+        return new UserResponseDTO(
+                user.getId(),
+                user.getEmail(),
+                roles,
+                ownedSubscriptions,
+                participatingSubscriptions);
+    }
 
     public static User toEntity(UserRequestDTO dto, User user) {
-        if(user == null){
+        if (user == null) {
             user = new User();
         }
         user.setEmail(dto.email());
@@ -48,11 +78,6 @@ public class UserMapper {
         user.setProfile(profile);
 
         return user;
-    }
-
-    public static UserResponseDTO toResponse(User user){
-        Set<String> roles = user.getRoles().stream().map(u -> u.getRoleType().toString()).collect(Collectors.toSet());
-        return new UserResponseDTO(user.getEmail(), roles,  user.getId());
     }
 
     public static Set<UserRole> getRolesFromDTO(UserRequestDTO dto, User user) {
