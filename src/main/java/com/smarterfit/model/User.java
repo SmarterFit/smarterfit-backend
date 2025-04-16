@@ -1,8 +1,7 @@
-package com.smarterfit.model.UserRole;
+package com.smarterfit.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.smarterfit.enums.RoleType;
-import com.smarterfit.model.Profile;
+import com.smarterfit.model.UserRole.UserRole;
 import jakarta.persistence.*;
 import lombok.*;
 

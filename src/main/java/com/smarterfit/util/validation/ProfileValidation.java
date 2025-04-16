@@ -3,7 +3,7 @@ package com.smarterfit.util.validation;
 import com.smarterfit.exception.BusinessException;
 import com.smarterfit.exception.ResourceNotFoundException;
 import com.smarterfit.model.Profile;
-import com.smarterfit.model.UserRole.User;
+import com.smarterfit.model.User;
 import com.smarterfit.repository.ProfileRepository;
 import org.springframework.stereotype.Component;
 

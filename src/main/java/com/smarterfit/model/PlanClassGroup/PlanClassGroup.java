@@ -2,13 +2,12 @@ package com.smarterfit.model.PlanClassGroup;
 
 import com.smarterfit.model.ClassGroup;
 import com.smarterfit.model.PlanModality;
-import com.smarterfit.model.UserRole.UserRoleId;
 import jakarta.persistence.*;
 import lombok.*;
 
 @Getter
 @Setter
-@EqualsAndHashCode(of = {"classGruop", "planModality"})
+@EqualsAndHashCode(of = {"classGroup", "planModality"})
 @AllArgsConstructor
 @NoArgsConstructor
 @IdClass(PlanClassGroupId.class)

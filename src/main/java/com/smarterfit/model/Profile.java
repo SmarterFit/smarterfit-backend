@@ -2,7 +2,6 @@ package com.smarterfit.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.smarterfit.enums.Gender;
-import com.smarterfit.model.UserRole.User;
 import jakarta.persistence.*;
 import lombok.*;
 

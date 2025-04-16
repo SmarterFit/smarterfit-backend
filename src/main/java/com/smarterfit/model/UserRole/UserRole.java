@@ -1,10 +1,9 @@
 package com.smarterfit.model.UserRole;
 
 import com.smarterfit.enums.RoleType;
+import com.smarterfit.model.User;
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.util.UUID;
 
 @Getter
 @Setter

@@ -4,7 +4,7 @@ import com.smarterfit.dto.request.ProfileRequestDTO;
 import com.smarterfit.dto.response.ProfileResponseDTO;
 import com.smarterfit.exception.ResourceNotFoundException;
 import com.smarterfit.model.Profile;
-import com.smarterfit.model.UserRole.User;
+import com.smarterfit.model.User;
 import com.smarterfit.repository.ProfileRepository;
 import com.smarterfit.repository.UserRepository;
 import com.smarterfit.util.mapper.ProfileMapper;

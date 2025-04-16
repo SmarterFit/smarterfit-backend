@@ -20,10 +20,10 @@ public class ClassSession {
 
     @Id @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-//
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "class_group_id", nullable = false)
-//    private ClassGroup classGroup;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "class_group_id", nullable = false)
+    private ClassGroup classGroup;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Column(nullable = false)

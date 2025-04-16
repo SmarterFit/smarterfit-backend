@@ -2,11 +2,8 @@ package com.smarterfit.service;
 
 import com.smarterfit.dto.request.UserRequestDTO;
 import com.smarterfit.dto.response.UserResponseDTO;
-import com.smarterfit.exception.BusinessException;
 import com.smarterfit.exception.ResourceNotFoundException;
-import com.smarterfit.model.Profile;
-import com.smarterfit.model.UserRole.User;
-import com.smarterfit.repository.ProfileRepository;
+import com.smarterfit.model.User;
 import com.smarterfit.repository.UserRepository;
 import com.smarterfit.util.mapper.UserMapper;
 import com.smarterfit.util.validation.ProfileValidation;

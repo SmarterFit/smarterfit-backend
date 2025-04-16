@@ -1,7 +1,7 @@
 package com.smarterfit.controller;
 
 import com.smarterfit.dto.request.LoginRequestDTO;
-import com.smarterfit.model.UserRole.User;
+import com.smarterfit.model.User;
 import com.smarterfit.repository.UserRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

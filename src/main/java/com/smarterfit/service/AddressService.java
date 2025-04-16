@@ -4,7 +4,7 @@ import com.smarterfit.dto.request.AddressRequestDTO;
 import com.smarterfit.dto.response.AddressResponseDTO;
 import com.smarterfit.model.Address;
 import com.smarterfit.model.Profile;
-import com.smarterfit.model.UserRole.User;
+import com.smarterfit.model.User;
 import com.smarterfit.repository.AddressRepository;
 import com.smarterfit.util.mapper.AddressMapper;
 import com.smarterfit.util.validation.UserValidation;
