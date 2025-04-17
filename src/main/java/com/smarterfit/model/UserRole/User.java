@@ -1,7 +1,6 @@
 package com.smarterfit.model.UserRole;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.smarterfit.enums.RoleType;
 import com.smarterfit.model.Profile;
 import com.smarterfit.model.SubscriptionUser.Subscription;
 import com.smarterfit.model.SubscriptionUser.SubscriptionUser;
