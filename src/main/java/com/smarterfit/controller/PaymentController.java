@@ -37,10 +37,10 @@ public class PaymentController {
    }
 
    /// Acesso: Dono da assinatura ou funcionários
-   @PatchMapping("/{id}/confirmar")
-   public ResponseEntity<PaymentProcessorResponseDTO> confirmPayment(@PathVariable UUID id,
+   @PatchMapping("/{id}/processar")
+   public ResponseEntity<PaymentProcessorResponseDTO> processPayment(@PathVariable UUID id,
          @RequestBody @Valid PaymentProcessorRequestDTO paymentProcessorRequestDTO) {
-      PaymentProcessorResponseDTO paymentProcessorResponseDTO = paymentService.confirmPayment(id,
+      PaymentProcessorResponseDTO paymentProcessorResponseDTO = paymentService.processPayment(id,
             paymentProcessorRequestDTO);
       return ResponseEntity.ok(paymentProcessorResponseDTO);
    }

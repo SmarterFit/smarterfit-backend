@@ -1,5 +1,6 @@
 package com.smarterfit.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -48,9 +49,11 @@ public class PaymentService {
       Subscription subscription = subscriptionValidation
             .findSubscriptionById(subscriptionPaymentRequestDTO.subscriptionId());
 
+      Double amount = subscription.getPlan().getPrice();
+
       Payment subscriptionPayment = Payment.builder()
             .subscription(subscription)
-            .amount(subscriptionPaymentRequestDTO.amount())
+            .amount(amount)
             .paymentMethod(subscriptionPaymentRequestDTO.paymentMethod())
             .status(PaymentStatus.PENDING)
             .build();
@@ -60,12 +63,10 @@ public class PaymentService {
       return PaymentMapper.toResponse(subscriptionPayment);
    }
 
-   public PaymentProcessorResponseDTO confirmPayment(UUID id, PaymentProcessorRequestDTO paymentProcessorRequestDTO) {
+   public PaymentProcessorResponseDTO processPayment(UUID id, PaymentProcessorRequestDTO paymentProcessorRequestDTO) {
       Payment subscriptionPayment = findPaymentById(id);
 
-      if (subscriptionPayment.getSubscription().getStatus() == SubscriptionStatus.CANCELED) {
-         throw new BusinessException("Assinatura cancelada, não é possível processar o pagamento");
-      } else if (subscriptionPayment.getStatus() != PaymentStatus.PENDING) {
+      if (subscriptionPayment.getStatus() != PaymentStatus.PENDING) {
          throw new BusinessException("Pagamento não pode ser processado, pois já foi processado");
       }
 
@@ -74,6 +75,7 @@ public class PaymentService {
 
       if (response.success()) {
          subscriptionPayment.setStatus(PaymentStatus.PAID);
+         subscriptionPayment.setPaymentDate(LocalDateTime.now());
          subscriptionPaymentRepository.save(subscriptionPayment);
 
          subscriptionService.renewSubscription(subscriptionPayment.getSubscription().getId());

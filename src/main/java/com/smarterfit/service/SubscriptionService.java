@@ -143,7 +143,7 @@ public class SubscriptionService {
       Subscription subscription = findSubscriptionById(id);
 
       LocalDateTime now = LocalDateTime.now();
-      LocalDateTime endedIn = subscription.getEndedIn();
+      LocalDateTime endedIn = subscription.getEndedIn() != null ? subscription.getEndedIn() : now;
       Integer duration = subscription.getPlan().getDuration();
       LocalDateTime newEndDate = endedIn.isAfter(now) ? endedIn.plusDays(duration) : now.plusDays(duration);
       SubscriptionStatus status = subscription.getStatus();
@@ -159,6 +159,8 @@ public class SubscriptionService {
       subscription.setStatus(SubscriptionStatus.ACTIVE);
       subscription.setRenewedIn(now);
       subscription.setEndedIn(newEndDate);
+
+      subscriptionRepository.save(subscription);
    }
 
    private Subscription findSubscriptionById(UUID id) {
