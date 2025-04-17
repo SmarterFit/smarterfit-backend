@@ -17,7 +17,6 @@ public class SmarterFitApplication implements CommandLineRunner {
 	public void run(String... args){
 		System.out.println("SmarterFit API is running");
 		System.out.println("Acesse: http://localhost:8081/");
-
 	}
 }
 
