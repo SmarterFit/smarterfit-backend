@@ -13,5 +13,7 @@ public record SubscriptionResponseDTO(
       LocalDateTime renewedIn,
       LocalDateTime endedIn,
       String status,
-      Integer availableMembers) {
+      Integer availableMembers,
+      Set<PaymentShortResponseDTO> payments
+      ) {
 }

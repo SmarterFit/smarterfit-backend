@@ -23,7 +23,7 @@ public class PlanMapper {
       plan.setPrice(planRequestDTO.price());
       plan.setDuration(planRequestDTO.duration());
       plan.setMaxUsers(planRequestDTO.maxUsers());
-      
+
       return plan;
    }
 
@@ -38,9 +38,8 @@ public class PlanMapper {
             plan.getDescription(),
             plan.getPrice(),
             plan.getDuration(),
-            plan.getMaxUsers()
-      );
-      
+            plan.getMaxUsers());
+
       return planResponseDTO;
    }
 }

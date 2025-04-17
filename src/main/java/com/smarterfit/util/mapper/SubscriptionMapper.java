@@ -4,6 +4,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.smarterfit.dto.response.PlanResponseDTO;
+import com.smarterfit.dto.response.PaymentShortResponseDTO;
 import com.smarterfit.dto.response.SubscriptionResponseDTO;
 import com.smarterfit.dto.response.SubscriptionShortResponseDTO;
 import com.smarterfit.dto.response.UserShortResponseDTO;
@@ -33,9 +34,20 @@ public class SubscriptionMapper {
       }
 
       PlanResponseDTO plan = PlanMapper.toResponse(subscription.getPlan());
+
       UserShortResponseDTO owner = UserMapper.toShortResponse(subscription.getOwner());
-      Set<UserShortResponseDTO> participants = subscription.getParticipants().stream().map(
-            participant -> UserMapper.toShortResponse(participant.getUser())).collect(Collectors.toSet());
+
+      Set<UserShortResponseDTO> participants = subscription.getParticipants()
+            .stream()
+            .map(
+                  participant -> UserMapper.toShortResponse(participant.getUser()))
+            .collect(Collectors.toSet());
+
+      Set<PaymentShortResponseDTO> payments = subscription.getPayments()
+            .stream()
+            .map(
+                  PaymentMapper::toShortResponse)
+            .collect(Collectors.toSet());
 
       return new SubscriptionResponseDTO(
             subscription.getId(),
@@ -46,6 +58,7 @@ public class SubscriptionMapper {
             subscription.getRenewedIn(),
             subscription.getEndedIn(),
             subscription.getStatus().toString(),
-            subscription.getAvailableMembers());
+            subscription.getAvailableMembers(),
+            payments);
    }
 }

@@ -1,5 +1,7 @@
 package com.smarterfit.service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -125,7 +127,40 @@ public class SubscriptionService {
       subscriptionRepository.save(subscription);
    }
 
-   /// TODO: Implementar o método de pagamento de assinatura (ativação)
+   @Transactional
+   public void expireSubscriptionsIfNeeded() {
+      List<Subscription> subscriptions = subscriptionRepository
+            .findByStatusIn(List.of(SubscriptionStatus.ACTIVE));
+
+      for (Subscription subscription : subscriptions) {
+         if (subscription.getEndedIn().isBefore(LocalDateTime.now())) {
+            subscription.setStatus(SubscriptionStatus.EXPIRED);
+            subscriptionRepository.save(subscription);
+         }
+      }
+   }
+
+   public void renewSubscription(UUID id) {
+      Subscription subscription = findSubscriptionById(id);
+
+      LocalDateTime now = LocalDateTime.now();
+      LocalDateTime endedIn = subscription.getEndedIn();
+      Integer duration = subscription.getPlan().getDuration();
+      LocalDateTime newEndDate = endedIn.isAfter(now) ? endedIn.plusDays(duration) : now.plusDays(duration);
+      SubscriptionStatus status = subscription.getStatus();
+
+      if (status == SubscriptionStatus.CANCELED) {
+         throw new BusinessException("Assinatura não pode ser renovada, pois está cancelada.");
+      }
+
+      if (status == SubscriptionStatus.PENDING) {
+         subscription.setStartedIn(now);
+      }
+
+      subscription.setStatus(SubscriptionStatus.ACTIVE);
+      subscription.setRenewedIn(now);
+      subscription.setEndedIn(newEndDate);
+   }
 
    private Subscription findSubscriptionById(UUID id) {
       return subscriptionRepository.findById(id)
