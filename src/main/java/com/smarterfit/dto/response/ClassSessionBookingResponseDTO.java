@@ -9,7 +9,6 @@ import java.util.UUID;
 public record ClassSessionBookingResponseDTO(
 
         UUID id,
-        UUID userId,
         UUID classSessionId,
         LocalDateTime bookingDate,
         String bookingStatus

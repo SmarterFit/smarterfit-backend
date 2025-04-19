@@ -1,5 +1,6 @@
 package com.smarterfit.util.validation;
 
+import com.smarterfit.exception.ResourceAlreadyExistsException;
 import com.smarterfit.exception.ResourceNotFoundException;
 import com.smarterfit.model.ClassGroup;
 import com.smarterfit.repository.ClassGroupRepository;
@@ -23,9 +24,9 @@ public class ClassGroupValidation {
     }
 
     public void validateClassGroupAvailability(String name, UUID currentClassGroupId) {
-        classGroupRepository.findByName(name).ifPresent(existing -> {
+        classGroupRepository.findByTitle(name).ifPresent(existing -> {
             if (!existing.getId().equals(currentClassGroupId)) {
-                throw new ResourceNotFoundException("Class group name is already in use.");
+                throw new ResourceAlreadyExistsException("Class group name is already in use.");
             }
         });
 

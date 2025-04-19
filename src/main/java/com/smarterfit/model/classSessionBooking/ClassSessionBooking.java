@@ -29,7 +29,7 @@ public class ClassSessionBooking {
     private ClassSession classSession;
 
     @Column(nullable = false)
-    private LocalDateTime bookingTime;
+    private LocalDateTime bookingDate;
 
     @Column(nullable = false)
     private Status status;

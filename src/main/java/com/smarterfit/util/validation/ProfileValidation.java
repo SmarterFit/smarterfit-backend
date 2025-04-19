@@ -1,6 +1,7 @@
 package com.smarterfit.util.validation;
 
 import com.smarterfit.exception.BusinessException;
+import com.smarterfit.exception.ResourceAlreadyExistsException;
 import com.smarterfit.exception.ResourceNotFoundException;
 import com.smarterfit.model.Profile;
 import com.smarterfit.model.User;
@@ -26,7 +27,7 @@ public class ProfileValidation {
     public void validateCpfAvailability(String cpf, UUID currentProfileId) {
         profileRepository.findByCpf(cpf).ifPresent(existing -> {
             if (!existing.getId().equals(currentProfileId)) {
-                throw new BusinessException("The CPF is already in use.");
+                throw new ResourceAlreadyExistsException("The CPF is already in use.");
             }
         });
     }

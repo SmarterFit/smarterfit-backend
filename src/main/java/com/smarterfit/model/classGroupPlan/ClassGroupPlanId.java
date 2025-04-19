@@ -1,11 +1,15 @@
 package com.smarterfit.model.classGroupPlan;
 
 import jakarta.persistence.Embeddable;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.UUID;
 
+@Getter
+@Setter
 @Embeddable
 public class ClassGroupPlanId implements Serializable {
     private UUID planId;

@@ -39,5 +39,11 @@ public class UserValidation {
         }
     }
 
+    public void validateUserExists(UUID id) {
+        if (userRepository.existsById(id)) {
+            throw new BusinessException("User already exists");
+        }
+    }
+
 }
 

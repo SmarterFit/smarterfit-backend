@@ -2,11 +2,15 @@ package com.smarterfit.model.userRole;
 
 import com.smarterfit.enums.RoleType;
 import jakarta.persistence.Embeddable;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.UUID;
 
+@Getter
+@Setter
 @Embeddable
 public class UserRoleId implements Serializable {
     private UUID user;

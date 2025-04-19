@@ -8,5 +8,7 @@ import java.util.UUID;
 
 public interface ClassGroupRepository  extends JpaRepository<ClassGroup, UUID> {
 
-    Optional<ClassGroup> findByName(String name);
+    Optional<ClassGroup> findByTitle(String title);
+
+
 }
