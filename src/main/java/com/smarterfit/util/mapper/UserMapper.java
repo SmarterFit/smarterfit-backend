@@ -3,9 +3,10 @@ package com.smarterfit.util.mapper;
 import com.smarterfit.dto.request.UserRequestDTO;
 import com.smarterfit.dto.response.UserResponseDTO;
 import com.smarterfit.enums.RoleType;
+import com.smarterfit.exception.ResourceNotFoundException;
 import com.smarterfit.model.Profile;
 import com.smarterfit.model.User;
-import com.smarterfit.model.UserRole.UserRole;
+import com.smarterfit.model.userRole.UserRole;
 import com.smarterfit.util.Converter;
 
 import java.util.HashSet;
@@ -14,11 +15,19 @@ import java.util.stream.Collectors;
 
 public class UserMapper {
 
+    private UserMapper() {
+        // Private constructor to prevent instantiation
+    }
+
+    public static User toEntity(UserRequestDTO dto) {
+        return toEntity(dto, new User());
+    }
 
     public static User toEntity(UserRequestDTO dto, User user) {
         if(user == null){
-            user = new User();
+            throw new ResourceNotFoundException("User not found.");
         }
+
         user.setEmail(dto.email());
         user.setPassword(dto.password());
 
@@ -55,7 +64,9 @@ public class UserMapper {
         return new UserResponseDTO(user.getEmail(), roles,  user.getId());
     }
 
-    public static Set<UserRole> getRolesFromDTO(UserRequestDTO dto, User user) {
+
+
+    private static Set<UserRole> getRolesFromDTO(UserRequestDTO dto, User user) {
         Set<UserRole> userRoles = new HashSet<>();
         if (dto.roles() != null) {
             for (String roleStr : dto.roles()) {

@@ -10,6 +10,6 @@ import java.util.UUID;
 
 public interface ModalityRepository extends JpaRepository<Modality, UUID> {
 
-    @Query("select m from modality m where m.name like %:name%")
+    @Query("select m from Modality m where m.name like %:name%")
     Optional<Modality> findByName(@Param("name") String name);
 }

@@ -13,5 +13,5 @@ public record ProfileResponseDTO(
         LocalDate birthDate,
         Gender gender,
         AddressResponseDTO address,
-        UUID ID
+        UUID id
 ) {}

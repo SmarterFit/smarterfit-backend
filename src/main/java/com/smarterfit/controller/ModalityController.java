@@ -34,7 +34,7 @@ public class ModalityController {
     @PutMapping("/{id}")
     public ResponseEntity<ModalityResponseDTO> updateModalityById(
             @PathVariable UUID id,
-            @RequestBody ModalityRequestDTO modalityRequest) {
+            @RequestBody @Valid ModalityRequestDTO modalityRequest) {
         return ResponseEntity.ok(modalityService.updateModalityById(id, modalityRequest));
     }
 

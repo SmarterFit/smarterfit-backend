@@ -1,7 +1,7 @@
 package com.smarterfit.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.smarterfit.model.UserRole.UserRole;
+import com.smarterfit.model.userRole.UserRole;
 import jakarta.persistence.*;
 import lombok.*;
 

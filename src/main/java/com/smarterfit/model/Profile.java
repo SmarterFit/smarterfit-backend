@@ -17,6 +17,7 @@ import java.util.UUID;
 @Entity(name = "profile")
 @Table(name = "SF_PROFILE")
 public class Profile {
+
     @Id
     UUID id;
 

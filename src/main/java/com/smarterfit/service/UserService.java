@@ -36,7 +36,7 @@ public class UserService {
         userValidation.validateEmailAvailability(userRequestDTO.email());
         profileValidation.validateCpfAvailability(userRequestDTO.cpf());
 
-        User user = UserMapper.toEntity(userRequestDTO, null);
+        User user = UserMapper.toEntity(userRequestDTO);
 
         userRepository.save(user);
         return UserMapper.toResponse(user);
@@ -44,13 +44,13 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public UserResponseDTO getUserById(UUID id) {
-        User user = findUserById(id);
+        User user = userValidation.validateUserById(id);
         return UserMapper.toResponse(user);
     }
 
     @Transactional
     public UserResponseDTO updateUserById(UUID id, UserRequestDTO requestDTO) {
-        User existingUser = findUserById(id);
+        User existingUser = userValidation.validateUserById(id);
 
         if (!existingUser.getEmail().equals(requestDTO.email())) {
             userValidation.validateEmailAvailability(requestDTO.email());
@@ -64,7 +64,7 @@ public class UserService {
 
     @Transactional
     public void deleteUserById(UUID id) {
-        User user = findUserById(id);
+        User user = userValidation.validateUserById(id);
         userRepository.delete(user);
     }
 
@@ -76,10 +76,7 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
-    private User findUserById(UUID id) {
-        return userRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Profile not found."));
-    }
+
 
 
 }

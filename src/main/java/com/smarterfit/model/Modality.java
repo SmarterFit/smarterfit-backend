@@ -12,8 +12,8 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
-@Entity(name = "modality")
-@Table(name = "SF_PROFILE")
+@Entity
+@Table(name = "SF_MODALITY")
 public class Modality {
 
     @Id @GeneratedValue(strategy = GenerationType.UUID)

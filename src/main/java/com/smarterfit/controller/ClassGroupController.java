@@ -32,7 +32,7 @@ public class ClassGroupController {
     @PutMapping("/{id}")
     public ResponseEntity<ClassGroupResponseDTO> updateClassGroupById(
             @PathVariable UUID id,
-            @RequestBody ClassGroupRequestDTO classGroupRequest) {
+            @RequestBody @Valid ClassGroupRequestDTO classGroupRequest) {
         return ResponseEntity.ok(classGroupService.updateClassGroupById(id, classGroupRequest));
     }
 

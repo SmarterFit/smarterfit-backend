@@ -1,33 +1,33 @@
-package com.smarterfit.model;
+package com.smarterfit.model.classGroupUser;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.smarterfit.model.ClassGroup;
+import com.smarterfit.model.User;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Getter
 @Setter
-@NoArgsConstructor
+@EqualsAndHashCode(of = {"classGroup", "user"})
 @AllArgsConstructor
-@EqualsAndHashCode(of = "id")
-@Entity(name = "Plan_Modality")
-@Table(name = "SF_PROFILE")
-public class PlanModality {
+@NoArgsConstructor
+@IdClass(ClassGroupUserId.class)
 
-    @Id @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+@Entity
+@Table(name = "SF_CLASS_GROUP_USER")
+public class ClassGroupUser{
 
-    private String name;
-
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "plan_id", nullable = false)
-//    private Plan plan;
-
+    @Id
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "modality_id", nullable = false)
-    private Modality modality;
+    @JoinColumn(name = "class_group_id", nullable = false)
+    private ClassGroup classGroup;
+
+    @Id
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @Column(name = "dt_created_at", nullable = false, updatable = false)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -48,4 +48,8 @@ public class PlanModality {
     public void onPreUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
+
+
+
+
 }

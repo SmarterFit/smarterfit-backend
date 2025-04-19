@@ -21,11 +21,10 @@ public class UserValidation {
         return userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found."));
     }
-
-    public User validateUserByById(UUID id) {
-        return userRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found."));
+    public User validateUserByEmail(String email) {
+        return  userRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException("User not found."));
     }
+
 
     public void validateEmailAvailability(String email) {
         userRepository.findByEmail(email).ifPresent(user -> {

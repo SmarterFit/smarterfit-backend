@@ -2,7 +2,7 @@ package com.smarterfit.model;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.smarterfit.enums.BookingStatus;
+import com.smarterfit.enums.Status;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -33,8 +33,11 @@ public class ClassSession {
     @Column(nullable = false)
     private LocalDateTime endTime;
 
-    @Column(name = "booking_status", nullable = false)
+    @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)
-    private BookingStatus status;
+    private Status status;
+
+    @Column(name = "capacity", nullable = false)
+    private Integer capacity;
 
 }

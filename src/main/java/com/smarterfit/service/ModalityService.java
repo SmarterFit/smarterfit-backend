@@ -5,6 +5,7 @@ import com.smarterfit.dto.response.ModalityResponseDTO;
 import com.smarterfit.model.Modality;
 import com.smarterfit.repository.ModalityRepository;
 import com.smarterfit.util.mapper.ModalityMapper;
+import com.smarterfit.util.validation.ModalityValidation;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,9 +15,11 @@ import java.util.UUID;
 public class ModalityService {
 
     private final ModalityRepository modalityRepository;
+    private final ModalityValidation modalityValidation;
 
-    public ModalityService(ModalityRepository modalityRepository) {
+    public ModalityService(ModalityRepository modalityRepository, ModalityValidation modalityValidation) {
         this.modalityRepository = modalityRepository;
+        this.modalityValidation = modalityValidation;
     }
 
     @Transactional
@@ -28,13 +31,13 @@ public class ModalityService {
 
     @Transactional(readOnly = true)
     public ModalityResponseDTO getModalityById(UUID id) {
-        Modality modality = findById(id);
+        Modality modality = modalityValidation.validateModalityById(id);
         return ModalityMapper.toResponse(modality);
     }
 
     @Transactional
     public ModalityResponseDTO updateModalityById(UUID id, ModalityRequestDTO modalityRequest) {
-        Modality modality = findById(id);
+        Modality modality = modalityValidation.validateModalityById(id);
 
         modality = ModalityMapper.toEntity(modalityRequest, modality);
         modalityRepository.save(modality);
@@ -43,14 +46,10 @@ public class ModalityService {
 
     @Transactional
     public void deleteModalityById(UUID id) {
-        Modality modality = findById(id);
+        Modality modality = modalityValidation.validateModalityById(id);
         modalityRepository.delete(modality);
 
     }
 
 
-    private Modality findById(UUID id) {
-        return modalityRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Modality not found"));
-    }
 }

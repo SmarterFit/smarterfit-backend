@@ -2,13 +2,18 @@ package com.smarterfit.util.mapper;
 
 import com.smarterfit.dto.request.AddressRequestDTO;
 import com.smarterfit.dto.response.AddressResponseDTO;
+import com.smarterfit.exception.ResourceNotFoundException;
 import com.smarterfit.model.Address;
 
 public class AddressMapper {
 
+    private AddressMapper() {
+        // Private constructor to prevent instantiation
+    }
+
     public static Address toEntity(AddressRequestDTO dto, Address address) {
         if (address == null) {
-            address = new Address();
+            throw new ResourceNotFoundException("Address not found.");
         }
 
         address.setStreet(dto.street());

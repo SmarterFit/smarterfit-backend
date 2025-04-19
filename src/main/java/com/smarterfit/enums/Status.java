@@ -1,6 +1,6 @@
 package com.smarterfit.enums;
 
-public enum BookingStatus {
+public enum Status {
     CONFIRMED,
     CANCELED
 }
