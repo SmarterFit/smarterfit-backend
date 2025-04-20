@@ -12,14 +12,14 @@ import java.util.UUID;
 @Setter
 @Embeddable
 public class ClassGroupPlanId implements Serializable {
-    private UUID planId;
-    private UUID classGroupId;
+    private UUID plan;
+    private UUID classGroup;
 
     public ClassGroupPlanId() {}
 
-    public ClassGroupPlanId(UUID planId, UUID classGroupId) {
-        this.planId = planId;
-        this.classGroupId = classGroupId;
+    public ClassGroupPlanId(UUID plan, UUID classGroup) {
+        this.plan = plan;
+        this.classGroup = classGroup;
     }
 
     @Override
@@ -27,11 +27,11 @@ public class ClassGroupPlanId implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ClassGroupPlanId that = (ClassGroupPlanId) o;
-        return Objects.equals(planId, that.planId) && Objects.equals(classGroupId, that.classGroupId);
+        return Objects.equals(plan, that.plan) && Objects.equals(classGroup, that.classGroup);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(planId, classGroupId);
+        return Objects.hash(plan, classGroup);
     }
 }

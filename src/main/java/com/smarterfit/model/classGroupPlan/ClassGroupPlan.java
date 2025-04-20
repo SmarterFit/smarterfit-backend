@@ -10,7 +10,7 @@ import lombok.*;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(of = {"classGroupId", "planId"})
+@EqualsAndHashCode(of = {"classGroup", "plan"})
 @IdClass(ClassGroupPlanId.class)
 @Entity
 @Table(name = "SF_CLASS_GROUP_PLAN")
@@ -18,12 +18,12 @@ public class ClassGroupPlan {
     @Id
     @JoinColumn(name = "class_group_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
-    private ClassGroup classGroupId;
+    private ClassGroup classGroup;
 
     @Id
     @JoinColumn(name = "plan_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
-    private Plan planId;
+    private Plan plan;
 
 
 
