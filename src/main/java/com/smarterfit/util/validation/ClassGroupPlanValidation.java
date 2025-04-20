@@ -19,7 +19,7 @@ public class ClassGroupPlanValidation {
     }
 
 
-    public void validateClassGroupPlanAvailability(UUID planId, UUID classGroupId) {
+    public void validateClassGroupPlanExists(UUID planId, UUID classGroupId) {
         if (classGroupPlanRepository.existsByPlanIdAndClassGroupId(planId, classGroupId)) {
             throw new ResourceAlreadyExistsException("Plan name already exists for this class group.");
         }

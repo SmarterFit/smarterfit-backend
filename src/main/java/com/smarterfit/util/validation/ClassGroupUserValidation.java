@@ -17,16 +17,17 @@ public class ClassGroupUserValidation {
         this.classGroupUserRepository = classGroupUserRepository;
     }
 
-    public void validateClassGroupUser(UUID userId, UUID classGroupId) {
+    public void validateClassGroupUserExists(UUID userId, UUID classGroupId) {
         if (classGroupUserRepository.existsByUserIdAndClassGroupId(userId, classGroupId)) {
             throw new ResourceAlreadyExistsException("User ID and Class Group ID already exist.");
         }
 
     }
 
+
     public ClassGroupUser validateClassGroupUserId(UUID userId, UUID classGroupId) {
         return classGroupUserRepository.findByUserIdAndClassGroupId(userId, classGroupId)
-                .orElseThrow(() -> new ResourceNotFoundException("Class group user not found."));
+                .orElseThrow(() -> new ResourceNotFoundException("This user is not a member of this class."));
 
     }
 }
