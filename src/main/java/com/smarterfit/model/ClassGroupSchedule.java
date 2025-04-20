@@ -28,14 +28,11 @@ public class ClassGroupSchedule {
 
     /**
      * Days of the week when this class occurs.
-     * Values range from 2 to 8, where:
-     * 2 = Monday, 3 = Tuesday, ..., 7 = Saturday, 8 = Sunday.
-     * Stored as a collection of integers to allow multiple days (e.g., [2, 4, 6] = Mon, Wed, Fri).
+     * Values range from 1 to 7, where:
+     * 1 = Monday, 2 = Tuesday, ..., 6 = Saturday, 7 = Sunday.
      */
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "SF_CLASS_GROUP_SCHEDULE_DAYS", joinColumns = @JoinColumn(name = "schedule_id"))
     @Column(name = "weekday", nullable = false)
-    private Set<Integer> daysOfWeek;
+    private Integer dayOfWeek;
 
     @Column(name = "start_time", nullable = false)
     private LocalTime startTime;

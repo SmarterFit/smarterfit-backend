@@ -6,7 +6,7 @@ import java.util.UUID;
 public record   ClassGroupScheduleResponseDTO(
         UUID id,
         UUID classGroupId,
-        Set<Integer> daysOfWeek,
+        Integer dayOfWeek,
         String startTime,
         String endTime
 

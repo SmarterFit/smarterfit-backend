@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/sessao-turma")
+@RequestMapping("/turma/aula")
 public class ClassSessionController {
 
     public final ClassSessionService classSessionService;
