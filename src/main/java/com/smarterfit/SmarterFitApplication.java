@@ -10,17 +10,13 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableTransactionManagement
 @EnableScheduling
 public class SmarterFitApplication implements CommandLineRunner {
-
 	public static void main(String[] args) {
 		SpringApplication.run(SmarterFitApplication.class, args);
 	}
-
-
 	@Override
 	public void run(String... args){
 		System.out.println("SmarterFit API is running");
 		System.out.println("Acesse: http://localhost:8081/");
-
 	}
 }
 

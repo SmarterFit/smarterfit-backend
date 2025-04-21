@@ -2,11 +2,8 @@ package com.smarterfit.service;
 
 import com.smarterfit.dto.request.UserRequestDTO;
 import com.smarterfit.dto.response.UserResponseDTO;
-import com.smarterfit.exception.BusinessException;
 import com.smarterfit.exception.ResourceNotFoundException;
-import com.smarterfit.model.Profile;
 import com.smarterfit.model.UserRole.User;
-import com.smarterfit.repository.ProfileRepository;
 import com.smarterfit.repository.UserRepository;
 import com.smarterfit.util.mapper.UserMapper;
 import com.smarterfit.util.validation.ProfileValidation;
@@ -27,19 +24,21 @@ public class UserService {
     private final ProfileValidation profileValidation;
 
     @Autowired
-    public UserService(UserRepository userRepository, UserValidation userValidation, ProfileValidation profileValidation) {
+    public UserService(UserRepository userRepository, UserValidation userValidation,
+            ProfileValidation profileValidation) {
         this.userRepository = userRepository;
         this.userValidation = userValidation;
         this.profileValidation = profileValidation;
     }
+
     @Transactional
-    public UserResponseDTO createUser(UserRequestDTO userRequestDTO){
+    public UserResponseDTO createUser(UserRequestDTO userRequestDTO) {
 
         userValidation.validatePasswords(userRequestDTO.password(), userRequestDTO.confirmPassword());
         userValidation.validateEmailAvailability(userRequestDTO.email());
         profileValidation.validateCpfAvailability(userRequestDTO.cpf());
 
-        User user = UserMapper.toEntity(userRequestDTO, null);
+        User user = UserMapper.toEntity(userRequestDTO, new User());
 
         userRepository.save(user);
         return UserMapper.toResponse(user);
@@ -83,6 +82,5 @@ public class UserService {
         return userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Profile not found."));
     }
-
 
 }

@@ -1,7 +1,8 @@
 package com.smarterfit.enums;
 
 public enum SubscriptionStatus {
-    ACTIVE,
-    EXPIRED,
-    CANCELED
+    PENDING, // Recém-criada, aguardando ativação
+    ACTIVE, // Está ativa e válida
+    EXPIRED, // Expirou naturalmente (data fim atingida)
+    CANCELED // Cancelada manualmente (antes do vencimento)
 }

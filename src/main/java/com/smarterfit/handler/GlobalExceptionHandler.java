@@ -1,12 +1,14 @@
 package com.smarterfit.handler;
 
-
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.*;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+
+import com.smarterfit.exception.ResourceNotFoundException;
+
 import org.springframework.http.converter.HttpMessageNotReadableException;
 
 import java.util.HashMap;
@@ -35,13 +37,14 @@ public class GlobalExceptionHandler {
                 .body("Invalid input: " + ex.getMessage());
     }
 
-//    // Tipo errado no path param, query param, etc
-//    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-//    public ResponseEntity<String> handleArgumentTypeMismatch(MethodArgumentTypeMismatchException ex) {
-//        return ResponseEntity
-//                .badRequest()
-//                .body("Invalid value for field: " + ex.getName());
-//    }
+    // // Tipo errado no path param, query param, etc
+    // @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    // public ResponseEntity<String>
+    // handleArgumentTypeMismatch(MethodArgumentTypeMismatchException ex) {
+    // return ResponseEntity
+    // .badRequest()
+    // .body("Invalid value for field: " + ex.getName());
+    // }
 
     // Violação de unicidade: email, cpf duplicado, etc
     @ExceptionHandler(DataIntegrityViolationException.class)
@@ -57,6 +60,13 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .badRequest()
                 .body("Validation error: " + ex.getMessage());
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<String> handleResourceNotFound(ResourceNotFoundException ex) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(ex.getMessage());
     }
 
     // Fallback genérico
