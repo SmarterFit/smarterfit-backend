@@ -1,17 +1,27 @@
-package com.smarterfit.model.SubscriptionUser;
+package com.smarterfit.model.TrainingGroup;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+
+import org.springframework.cglib.core.Local;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.smarterfit.enums.GroupType;
 import com.smarterfit.model.UserRole.User;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.IdClass;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
@@ -22,25 +32,36 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Entity
-@Table(name = "SF_SUBSCRIPTION_USER")
-@IdClass(SubscriptionUserId.class)
+@Entity(name = "training_group")
+@Table(name = "SF_TRAINING_GROUP")
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(of = { "user", "subscription" })
+@NoArgsConstructor
 @Builder
-public class SubscriptionUser {
+@EqualsAndHashCode(of = "id")
+public class TrainingGroup {
    @Id
-   @ManyToOne(fetch = FetchType.LAZY)
-   @JoinColumn(name = "user_id", nullable = false)
-   private User user;
+   @GeneratedValue(strategy = GenerationType.UUID)
+   private UUID id;
 
-   @Id
-   @ManyToOne(fetch = FetchType.LAZY)
-   @JoinColumn(name = "subscription_id", nullable = false)
-   private Subscription subscription;
+   @Column(name = "name", nullable = false)
+   private String name;
+
+   @Column(name = "group_type", nullable = false)
+   private GroupType groupType;
+
+   @OneToMany(mappedBy = "trainingGroup", cascade = CascadeType.ALL, orphanRemoval = true)
+   @Builder.Default
+   private Set<TrainingGroupUser> participants = new HashSet<>();
+
+   @Column(name = "dt_start")
+   @JsonFormat(pattern = "yyyy-MM-dd")
+   private LocalDate startDate;
+
+   @Column(name = "dt_end")
+   @JsonFormat(pattern = "yyyy-MM-dd")
+   private LocalDate endDate;
 
    @Column(name = "dt_created_at", nullable = false, updatable = false)
    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")

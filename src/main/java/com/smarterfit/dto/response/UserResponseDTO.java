@@ -9,5 +9,6 @@ public record UserResponseDTO(
         String email,
         Set<String> roles,
         Set<SubscriptionShortResponseDTO> ownedSubscriptions,
-        Set<SubscriptionShortResponseDTO> participatingSubscriptions
+        Set<SubscriptionShortResponseDTO> participatingSubscriptions,
+        Set<TrainingGroupShortResponseDTO> participatingTrainingGroups
 ) {}

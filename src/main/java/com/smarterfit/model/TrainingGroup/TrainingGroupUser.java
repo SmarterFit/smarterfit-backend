@@ -1,4 +1,4 @@
-package com.smarterfit.model.SubscriptionUser;
+package com.smarterfit.model.TrainingGroup;
 
 import java.time.LocalDateTime;
 
@@ -22,25 +22,32 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Entity
-@Table(name = "SF_SUBSCRIPTION_USER")
-@IdClass(SubscriptionUserId.class)
+@Entity(name = "training_group_user")
+@Table(name = "SF_TRAINING_GROUP_USER")
+@IdClass(TrainingGroupUserId.class)
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(of = { "user", "subscription" })
 @Builder
-public class SubscriptionUser {
+@EqualsAndHashCode(of = { "user", "trainingGroup" })
+public class TrainingGroupUser {
+   @Id
+   @ManyToOne(fetch = FetchType.LAZY)
+   @JoinColumn(name = "training_group_id", nullable = false)
+   private TrainingGroup trainingGroup;
+
    @Id
    @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "user_id", nullable = false)
    private User user;
 
-   @Id
-   @ManyToOne(fetch = FetchType.LAZY)
-   @JoinColumn(name = "subscription_id", nullable = false)
-   private Subscription subscription;
+   @Column(name = "is_admin", nullable = false)
+   private Boolean isAdmin;
+
+   @Column(name = "points", nullable = false)
+   @Builder.Default
+   private Integer points = 0;
 
    @Column(name = "dt_created_at", nullable = false, updatable = false)
    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
