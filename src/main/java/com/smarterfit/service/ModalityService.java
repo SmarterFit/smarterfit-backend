@@ -9,6 +9,7 @@ import com.smarterfit.util.validation.ModalityValidation;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -24,6 +25,8 @@ public class ModalityService {
 
     @Transactional
     public ModalityResponseDTO createModality(ModalityRequestDTO modalityRequest) {
+        modalityValidation.existsModalityByName(modalityRequest.name());
+
         Modality modality = ModalityMapper.toEntity(modalityRequest);
         modalityRepository.save(modality);
         return ModalityMapper.toResponse(modality);
@@ -33,6 +36,20 @@ public class ModalityService {
     public ModalityResponseDTO getModalityById(UUID id) {
         Modality modality = modalityValidation.validateModalityById(id);
         return ModalityMapper.toResponse(modality);
+    }
+
+    @Transactional(readOnly = true)
+    public List<ModalityResponseDTO> getAllModalityByName(String name) {
+        return modalityRepository.findAllByNameContaining(name).stream()
+                .map(ModalityMapper::toResponse)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<ModalityResponseDTO> getAllModality() {
+        return modalityRepository.findAll().stream()
+                .map(ModalityMapper::toResponse)
+                .toList();
     }
 
     @Transactional

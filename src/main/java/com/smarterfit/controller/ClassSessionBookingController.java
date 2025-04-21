@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/turma/aula/registro")
+@RequestMapping("/turma-aula/registro")
 public class ClassSessionBookingController {
 
     private final ClassSessionBookingService classSessionBookingService;

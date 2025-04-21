@@ -7,10 +7,11 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/turma/aula")
+@RequestMapping("/turma-aula")
 public class ClassSessionController {
 
     public final ClassSessionService classSessionService;
@@ -28,6 +29,16 @@ public class ClassSessionController {
     @GetMapping("/{id}")
     public ResponseEntity<ClassSessionResponseDTO> getClassSessionById(@PathVariable UUID id) {
         return ResponseEntity.ok(classSessionService.getClassSessionById(id));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ClassSessionResponseDTO>> getAllClassSession() {
+        return ResponseEntity.ok(classSessionService.getAllClassSession());
+    }
+
+    @PostMapping("/agendar")
+    public void scheduleClassSession() {
+        classSessionService.generateDailySessions();
     }
 
     @PutMapping("/{id}")

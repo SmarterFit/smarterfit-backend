@@ -4,6 +4,7 @@ package com.smarterfit.util.mapper;
 import com.smarterfit.dto.request.ClassSessionBookingRequestDTO;
 import com.smarterfit.dto.request.ClassSessionBookingStatusDTO;
 import com.smarterfit.dto.response.ClassSessionBookingResponseDTO;
+import com.smarterfit.enums.BookingStatus;
 import com.smarterfit.enums.Status;
 import com.smarterfit.exception.ResourceNotFoundException;
 import com.smarterfit.model.ClassSession;
@@ -25,7 +26,7 @@ public class ClassSessionBookingMapper {
 
         classSessionBooking.setClassSession(classSession);
         classSessionBooking.setUser(user);
-        classSessionBooking.setStatus(Converter.stringToEnum(Status.class, classSessionBookingRequestDTO.bookingStatus()));
+        classSessionBooking.setBookingStatus(Converter.stringToEnum(BookingStatus.class, classSessionBookingRequestDTO.bookingStatus()));
         classSessionBooking.setBookingDate(classSessionBookingRequestDTO.bookingDate());
 
 
@@ -40,7 +41,7 @@ public class ClassSessionBookingMapper {
     public static ClassSessionBooking toEntityUpdateStatus(ClassSessionBookingStatusDTO statusDTO,
                                                            ClassSessionBooking classSessionBooking) {
 
-        classSessionBooking.setStatus(Converter.stringToEnum(Status.class, statusDTO.bookingStatus()));
+        classSessionBooking.setBookingStatus(Converter.stringToEnum(BookingStatus.class, statusDTO.bookingStatus()));
         return classSessionBooking;
     }
 
@@ -49,7 +50,7 @@ public class ClassSessionBookingMapper {
                 classSessionBooking.getUser().getId(),
                 classSessionBooking.getClassSession().getId(),
                 classSessionBooking.getBookingDate(),
-                classSessionBooking.getStatus().toString()
+                classSessionBooking.getBookingStatus().toString()
         );
     }
 

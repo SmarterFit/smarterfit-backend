@@ -1,5 +1,6 @@
 package com.smarterfit.model.classSessionBooking;
 
+import com.smarterfit.enums.BookingStatus;
 import com.smarterfit.enums.Status;
 import com.smarterfit.model.ClassSession;
 import com.smarterfit.model.User;
@@ -32,5 +33,5 @@ public class ClassSessionBooking {
     private LocalDateTime bookingDate;
 
     @Column(nullable = false)
-    private Status status;
+    private BookingStatus bookingStatus;
 }

@@ -20,8 +20,8 @@ public record ClassSessionRequestDTO(
         @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
         LocalDateTime endTime,
 
-        @NotBlank(message = "Booking status is required.")
-        String bookingStatus,
+        @NotBlank(message = "Status is required.")
+        String status,
 
         @Min(value = 1, message = "Minimum capacity must be 1.")
         @Max(value = 50, message = "Maximum capacity must be 50.")

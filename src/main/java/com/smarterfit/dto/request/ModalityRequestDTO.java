@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 
 public record ModalityRequestDTO(
 
-        @NotBlank(message = "Modality ID cannot be blank")
+        @NotBlank(message = "Modality cannot be blank")
         String name
 ) {
 }

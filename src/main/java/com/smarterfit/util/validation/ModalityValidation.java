@@ -22,4 +22,11 @@ public class ModalityValidation {
                 .orElseThrow(() -> new ResourceNotFoundException("Modality not found."));
     }
 
+
+    public void existsModalityByName(String name) {
+        if (classGroupRepository.existsByName(name)) {
+            throw new ResourceNotFoundException("Modality already exists");
+        }
+    }
+
 }

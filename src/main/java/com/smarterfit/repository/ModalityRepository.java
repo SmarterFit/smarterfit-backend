@@ -5,11 +5,14 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.util.Optional;
+import java.util.List;
 import java.util.UUID;
 
 public interface ModalityRepository extends JpaRepository<Modality, UUID> {
 
     @Query("select m from Modality m where m.name like %:name%")
-    Optional<Modality> findByName(@Param("name") String name);
+    List<Modality> findAllByNameContaining(@Param("name") String name);
+
+
+    boolean existsByName(String name);
 }

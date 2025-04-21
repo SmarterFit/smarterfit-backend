@@ -10,7 +10,7 @@ import java.util.UUID;
 public interface ClassGroupScheduleRepository extends JpaRepository<ClassGroupSchedule, UUID> {
 
     @Query("""
-    SELECT CASE WHEN COUNT(cgs) > 0 THEN TRUE ELSE FALSE END
+    SELECT CASE WHEN COUNT(cgs) > 1 THEN TRUE ELSE FALSE END
     FROM ClassGroupSchedule cgs
     WHERE cgs.classGroup.id = :classGroupId
       AND cgs.dayOfWeek = :dayOfWeek

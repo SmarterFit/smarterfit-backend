@@ -54,6 +54,7 @@ public class ClassGroupService {
         // todo: Validar permissão do usuario
 
         ClassGroup classGroup = ClassGroupMapper.toEntity(classGroupRequest, modality, user);
+        classGroup.setTotalMembers(0);
         classGroupRepository.save(classGroup);
 
         return ClassGroupMapper.toResponse(classGroup, user.getProfile().getFullName());
@@ -101,16 +102,17 @@ public class ClassGroupService {
 
     @Transactional
     public void addUserToClassGroup(UUID classGroupId, UUID userId) {
-        ClassGroupUser classGroupUser = validationFaced.classGroupUserValidation.validateClassGroupUserId(classGroupId, userId);
         validationFaced.classGroupUserValidation.validateClassGroupUserExists(classGroupId, userId);
+        ClassGroup classGroup = validationFaced.classGroupValidation.validateClassGroupById(classGroupId);
+        User user = validationFaced.userValidation.validateUserById(userId);
 
         // todo: validar se tem match entre os planos do grupo e do aluno
 
-        if (isPrivateGroupFull(classGroupUser.getClassGroup())) {
+        if (isPrivateGroupFull(classGroup)) {
             throw new BusinessException("Class group is full");
         }
-        incrementGroupMembers(classGroupUser.getClassGroup());
-        saveUserToGroup(classGroupUser.getClassGroup(), classGroupUser.getUser());
+        incrementGroupMembers(classGroup);
+        saveUserToGroup(classGroup, user);
     }
 
     @Transactional(readOnly = true)

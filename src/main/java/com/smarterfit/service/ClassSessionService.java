@@ -61,6 +61,13 @@ public class ClassSessionService {
         return ClassSessionMapper.toResponseDTO(classSession);
     }
 
+    @Transactional(readOnly = true)
+    public List<ClassSessionResponseDTO> getAllClassSession() {
+        return classSessionRepository.findAll().stream()
+                .map(ClassSessionMapper::toResponseDTO)
+                .toList();
+    }
+
     @Transactional
     public ClassSessionResponseDTO updateClassSessionById(UUID id, ClassSessionRequestDTO classSessionRequest) {
         ClassSession classSession = classSessionValidation.validateClassSessionById(id);
@@ -93,6 +100,7 @@ public class ClassSessionService {
             );
 
             if (!sessionExists) {
+                // todo: verificar se classgroup quer criar aulas automaticamente
                 LocalDateTime startDateTime = today.atTime(schedule.getStartTime());
                 LocalDateTime endDateTime = today.atTime(schedule.getEndTime());
 

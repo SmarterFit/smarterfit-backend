@@ -25,7 +25,8 @@ public class ClassSessionMapper {
         classSession.setClassGroup(classGroup);
         classSession.setStartTime(classSessionRequest.startTime());
         classSession.setEndTime(classSessionRequest.endTime());
-        classSession.setStatus(Converter.stringToEnum(Status.class, classSessionRequest.bookingStatus()));
+        classSession.setStatus(Converter.stringToEnum(Status.class, classSessionRequest.status()));
+        classSession.setCapacity(classSessionRequest.capacity());
 
 
         return classSession;

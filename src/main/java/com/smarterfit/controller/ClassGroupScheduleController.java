@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/turma/horaios")
+@RequestMapping("/turma-horarios")
 public class ClassGroupScheduleController {
 
     private final ClassGroupScheduleService classGroupScheduleService;

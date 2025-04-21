@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -29,6 +30,15 @@ public class ModalityController {
     @GetMapping("/{id}")
     public ResponseEntity<ModalityResponseDTO> getModalityById(@PathVariable UUID id) {
         return ResponseEntity.ok(modalityService.getModalityById(id));
+    }
+
+    @GetMapping("/buscar/{name}")
+    public ResponseEntity<List<ModalityResponseDTO>> getAllModalityByName(@PathVariable String name) {
+        return ResponseEntity.ok(modalityService.getAllModalityByName(name));
+    }
+    @GetMapping
+    public ResponseEntity<List<ModalityResponseDTO>> getAllModality() {
+        return ResponseEntity.ok(modalityService.getAllModality());
     }
 
     @PutMapping("/{id}")
