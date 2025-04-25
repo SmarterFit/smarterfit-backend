@@ -1,6 +1,6 @@
 package com.smarterfit.model.SubscriptionUser;
 
-import com.smarterfit.model.UserRole.User;
+import com.smarterfit.model.User;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;

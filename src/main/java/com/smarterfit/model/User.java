@@ -1,15 +1,16 @@
-package com.smarterfit.model.UserRole;
+package com.smarterfit.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.smarterfit.model.Profile;
 import com.smarterfit.model.SubscriptionUser.Subscription;
 import com.smarterfit.model.SubscriptionUser.SubscriptionUser;
-
+import com.smarterfit.model.userRole.UserRole;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -60,9 +61,6 @@ public class User {
         this.updatedAt = LocalDateTime.now();
     }
 
-    public void addRole(UserRole role) {
-        role.setUser(this);
-        roles.add(role);
-    }
+
 
 }

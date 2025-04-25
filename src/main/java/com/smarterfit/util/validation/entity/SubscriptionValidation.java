@@ -1,4 +1,4 @@
-package com.smarterfit.util.validation;
+package com.smarterfit.util.validation.entity;
 
 import java.util.UUID;
 

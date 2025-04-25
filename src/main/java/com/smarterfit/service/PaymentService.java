@@ -16,7 +16,6 @@ import com.smarterfit.dto.response.PaymentProcessorResponseDTO;
 import com.smarterfit.dto.response.PaymentResponseDTO;
 import com.smarterfit.enums.PaymentMethod;
 import com.smarterfit.enums.PaymentStatus;
-import com.smarterfit.enums.SubscriptionStatus;
 import com.smarterfit.exception.BusinessException;
 import com.smarterfit.exception.ResourceNotFoundException;
 import com.smarterfit.model.SubscriptionUser.Subscription;
@@ -24,7 +23,7 @@ import com.smarterfit.processor.PaymentProcessor;
 import com.smarterfit.model.SubscriptionUser.Payment;
 import com.smarterfit.repository.SubscriptionPaymentRepository;
 import com.smarterfit.util.mapper.PaymentMapper;
-import com.smarterfit.util.validation.SubscriptionValidation;
+import com.smarterfit.util.validation.entity.SubscriptionValidation;
 
 @Service
 public class PaymentService {
