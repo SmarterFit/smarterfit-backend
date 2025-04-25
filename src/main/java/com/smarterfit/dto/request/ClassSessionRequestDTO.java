@@ -1,7 +1,9 @@
 package com.smarterfit.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.smarterfit.enums.SessionStatus;
 import jakarta.validation.constraints.*;
+import org.hibernate.Session;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -21,7 +23,7 @@ public record ClassSessionRequestDTO(
         LocalDateTime endTime,
 
         @NotBlank(message = "Status is required.")
-        String status,
+        SessionStatus status,
 
         @Min(value = 1, message = "Minimum capacity must be 1.")
         @Max(value = 50, message = "Maximum capacity must be 50.")

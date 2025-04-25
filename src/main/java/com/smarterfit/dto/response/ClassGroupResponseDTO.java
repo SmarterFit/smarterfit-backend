@@ -1,23 +1,17 @@
 package com.smarterfit.dto.response;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
-
-import java.util.Date;
-import java.util.List;
+import java.time.LocalDate;
 import java.util.UUID;
 
 public record ClassGroupResponseDTO(
 
          UUID id,
-         String name,
+         String title,
          Integer capacity,
-         String groupType,
          String description,
          ModalityResponseDTO modalityDTO,
-         Date startDate,
-         Date endDate,
+         LocalDate startDate,
+         LocalDate endDate,
          String nameCreator
 
 

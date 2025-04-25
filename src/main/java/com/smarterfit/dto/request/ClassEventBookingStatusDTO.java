@@ -1,20 +1,20 @@
 package com.smarterfit.dto.request;
 
+import com.smarterfit.enums.Status;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
-public record ClassSessionBookingStatusDTO(
+public record ClassEventBookingStatusDTO(
         @NotNull(message = "User ID is required")
         UUID userId,
 
         @NotNull(message = "Class group ID is required")
-        UUID classSessionId,
+        UUID classEventId,
 
         @NotBlank(message = "Booking time is required")
-        String bookingStatus
+        Status bookingStatus
 
 ) {
 }

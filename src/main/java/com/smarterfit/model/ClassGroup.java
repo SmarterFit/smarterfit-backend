@@ -1,10 +1,10 @@
 package com.smarterfit.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.smarterfit.enums.GroupType;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.UUID;
@@ -24,15 +24,11 @@ public class ClassGroup {
     @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false)
     private Integer capacity;
 
     @Column(name = "total_members")
     private Integer totalMembers;
 
-    @Enumerated
-    @Column(name = "group_type", nullable = false)
-    private GroupType groupType;
 
     @Column(nullable = false)
     private String description;
@@ -42,10 +38,10 @@ public class ClassGroup {
     private Modality modality;
 
     @Column(name = "start_date", nullable = false)
-    private Date startDate;
+    private LocalDate startDate;
 
     @Column(name = "end_date", nullable = false)
-    private Date endDate;
+    private LocalDate endDate;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "created_by_user", nullable = false)

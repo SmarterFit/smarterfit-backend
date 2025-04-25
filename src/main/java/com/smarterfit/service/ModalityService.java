@@ -5,7 +5,7 @@ import com.smarterfit.dto.response.ModalityResponseDTO;
 import com.smarterfit.model.Modality;
 import com.smarterfit.repository.ModalityRepository;
 import com.smarterfit.util.mapper.ModalityMapper;
-import com.smarterfit.util.validation.ModalityValidation;
+import com.smarterfit.util.validation.entity.ModalityValidation;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

@@ -1,15 +1,12 @@
 package com.smarterfit.dto.response;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-public record ClassSessionBookingResponseDTO(
+public record ClassEventBookingResponseDTO(
 
         UUID id,
-        UUID classSessionId,
+        UUID classEventId,
         LocalDateTime bookingDate,
         String bookingStatus
 

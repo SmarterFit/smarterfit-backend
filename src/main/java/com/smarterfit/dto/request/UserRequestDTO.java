@@ -1,5 +1,6 @@
 package com.smarterfit.dto.request;
 
+import com.smarterfit.enums.RoleType;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -30,6 +31,6 @@ public record UserRequestDTO(
         String cpf,
 
         @NotEmpty(message = "At least one role must be provided")
-        Set<@NotBlank(message = "Role cannot be blank") String> roles
+        Set<@NotBlank(message = "Role cannot be blank") RoleType> roles
 ) {
 }

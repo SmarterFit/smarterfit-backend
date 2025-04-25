@@ -1,10 +1,13 @@
-package com.smarterfit.util.validation;
+package com.smarterfit.util.validation.entity;
 
 import com.smarterfit.exception.ResourceNotFoundException;
 import com.smarterfit.model.ClassGroupSchedule;
 import com.smarterfit.repository.ClassGroupScheduleRepository;
+import com.smarterfit.util.validation.DateValidationUtils;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.UUID;
 
@@ -33,6 +36,10 @@ public class ClassGroupScheduleValidation {
         }
 
         return false;
+    }
+
+    public void validateClassSchedulesDates(LocalTime startDate, LocalTime endDate) {
+        DateValidationUtils.validateTimeRange(startDate, endDate);
     }
 
 }

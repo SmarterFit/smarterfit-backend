@@ -2,11 +2,9 @@ package com.smarterfit.util.mapper;
 
 import com.smarterfit.dto.request.ClassSessionRequestDTO;
 import com.smarterfit.dto.response.ClassSessionResponseDTO;
-import com.smarterfit.enums.Status;
 import com.smarterfit.exception.ResourceNotFoundException;
 import com.smarterfit.model.ClassGroup;
 import com.smarterfit.model.ClassSession;
-import com.smarterfit.util.Converter;
 
 public class ClassSessionMapper {
 
@@ -25,8 +23,7 @@ public class ClassSessionMapper {
         classSession.setClassGroup(classGroup);
         classSession.setStartTime(classSessionRequest.startTime());
         classSession.setEndTime(classSessionRequest.endTime());
-        classSession.setStatus(Converter.stringToEnum(Status.class, classSessionRequest.status()));
-        classSession.setCapacity(classSessionRequest.capacity());
+        classSession.setStatus(classSessionRequest.status());
 
 
         return classSession;

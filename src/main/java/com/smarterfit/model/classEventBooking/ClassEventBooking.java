@@ -1,42 +1,43 @@
-package com.smarterfit.model;
-
+package com.smarterfit.model.classEventBooking;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.smarterfit.enums.SessionStatus;
+import com.smarterfit.enums.AttendanceStatus;
+import com.smarterfit.enums.Status;
+import com.smarterfit.model.ClassEvent;
+import com.smarterfit.model.User;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
-@Getter
 @Setter
-@NoArgsConstructor
+@Getter
 @AllArgsConstructor
-@EqualsAndHashCode(of = "id")
+@NoArgsConstructor
+@EqualsAndHashCode(of = {"user", "classEvent"})
+@IdClass(ClassEventBookingId.class)
 @Entity
-@Table(name = "SF_CLASS_SESSION")
-public class ClassSession {
+@Table(name = "SF_CLASS_SESSION_BOOKING")
+public class ClassEventBooking {
 
-    @Id @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
-
+    @Id
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "class_group_id", nullable = false)
-    private ClassGroup classGroup;
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
-    @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
+    @Id
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "class_event_id", nullable = false)
+    private ClassEvent classEvent;
+
     @Column(nullable = false)
-    private LocalDateTime startTime;
+    private LocalDateTime bookingDate;
 
-    @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
     @Column(nullable = false)
-    private LocalDateTime endTime;
+    private Status bookingStatus;
 
-    @Column(name = "status", nullable = false)
-    @Enumerated(EnumType.STRING)
-    private SessionStatus status;
+    @Column(name = "attendance_status")
+    private AttendanceStatus attendanceStatus;
 
 
     @Column(name = "dt_created_at", nullable = false, updatable = false)
@@ -58,5 +59,4 @@ public class ClassSession {
     public void onPreUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
-
 }

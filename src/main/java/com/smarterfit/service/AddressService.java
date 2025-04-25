@@ -7,7 +7,7 @@ import com.smarterfit.model.Profile;
 import com.smarterfit.model.User;
 import com.smarterfit.repository.AddressRepository;
 import com.smarterfit.util.mapper.AddressMapper;
-import com.smarterfit.util.validation.UserValidation;
+import com.smarterfit.util.validation.entity.UserValidation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -1,12 +1,17 @@
-package com.smarterfit.util.validation;
+package com.smarterfit.util.validation.entity;
 
+import com.smarterfit.exception.InvalidDateException;
 import com.smarterfit.exception.ResourceAlreadyExistsException;
 import com.smarterfit.exception.ResourceNotFoundException;
 import com.smarterfit.model.ClassGroup;
 import com.smarterfit.repository.ClassGroupRepository;
+import com.smarterfit.util.validation.DateValidationUtils;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.UUID;
+
+
 
 @Component
 public class ClassGroupValidation {
@@ -32,5 +37,8 @@ public class ClassGroupValidation {
 
     }
 
+    public void validateClassGroupDates(LocalDate startDate, LocalDate endDate) {
+        DateValidationUtils.validateDateRange(startDate, endDate, Boolean.TRUE);
+    }
 
 }

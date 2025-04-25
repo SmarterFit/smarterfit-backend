@@ -6,8 +6,8 @@ import com.smarterfit.model.ClassGroup;
 import com.smarterfit.model.ClassGroupSchedule;
 import com.smarterfit.repository.ClassGroupScheduleRepository;
 import com.smarterfit.util.mapper.ClassGroupScheduleMapper;
-import com.smarterfit.util.validation.ClassGroupScheduleValidation;
-import com.smarterfit.util.validation.ClassGroupValidation;
+import com.smarterfit.util.validation.entity.ClassGroupScheduleValidation;
+import com.smarterfit.util.validation.entity.ClassGroupValidation;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -29,6 +29,7 @@ public class ClassGroupScheduleService {
 
 
     public ClassGroupScheduleResponseDTO createClassGroupSchedule(ClassGroupScheduleRequestDTO classGroupScheduleDTO) {
+        classGroupScheduleValidation.validateClassSchedulesDates(classGroupScheduleDTO.startTime(), classGroupScheduleDTO.endTime());
         ClassGroup classGroup = classGroupValidation.validateClassGroupById(classGroupScheduleDTO.classGroupId());
 
         ClassGroupSchedule classGroupSchedule = ClassGroupScheduleMapper.toEntity(classGroupScheduleDTO, classGroup);

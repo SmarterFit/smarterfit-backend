@@ -1,20 +1,11 @@
 package com.smarterfit.util.mapper;
 
 import com.smarterfit.dto.request.ClassGroupRequestDTO;
-import com.smarterfit.dto.request.ModalityRequestDTO;
 import com.smarterfit.dto.response.ClassGroupResponseDTO;
-import com.smarterfit.dto.response.ClassGroupScheduleResponseDTO;
-import com.smarterfit.dto.response.ModalityResponseDTO;
-import com.smarterfit.enums.GroupType;
 import com.smarterfit.exception.ResourceNotFoundException;
 import com.smarterfit.model.ClassGroup;
-import com.smarterfit.model.ClassGroupSchedule;
 import com.smarterfit.model.Modality;
 import com.smarterfit.model.User;
-import com.smarterfit.util.Converter;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class ClassGroupMapper {
 
@@ -31,7 +22,6 @@ public class ClassGroupMapper {
         classGroup.setTitle(dto.title());
         classGroup.setCapacity(dto.capacity());
         classGroup.setModality(modality);
-        classGroup.setGroupType(Converter.stringToEnum(GroupType.class, dto.groupType()));
         classGroup.setDescription(dto.description());
         classGroup.setStartDate(dto.startDate());
         classGroup.setEndDate(dto.endDate());
@@ -53,7 +43,6 @@ public class ClassGroupMapper {
                 classGroup.getId(),
                 classGroup.getTitle(),
                 classGroup.getCapacity(),
-                classGroup.getGroupType().toString(),
                 classGroup.getDescription(),
                 ModalityMapper.toResponse(classGroup.getModality()),
                 classGroup.getStartDate(),

@@ -1,4 +1,4 @@
-package com.smarterfit.util.validation;
+package com.smarterfit.util.validation.entity;
 
 import com.smarterfit.exception.BusinessException;
 import com.smarterfit.exception.ResourceAlreadyExistsException;

@@ -1,4 +1,4 @@
-package com.smarterfit.util.validation;
+package com.smarterfit.util.validation.entity;
 
 import com.smarterfit.exception.ResourceNotFoundException;
 import com.smarterfit.model.Modality;

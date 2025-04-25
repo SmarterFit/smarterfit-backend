@@ -2,12 +2,11 @@ package com.smarterfit.service;
 
 import com.smarterfit.dto.request.UserRequestDTO;
 import com.smarterfit.dto.response.UserResponseDTO;
-import com.smarterfit.exception.ResourceNotFoundException;
 import com.smarterfit.model.User;
 import com.smarterfit.repository.UserRepository;
 import com.smarterfit.util.mapper.UserMapper;
-import com.smarterfit.util.validation.ProfileValidation;
-import com.smarterfit.util.validation.UserValidation;
+import com.smarterfit.util.validation.entity.ProfileValidation;
+import com.smarterfit.util.validation.entity.UserValidation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

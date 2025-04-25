@@ -1,10 +1,8 @@
-package com.smarterfit.util.validation;
+package com.smarterfit.util.validation.entity;
 
 import com.smarterfit.exception.ResourceAlreadyExistsException;
-import com.smarterfit.model.Plan;
 import com.smarterfit.model.classGroupPlan.ClassGroupPlan;
 import com.smarterfit.repository.ClassGroupPlanRepository;
-
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;

@@ -7,7 +7,6 @@ import com.smarterfit.exception.ResourceNotFoundException;
 import com.smarterfit.model.Profile;
 import com.smarterfit.model.User;
 import com.smarterfit.model.userRole.UserRole;
-import com.smarterfit.util.Converter;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -34,7 +33,7 @@ public class UserMapper {
         Set<UserRole> userRoles = new HashSet<>();
 
         if (dto.roles() == null || dto.roles().isEmpty()) {
-            RoleType defaultRole = Converter.stringToEnum(RoleType.class, RoleType.CUSTOMER.toString());
+            RoleType defaultRole = RoleType.CUSTOMER;
             UserRole role = new UserRole();
             role.setUser(user);
             role.setRoleType(defaultRole);
@@ -69,8 +68,7 @@ public class UserMapper {
     private static Set<UserRole> getRolesFromDTO(UserRequestDTO dto, User user) {
         Set<UserRole> userRoles = new HashSet<>();
         if (dto.roles() != null) {
-            for (String roleStr : dto.roles()) {
-                RoleType roleType = Converter.stringToEnum(RoleType.class, roleStr);
+            for (RoleType roleType : dto.roles()) {
                 UserRole role = new UserRole();
                 role.setUser(user);
                 role.setRoleType(roleType);
