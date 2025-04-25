@@ -1,20 +1,20 @@
-package com.smarterfit.model;
+package com.smarterfit.model.SubscriptionUser;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.smarterfit.model.SubscriptionUser.Subscription;
+import com.smarterfit.enums.PaymentMethod;
+import com.smarterfit.enums.PaymentStatus;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
@@ -25,37 +25,34 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Entity(name = "plan")
-@Table(name = "SF_PLAN")
+@Entity(name = "subscription_payment")
+@Table(name = "SF_SUBSCRIPTION_PAYMENT")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(of = "id")
 @Builder
-public class Plan {
+@EqualsAndHashCode(of = "id")
+public class Payment {
    @Id
    @GeneratedValue(strategy = GenerationType.UUID)
-   UUID id;
+   private UUID id;
 
-   @Column(name = "name", nullable = false)
-   String name;
+   @ManyToOne(fetch = FetchType.LAZY)
+   @JoinColumn(name = "subscription_id", nullable = false)
+   Subscription subscription;
 
-   @Column(name = "description")
-   String description;
+   @Column(name = "amount", nullable = false)
+   Double amount;
 
-   @Column(name = "price", nullable = false)
-   Double price;
+   @Column(name = "dt_payment")
+   LocalDateTime paymentDate;
 
-   @Column(name = "duration", nullable = false)
-   Integer duration; // in days
+   @Column(name = "payment_method", nullable = false)
+   PaymentMethod paymentMethod;
 
-   @Column(name = "max_users", nullable = false)
-   Integer maxUsers;
-
-   @OneToMany(mappedBy = "plan", cascade = CascadeType.ALL, orphanRemoval = true)
-   @Builder.Default
-   private Set<Subscription> subscriptions = new HashSet<>();
+   @Column(name = "status", nullable = false)
+   PaymentStatus status;
 
    @Column(name = "dt_created_at", nullable = false, updatable = false)
    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
