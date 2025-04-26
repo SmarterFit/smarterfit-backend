@@ -29,7 +29,7 @@ import com.smarterfit.specification.PaymentSpecifications;
 import com.smarterfit.model.SubscriptionUser.Payment;
 import com.smarterfit.util.mapper.PaymentMapper;
 import com.smarterfit.util.validation.PaymentValidation;
-import com.smarterfit.util.validation.SubscriptionValidation;
+import com.smarterfit.util.validation.entity.SubscriptionValidation;
 
 @Service
 public class PaymentService {

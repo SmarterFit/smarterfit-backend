@@ -12,7 +12,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
-@Entity(name = "address")
+@Entity
 @Table(name = "SF_ADDRESS")
 public class Address {
 
@@ -26,6 +26,7 @@ public class Address {
     private String city;
     private String state;
     private String cep;
+
 
     @OneToOne
     @JoinColumn(name = "profile_id", nullable = false)

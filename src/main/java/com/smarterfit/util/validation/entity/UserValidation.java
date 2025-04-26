@@ -1,8 +1,8 @@
-package com.smarterfit.util.validation;
+package com.smarterfit.util.validation.entity;
 
 import com.smarterfit.exception.BusinessException;
 import com.smarterfit.exception.ResourceNotFoundException;
-import com.smarterfit.model.UserRole.User;
+import com.smarterfit.model.User;
 import com.smarterfit.repository.UserRepository;
 import org.springframework.stereotype.Component;
 
@@ -21,6 +21,10 @@ public class UserValidation {
         return userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found."));
     }
+    public User validateUserByEmail(String email) {
+        return  userRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException("User not found."));
+    }
+
 
     public void validateEmailAvailability(String email) {
         userRepository.findByEmail(email).ifPresent(user -> {
@@ -28,10 +32,18 @@ public class UserValidation {
         });
     }
 
+
     public void validatePasswords(String password, String confirmPassword) {
         if (!password.equals(confirmPassword)) {
             throw new BusinessException("The passwords don't match.");
         }
     }
 
+    public void validateUserExists(UUID id) {
+        if (userRepository.existsById(id)) {
+            throw new BusinessException("User already exists");
+        }
+    }
+
 }
+

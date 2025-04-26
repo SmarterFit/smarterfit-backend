@@ -8,8 +8,7 @@ import java.util.UUID;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.smarterfit.enums.SubscriptionStatus;
 import com.smarterfit.model.Plan;
-import com.smarterfit.model.UserRole.User;
-
+import com.smarterfit.model.User;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

@@ -2,13 +2,11 @@ package com.smarterfit.service;
 
 import com.smarterfit.dto.request.UserRequestDTO;
 import com.smarterfit.dto.response.UserResponseDTO;
-import com.smarterfit.dto.response.training_group.TrainingGroupResponseDTO;
-import com.smarterfit.exception.ResourceNotFoundException;
-import com.smarterfit.model.UserRole.User;
+import com.smarterfit.model.User;
 import com.smarterfit.repository.UserRepository;
 import com.smarterfit.util.mapper.UserMapper;
-import com.smarterfit.util.validation.ProfileValidation;
-import com.smarterfit.util.validation.UserValidation;
+import com.smarterfit.util.validation.entity.ProfileValidation;
+import com.smarterfit.util.validation.entity.UserValidation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,21 +22,19 @@ public class UserService {
     private final ProfileValidation profileValidation;
 
     @Autowired
-    public UserService(UserRepository userRepository, UserValidation userValidation,
-            ProfileValidation profileValidation) {
+    public UserService(UserRepository userRepository, UserValidation userValidation, ProfileValidation profileValidation) {
         this.userRepository = userRepository;
         this.userValidation = userValidation;
         this.profileValidation = profileValidation;
     }
-
     @Transactional
-    public UserResponseDTO createUser(UserRequestDTO userRequestDTO) {
+    public UserResponseDTO createUser(UserRequestDTO userRequestDTO){
 
         userValidation.validatePasswords(userRequestDTO.password(), userRequestDTO.confirmPassword());
         userValidation.validateEmailAvailability(userRequestDTO.email());
         profileValidation.validateCpfAvailability(userRequestDTO.cpf());
 
-        User user = UserMapper.toEntity(userRequestDTO, new User());
+        User user = UserMapper.toEntity(userRequestDTO);
 
         userRepository.save(user);
         return UserMapper.toResponse(user);
@@ -46,13 +42,13 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public UserResponseDTO getUserById(UUID id) {
-        User user = findUserById(id);
+        User user = userValidation.validateUserById(id);
         return UserMapper.toResponse(user);
     }
 
     @Transactional
     public UserResponseDTO updateUserById(UUID id, UserRequestDTO requestDTO) {
-        User existingUser = findUserById(id);
+        User existingUser = userValidation.validateUserById(id);
 
         if (!existingUser.getEmail().equals(requestDTO.email())) {
             userValidation.validateEmailAvailability(requestDTO.email());
@@ -66,7 +62,7 @@ public class UserService {
 
     @Transactional
     public void deleteUserById(UUID id) {
-        User user = findUserById(id);
+        User user = userValidation.validateUserById(id);
         userRepository.delete(user);
     }
 
@@ -76,10 +72,5 @@ public class UserService {
                 .stream()
                 .map(UserMapper::toResponse)
                 .collect(Collectors.toList());
-    }
-
-    private User findUserById(UUID id) {
-        return userRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Profile not found."));
     }
 }

@@ -1,9 +1,10 @@
-package com.smarterfit.util.validation;
+package com.smarterfit.util.validation.entity;
 
 import com.smarterfit.exception.BusinessException;
+import com.smarterfit.exception.ResourceAlreadyExistsException;
 import com.smarterfit.exception.ResourceNotFoundException;
 import com.smarterfit.model.Profile;
-import com.smarterfit.model.UserRole.User;
+import com.smarterfit.model.User;
 import com.smarterfit.repository.ProfileRepository;
 import org.springframework.stereotype.Component;
 
@@ -26,7 +27,7 @@ public class ProfileValidation {
     public void validateCpfAvailability(String cpf, UUID currentProfileId) {
         profileRepository.findByCpf(cpf).ifPresent(existing -> {
             if (!existing.getId().equals(currentProfileId)) {
-                throw new BusinessException("The CPF is already in use.");
+                throw new ResourceAlreadyExistsException("The CPF is already in use.");
             }
         });
     }

@@ -3,7 +3,7 @@ package com.smarterfit.model.SubscriptionUser;
 import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.smarterfit.model.UserRole.User;
+import com.smarterfit.model.User;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

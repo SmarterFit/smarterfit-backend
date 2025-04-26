@@ -2,13 +2,23 @@ package com.smarterfit.util.mapper;
 
 import com.smarterfit.dto.request.ProfileRequestDTO;
 import com.smarterfit.dto.response.ProfileResponseDTO;
+import com.smarterfit.exception.ResourceNotFoundException;
 import com.smarterfit.model.Address;
 import com.smarterfit.model.Profile;
 
 public class ProfileMapper {
+
+    public ProfileMapper(){
+        // Private constructor to prevent instantiation
+    }
+
+    public static Profile toEntity(ProfileRequestDTO dto) {
+        return toEntity(dto, new Profile());
+    }
+
     public static Profile toEntity(ProfileRequestDTO dto, Profile profile) {
         if (profile == null) {
-            profile = new Profile();
+            throw new ResourceNotFoundException("Profile not found.");
         }
 
         profile.setFullName(dto.fullName());
@@ -24,10 +34,6 @@ public class ProfileMapper {
         }
 
         return profile;
-    }
-
-    public static Profile toEntity(ProfileRequestDTO dto) {
-        return toEntity(dto, null);
     }
 
     public static ProfileResponseDTO toResponse(Profile profile) {

@@ -3,14 +3,30 @@ package com.smarterfit.util.mapper;
 import com.smarterfit.dto.request.UserRequestDTO;
 import com.smarterfit.dto.response.UserResponseDTO;
 import com.smarterfit.model.Profile;
-import com.smarterfit.model.UserRole.User;
-import com.smarterfit.model.UserRole.UserRole;
+import com.smarterfit.model.User;
+import com.smarterfit.model.userRole.UserRole;
 
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 public class UserMapper {
+    public static UserResponseDTO toResponse(User user) {
+        if (user == null) {
+            return null;
+        }
+
+        return new UserResponseDTO(
+                user.getId(),
+                user.getEmail(),
+                user.getRoles().stream().map(role -> role.getRoleType()).collect(Collectors.toSet()));
+
+    }
+
+    public static User toEntity(UserRequestDTO dto) {
+        return toEntity(dto, new User());
+    }
+
     public static User toEntity(UserRequestDTO dto, User user) {
         User activateUser = user == null ? new User() : user;
 
@@ -39,21 +55,5 @@ public class UserMapper {
         activateUser.setProfile(profile);
 
         return activateUser;
-    }
-
-    public static User toEntity(UserRequestDTO dto) {
-        return toEntity(dto, null);
-    }
-
-        public static UserResponseDTO toResponse(User user) {
-            if (user == null) {
-                return null;
-            }
-
-        return new UserResponseDTO(
-                user.getId(),
-                user.getEmail(),
-                user.getRoles().stream().map(role -> role.getRoleType()).collect(Collectors.toSet()));
-
     }
 }

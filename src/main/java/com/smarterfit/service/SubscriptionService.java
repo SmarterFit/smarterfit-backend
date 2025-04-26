@@ -21,13 +21,13 @@ import com.smarterfit.exception.ResourceNotFoundException;
 import com.smarterfit.model.Plan;
 import com.smarterfit.model.SubscriptionUser.Subscription;
 import com.smarterfit.model.SubscriptionUser.SubscriptionUser;
-import com.smarterfit.model.UserRole.User;
+import com.smarterfit.model.User;
 import com.smarterfit.repository.SubscriptionRepository;
 import com.smarterfit.specification.SubscriptionSpecifications;
 import com.smarterfit.util.mapper.SubscriptionMapper;
-import com.smarterfit.util.validation.PlanValidation;
-import com.smarterfit.util.validation.SubscriptionValidation;
-import com.smarterfit.util.validation.UserValidation;
+import com.smarterfit.util.validation.entity.SubscriptionValidation;
+import com.smarterfit.util.validation.entity.PlanValidation;
+import com.smarterfit.util.validation.entity.UserValidation;
 
 @Service
 public class SubscriptionService {

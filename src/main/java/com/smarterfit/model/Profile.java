@@ -2,7 +2,6 @@ package com.smarterfit.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.smarterfit.enums.Gender;
-import com.smarterfit.model.UserRole.User;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,6 +17,7 @@ import java.util.UUID;
 @Entity(name = "profile")
 @Table(name = "SF_PROFILE")
 public class Profile {
+
     @Id
     UUID id;
 
@@ -42,7 +42,7 @@ public class Profile {
     @Column(name = "gender")
     private Gender gender;
 
-    @OneToOne(mappedBy = "profile",  cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "profile", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Address address;
 
     @Column(name = "dt_created_at", nullable = false, updatable = false)

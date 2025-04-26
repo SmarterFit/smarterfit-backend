@@ -1,6 +1,7 @@
 package com.smarterfit.repository;
 
-import com.smarterfit.model.UserRole.User;
+
+import com.smarterfit.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

@@ -1,6 +1,7 @@
-package com.smarterfit.model.UserRole;
+package com.smarterfit.model.userRole;
 
 import com.smarterfit.enums.RoleType;
+import com.smarterfit.model.User;
 import jakarta.persistence.*;
 import lombok.*;
 
