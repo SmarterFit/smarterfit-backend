@@ -6,7 +6,6 @@ import com.smarterfit.model.Address;
 import com.smarterfit.model.Profile;
 
 public class ProfileMapper {
-
     public static Profile toEntity(ProfileRequestDTO dto, Profile profile) {
         if (profile == null) {
             profile = new Profile();
@@ -27,15 +26,22 @@ public class ProfileMapper {
         return profile;
     }
 
+    public static Profile toEntity(ProfileRequestDTO dto) {
+        return toEntity(dto, null);
+    }
+
     public static ProfileResponseDTO toResponse(Profile profile) {
+        if (profile == null) {
+            return null;
+        }
+
         return new ProfileResponseDTO(
+                profile.getId(),
                 profile.getFullName(),
                 profile.getCpf(),
                 profile.getPhone(),
                 profile.getBirthDate(),
                 profile.getGender(),
-                AddressMapper.toResponse(profile.getAddress()),
-                profile.getId()
-        );
+                AddressMapper.toResponse(profile.getAddress()));
     }
 }

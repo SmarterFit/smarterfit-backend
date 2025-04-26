@@ -1,4 +1,4 @@
-package com.smarterfit.dto.response;
+package com.smarterfit.dto.response.payment;
 
 public record PaymentProcessorResponseDTO(
       String message,

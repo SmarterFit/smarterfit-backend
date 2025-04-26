@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserService {
-
     private final UserRepository userRepository;
     private final UserValidation userValidation;
     private final ProfileValidation profileValidation;

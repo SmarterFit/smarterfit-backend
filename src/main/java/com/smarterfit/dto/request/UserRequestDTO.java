@@ -6,6 +6,8 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import org.hibernate.validator.constraints.br.CPF;
 
+import com.smarterfit.enums.RoleType;
+
 import java.util.Set;
 
 public record UserRequestDTO(
@@ -26,6 +28,6 @@ public record UserRequestDTO(
         String cpf,
 
         @NotEmpty(message = "At least one role must be provided")
-        Set<@NotBlank(message = "Role cannot be blank") String> roles
+        Set<RoleType> roles
 ) {
 }
