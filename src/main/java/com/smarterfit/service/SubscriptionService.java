@@ -6,12 +6,14 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.smarterfit.dto.request.SubscriptionByStatusRequestDTO;
-import com.smarterfit.dto.request.SubscriptionRequestDTO;
-import com.smarterfit.dto.request.SubscriptionUserRequestDTO;
+import com.smarterfit.dto.request.subscription.SearchDTO;
+import com.smarterfit.dto.request.subscription.SubscriptionDTO;
 import com.smarterfit.dto.response.SubscriptionResponseDTO;
 import com.smarterfit.enums.SubscriptionStatus;
 import com.smarterfit.exception.BusinessException;
@@ -21,8 +23,10 @@ import com.smarterfit.model.SubscriptionUser.Subscription;
 import com.smarterfit.model.SubscriptionUser.SubscriptionUser;
 import com.smarterfit.model.UserRole.User;
 import com.smarterfit.repository.SubscriptionRepository;
+import com.smarterfit.specification.SubscriptionSpecifications;
 import com.smarterfit.util.mapper.SubscriptionMapper;
 import com.smarterfit.util.validation.PlanValidation;
+import com.smarterfit.util.validation.SubscriptionValidation;
 import com.smarterfit.util.validation.UserValidation;
 
 @Service
@@ -30,30 +34,23 @@ public class SubscriptionService {
    private final SubscriptionRepository subscriptionRepository;
    private final PlanValidation planValidation;
    private final UserValidation userValidation;
+   private final SubscriptionValidation subscriptionValidation;
 
    @Autowired
    public SubscriptionService(SubscriptionRepository subscriptionRepository, PlanValidation planValidation,
-         UserValidation userValidation) {
+         UserValidation userValidation, SubscriptionValidation subscriptionValidation) {
       this.subscriptionRepository = subscriptionRepository;
       this.planValidation = planValidation;
       this.userValidation = userValidation;
+      this.subscriptionValidation = subscriptionValidation;
    }
 
    @Transactional
-   public SubscriptionResponseDTO createSubscription(SubscriptionRequestDTO subscriptionRequestDTO) {
-      Plan plan = planValidation.findPlanById(subscriptionRequestDTO.planId());
-      User user = userValidation.validateUserById(subscriptionRequestDTO.ownerId());
+   public SubscriptionResponseDTO createSubscription(SubscriptionDTO subscriptionDTO) {
+      Plan plan = planValidation.findPlanById(subscriptionDTO.planId());
+      User user = userValidation.validateUserById(subscriptionDTO.ownerId());
 
-      Subscription subscription = new Subscription();
-      subscription.setPlan(plan);
-      subscription.setOwner(user);
-      subscription.setStatus(SubscriptionStatus.PENDING);
-      subscription.setAvailableMembers(plan.getMaxUsers() - 1);
-
-      SubscriptionUser subscriptionUser = new SubscriptionUser();
-      subscriptionUser.setUser(user);
-      subscriptionUser.setSubscription(subscription);
-      subscription.getParticipants().add(subscriptionUser);
+      Subscription subscription = SubscriptionMapper.toEntity(user, plan, subscriptionDTO);
 
       subscriptionRepository.save(subscription);
 
@@ -62,28 +59,37 @@ public class SubscriptionService {
 
    @Transactional(readOnly = true)
    public SubscriptionResponseDTO getSubscriptionById(UUID id) {
-      Subscription subscription = findSubscriptionById(id);
+      Subscription subscription = subscriptionValidation.findSubscriptionById(id);
       return SubscriptionMapper.toResponse(subscription);
    }
 
    @Transactional(readOnly = true)
-   public List<SubscriptionResponseDTO> getSubscriptionsByStatus(SubscriptionByStatusRequestDTO statusRequestDTO) {
-      List<Subscription> subscriptions = subscriptionRepository.findByStatusIn(statusRequestDTO.status());
+   public List<SubscriptionResponseDTO> getAllSubscriptions() {
+      List<Subscription> subscriptions = subscriptionRepository.findAll();
       return subscriptions.stream()
             .map(SubscriptionMapper::toResponse)
             .collect(Collectors.toList());
    }
 
+   @Transactional(readOnly = true)
+   public Page<SubscriptionResponseDTO> searchSubscriptions(SearchDTO searchDTO, Pageable pageable) {
+      Specification<Subscription> specification = SubscriptionSpecifications.searchByFilters(searchDTO);
+
+      Page<Subscription> subscriptions = subscriptionRepository
+            .findAll(specification, pageable);
+
+      return subscriptions.map(SubscriptionMapper::toResponse);
+   }
+
    @Transactional
-   public SubscriptionResponseDTO addMemberToSubscription(UUID id,
-         SubscriptionUserRequestDTO subscriptionUserRequestDTO) {
-      Subscription subscription = findSubscriptionById(id);
+   public SubscriptionResponseDTO addMemberToSubscription(UUID id, UUID userId) {
+      Subscription subscription = subscriptionValidation.findSubscriptionById(id);
 
       if (subscription.getAvailableMembers() <= 0) {
          throw new BusinessException("Not enough available members in the subscription.");
       }
 
-      User user = userValidation.validateUserById(subscriptionUserRequestDTO.userId());
+      User user = userValidation.validateUserById(userId);
 
       if (subscription.getParticipants().stream()
             .anyMatch(participant -> participant.getUser().getId().equals(user.getId()))) {
@@ -103,13 +109,17 @@ public class SubscriptionService {
 
    @Transactional
    public SubscriptionResponseDTO removeMemberFromSubscription(UUID id,
-         SubscriptionUserRequestDTO subscriptionUserRequestDTO) {
-      Subscription subscription = findSubscriptionById(id);
+         UUID userId) {
+      Subscription subscription = subscriptionValidation.findSubscriptionById(id);
 
       SubscriptionUser subscriptionUser = subscription.getParticipants().stream()
-            .filter(participant -> participant.getUser().getId().equals(subscriptionUserRequestDTO.userId()))
+            .filter(participant -> participant.getUser().getId().equals(userId))
             .findFirst()
             .orElseThrow(() -> new ResourceNotFoundException("User not found in the subscription."));
+
+      if (subscriptionUser.getCreatedAt().isAfter(LocalDateTime.now().minusDays(7))) {
+         throw new BusinessException("User cannot be removed from the subscription within 7 days of joining.");
+      }
 
       subscription.getParticipants().remove(subscriptionUser);
       subscription.setAvailableMembers(subscription.getAvailableMembers() + 1);
@@ -121,26 +131,28 @@ public class SubscriptionService {
 
    @Transactional
    public void cancelSubscription(UUID id) {
-      Subscription subscription = findSubscriptionById(id);
+      Subscription subscription = subscriptionValidation.findSubscriptionById(id);
       subscription.setStatus(SubscriptionStatus.CANCELED);
       subscriptionRepository.save(subscription);
    }
 
    @Transactional
    public void expireSubscriptionsIfNeeded() {
-      List<Subscription> subscriptions = subscriptionRepository
-            .findByStatusIn(List.of(SubscriptionStatus.ACTIVE));
+      LocalDateTime now = LocalDateTime.now();
 
-      for (Subscription subscription : subscriptions) {
-         if (subscription.getEndedIn().isBefore(LocalDateTime.now())) {
-            subscription.setStatus(SubscriptionStatus.EXPIRED);
-            subscriptionRepository.save(subscription);
-         }
-      }
+      List<Subscription> subscriptions = subscriptionRepository.findByStatusAndEndedInBefore(
+            SubscriptionStatus.ACTIVE,
+            now);
+
+      subscriptions.forEach(subscription -> {
+         subscription.setStatus(SubscriptionStatus.EXPIRED);
+      });
+
+      subscriptionRepository.saveAll(subscriptions);
    }
 
    public void renewSubscription(UUID id) {
-      Subscription subscription = findSubscriptionById(id);
+      Subscription subscription = subscriptionValidation.findSubscriptionById(id);
 
       LocalDateTime now = LocalDateTime.now();
       LocalDateTime endedIn = subscription.getEndedIn() != null ? subscription.getEndedIn() : now;
@@ -149,7 +161,7 @@ public class SubscriptionService {
       SubscriptionStatus status = subscription.getStatus();
 
       if (status == SubscriptionStatus.CANCELED) {
-         throw new BusinessException("Assinatura não pode ser renovada, pois está cancelada.");
+         throw new BusinessException("Subscription is canceled.");
       }
 
       if (status == SubscriptionStatus.PENDING) {
@@ -161,10 +173,5 @@ public class SubscriptionService {
       subscription.setEndedIn(newEndDate);
 
       subscriptionRepository.save(subscription);
-   }
-
-   private Subscription findSubscriptionById(UUID id) {
-      return subscriptionRepository.findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException("Assinatura não encontrada com o ID: " + id));
    }
 }

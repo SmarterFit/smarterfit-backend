@@ -11,6 +11,7 @@ import com.smarterfit.model.SubscriptionUser.Subscription;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -53,9 +54,16 @@ public class Plan {
    @Column(name = "max_users", nullable = false)
    Integer maxUsers;
 
+   @Column(name = "max_classes", nullable = false)
+   Integer maxClasses;
+
    @OneToMany(mappedBy = "plan", cascade = CascadeType.ALL, orphanRemoval = true)
    @Builder.Default
    private Set<Subscription> subscriptions = new HashSet<>();
+
+   @Column(name = "dt_deleted_at")
+   @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+   private LocalDateTime deletedAt;
 
    @Column(name = "dt_created_at", nullable = false, updatable = false)
    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")

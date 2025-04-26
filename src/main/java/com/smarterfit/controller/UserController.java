@@ -15,7 +15,6 @@ import java.util.UUID;
 @RequestMapping("/usuarios")
 @CrossOrigin
 public class UserController {
-
     private final UserService userService;
 
     @Autowired

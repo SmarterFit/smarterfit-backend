@@ -1,30 +1,27 @@
 package com.smarterfit.util.mapper;
 
-import com.smarterfit.dto.request.PlanRequestDTO;
+import com.smarterfit.dto.request.plan.PlanDTO;
 import com.smarterfit.dto.response.PlanResponseDTO;
 import com.smarterfit.model.Plan;
 
 public class PlanMapper {
-   public static Plan toEntity(PlanRequestDTO planRequestDTO) {
-      return toEntity(planRequestDTO, null);
-   }
-
-   public static Plan toEntity(PlanRequestDTO planRequestDTO, Plan plan) {
-      if (planRequestDTO == null) {
-         return null;
-      }
-
+   public static Plan toEntity(PlanDTO dto, Plan plan) {
       if (plan == null) {
          plan = new Plan();
       }
 
-      plan.setName(planRequestDTO.name());
-      plan.setDescription(planRequestDTO.description());
-      plan.setPrice(planRequestDTO.price());
-      plan.setDuration(planRequestDTO.duration());
-      plan.setMaxUsers(planRequestDTO.maxUsers());
+      plan.setName(dto.name());
+      plan.setDescription(dto.description());
+      plan.setPrice(dto.price());
+      plan.setDuration(dto.duration());
+      plan.setMaxUsers(dto.maxUsers());
+      plan.setMaxClasses(dto.maxClasses());
 
       return plan;
+   }
+
+   public static Plan toEntity(PlanDTO dto) {
+      return toEntity(dto, null);
    }
 
    public static PlanResponseDTO toResponse(Plan plan) {
@@ -38,7 +35,9 @@ public class PlanMapper {
             plan.getDescription(),
             plan.getPrice(),
             plan.getDuration(),
-            plan.getMaxUsers());
+            plan.getMaxUsers(),
+            plan.getMaxClasses(),
+            plan.getDeletedAt());
 
       return planResponseDTO;
    }

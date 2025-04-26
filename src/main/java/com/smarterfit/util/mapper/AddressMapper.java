@@ -21,6 +21,10 @@ public class AddressMapper {
         return address;
     }
 
+    public static Address toEntity(AddressRequestDTO dto) {
+        return toEntity(dto, null);
+    }
+
     public static AddressResponseDTO toResponse(Address address) {
         return new AddressResponseDTO(
                 address.getStreet(),
@@ -28,7 +32,6 @@ public class AddressMapper {
                 address.getNeighborhood(),
                 address.getCity(),
                 address.getState(),
-                address.getCep()
-        );
+                address.getCep());
     }
 }

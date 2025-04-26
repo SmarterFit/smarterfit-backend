@@ -1,19 +1,17 @@
 package com.smarterfit.dto.response;
 
 import java.time.LocalDateTime;
-import java.util.Set;
 import java.util.UUID;
+
+import com.smarterfit.enums.SubscriptionStatus;
 
 public record SubscriptionResponseDTO(
       UUID id,
-      UserShortResponseDTO owner,
-      Set<UserShortResponseDTO> participants,
-      PlanResponseDTO plan,
+      UserResponseDTO owner,
       LocalDateTime startedIn,
       LocalDateTime renewedIn,
       LocalDateTime endedIn,
-      String status,
+      SubscriptionStatus status,
       Integer availableMembers,
-      Set<PaymentShortResponseDTO> payments
-      ) {
+      Integer availableClasses) {
 }

@@ -2,14 +2,14 @@ package com.smarterfit.processor;
 
 import org.springframework.stereotype.Component;
 
-import com.smarterfit.dto.request.PaymentProcessorRequestDTO;
-import com.smarterfit.dto.response.PaymentProcessorResponseDTO;
+import com.smarterfit.dto.request.payment.ProcessorDTO;
+import com.smarterfit.dto.response.payment.PaymentProcessorResponseDTO;
 import com.smarterfit.enums.PaymentMethod;
 
 @Component
 public class CardPaymentProcessor implements PaymentProcessor {
    @Override
-   public PaymentProcessorResponseDTO processPayment(PaymentProcessorRequestDTO paymentProcessorRequestDTO) {
+   public PaymentProcessorResponseDTO processPayment(ProcessorDTO processorDTO) {
       return new PaymentProcessorResponseDTO("Payment processed", true);
    }
 

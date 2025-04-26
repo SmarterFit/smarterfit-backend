@@ -76,6 +76,9 @@ public class Subscription {
    @Column(name = "available_members", nullable = false)
    private Integer availableMembers;
 
+   @Column(name = "available_classes", nullable = false)
+   private Integer availableClasses;
+
    @OneToMany(mappedBy = "subscription", cascade = CascadeType.ALL, orphanRemoval = true)
    @Builder.Default
    Set<Payment> payments = new HashSet<>();
