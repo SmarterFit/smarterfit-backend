@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.smarterfit.model.Profile;
 import com.smarterfit.model.SubscriptionUser.Subscription;
 import com.smarterfit.model.SubscriptionUser.SubscriptionUser;
+import com.smarterfit.model.TrainingGroup.TrainingGroupUser;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -40,6 +41,9 @@ public class User {
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Subscription> ownedSubscriptions = new HashSet<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<TrainingGroupUser> participatingTrainingGroups = new HashSet<>();
 
     @Column(name = "dt_created_at", nullable = false, updatable = false)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")

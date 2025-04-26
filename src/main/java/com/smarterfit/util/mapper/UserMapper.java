@@ -45,10 +45,10 @@ public class UserMapper {
         return toEntity(dto, null);
     }
 
-    public static UserResponseDTO toResponse(User user) {
-        if (user == null) {
-            return null;
-        }
+        public static UserResponseDTO toResponse(User user) {
+            if (user == null) {
+                return null;
+            }
 
         return new UserResponseDTO(
                 user.getId(),

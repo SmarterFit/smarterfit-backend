@@ -79,6 +79,10 @@ public class PlanService {
          throw new BusinessException("Plan cannot be deleted because it has active subscriptions.");
       }
 
+      if (plan.getDeletedAt() != null) {
+         throw new BusinessException("Plan already deleted.");
+      }
+
       plan.setDeletedAt(LocalDateTime.now());
 
       planRepository.save(plan);
