@@ -151,6 +151,7 @@ public class SubscriptionService {
       subscriptionRepository.saveAll(subscriptions);
    }
 
+   @Transactional
    public void renewSubscription(UUID id) {
       Subscription subscription = subscriptionValidation.findSubscriptionById(id);
 

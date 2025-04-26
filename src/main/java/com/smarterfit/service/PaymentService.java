@@ -25,7 +25,7 @@ import com.smarterfit.exception.BusinessException;
 import com.smarterfit.model.SubscriptionUser.Subscription;
 import com.smarterfit.processor.PaymentProcessor;
 import com.smarterfit.repository.PaymentRepository;
-import com.smarterfit.specification.PaymentSpecification;
+import com.smarterfit.specification.PaymentSpecifications;
 import com.smarterfit.model.SubscriptionUser.Payment;
 import com.smarterfit.util.mapper.PaymentMapper;
 import com.smarterfit.util.validation.PaymentValidation;
@@ -80,13 +80,14 @@ public class PaymentService {
 
    @Transactional(readOnly = true)
    public Page<PaymentResponseDTO> searchPayments(SearchDTO searchDTO, Pageable pageable) {
-      Specification<Payment> specification = PaymentSpecification.searchByFilters(searchDTO);
+      Specification<Payment> specification = PaymentSpecifications.searchByFilters(searchDTO);
 
       Page<Payment> payments = paymentRepository.findAll(specification, pageable);
 
       return payments.map(PaymentMapper::toResponse);
    }
 
+   @Transactional
    public PaymentProcessorResponseDTO processPayment(UUID id, ProcessorDTO processorDTO) {
       Payment payment = paymentValidation.findPaymentById(id);
 

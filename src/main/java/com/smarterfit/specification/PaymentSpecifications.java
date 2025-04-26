@@ -10,7 +10,7 @@ import com.smarterfit.model.SubscriptionUser.Payment;
 
 import jakarta.persistence.criteria.Predicate;
 
-public class PaymentSpecification {
+public class PaymentSpecifications {
    public static Specification<Payment> searchByFilters(SearchDTO searchDTO) {
       return (root, query, criteriaBuilder) -> {
          List<Predicate> predicates = new ArrayList<>();

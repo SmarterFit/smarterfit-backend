@@ -2,6 +2,7 @@ package com.smarterfit.service;
 
 import com.smarterfit.dto.request.UserRequestDTO;
 import com.smarterfit.dto.response.UserResponseDTO;
+import com.smarterfit.dto.response.training_group.TrainingGroupResponseDTO;
 import com.smarterfit.exception.ResourceNotFoundException;
 import com.smarterfit.model.UserRole.User;
 import com.smarterfit.repository.UserRepository;
@@ -81,5 +82,4 @@ public class UserService {
         return userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Profile not found."));
     }
-
 }
