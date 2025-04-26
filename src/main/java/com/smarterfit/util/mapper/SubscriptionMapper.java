@@ -6,7 +6,7 @@ import com.smarterfit.enums.SubscriptionStatus;
 import com.smarterfit.model.Plan;
 import com.smarterfit.model.SubscriptionUser.Subscription;
 import com.smarterfit.model.SubscriptionUser.SubscriptionUser;
-import com.smarterfit.model.UserRole.User;
+import com.smarterfit.model.User;
 
 public class SubscriptionMapper {
       public static Subscription toEntity(User owner, Plan plan, SubscriptionDTO dto) {
