@@ -8,6 +8,7 @@ import com.smarterfit.enums.SubscriptionStatus;
 
 public record SearchDTO(
       UUID ownerId,
+      UUID participantId,
       UUID planId,
       List<SubscriptionStatus> status) {
 

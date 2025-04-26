@@ -19,6 +19,12 @@ public class SubscriptionSpecifications {
             predicates.add(criteriaBuilder.equal(root.get("owner").get("id"), searchDTO.ownerId()));
          }
 
+         // Filtro pelo id do participante
+         if (searchDTO.participantId() != null) {
+            predicates.add(
+                  criteriaBuilder.equal(root.join("participants").get("user").get("id"), searchDTO.participantId()));
+         }
+
          // Filtro pelo id do plano
          if (searchDTO.planId() != null) {
             predicates.add(criteriaBuilder.equal(root.get("plan").get("id"), searchDTO.planId()));
