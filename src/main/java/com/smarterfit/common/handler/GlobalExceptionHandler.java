@@ -1,0 +1,65 @@
+package com.smarterfit.common.handler;
+
+import com.smarterfit.common.dto.response.ApiError;
+import com.smarterfit.common.exceptions.ResourceAlreadyExistsException;
+import com.smarterfit.common.exceptions.ResourceNotFoundException;
+
+import jakarta.validation.ConstraintViolationException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
+
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<String> handleConstraintViolation(ConstraintViolationException ex) {
+        return ResponseEntity
+                .badRequest()
+                .body("Validation error: " + ex.getMessage());
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ApiError> genericException(Exception ex) {
+        return createResponseApiError(HttpStatus.INTERNAL_SERVER_ERROR, List.of(ex.getMessage()));
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ApiError> notFoundException(RuntimeException ex) {
+        return createResponseApiError(HttpStatus.NOT_FOUND, List.of(ex.getMessage()));
+    }
+
+    @ExceptionHandler(ResourceAlreadyExistsException.class)
+    public ResponseEntity<ApiError> emailExistsException(RuntimeException ex) {
+        return createResponseApiError(HttpStatus.CONFLICT, List.of(ex.getMessage()));
+    }
+
+    @ExceptionHandler({MethodArgumentNotValidException.class,
+            HttpMessageNotReadableException.class, MethodArgumentTypeMismatchException.class})
+    public ResponseEntity<ApiError> argumentNotValidException(MethodArgumentNotValidException ex) {
+        List<String> errorList = ex.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .map(error -> error.getField() + ": " + error.getDefaultMessage())
+                .collect(Collectors.toList());
+        return createResponseApiError(HttpStatus.BAD_REQUEST, errorList);
+    }
+
+    private ResponseEntity<ApiError> createResponseApiError(HttpStatus status, List<String> errors) {
+        ApiError apiError = ApiError
+        .builder()
+        .timestamp(LocalDateTime.now())
+        .code(status.value())
+        .status(status.name())
+        .errors(errors)
+        .build();
+        return new ResponseEntity<>(apiError, status);
+    }
+}
