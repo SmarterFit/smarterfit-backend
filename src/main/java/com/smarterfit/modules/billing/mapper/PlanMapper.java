@@ -1,5 +1,6 @@
 package com.smarterfit.modules.billing.mapper;
 
+import com.smarterfit.common.exceptions.BusinessException;
 import com.smarterfit.common.exceptions.ResourceNotFoundException;
 import com.smarterfit.common.mapper.GenericMapper;
 import com.smarterfit.modules.billing.dto.request.plan.CreatePlanRequestDTO;
@@ -26,10 +27,14 @@ public class PlanMapper {
    }
 
    public static PlanResponseDTO toResponse(Plan plan) {
-      if (plan == null) {
-         throw new ResourceNotFoundException("Plan not found.");
+      try {
+         if (plan == null) {
+            throw new ResourceNotFoundException("Plan not found.");
+         }
+   
+         return GenericMapper.map(plan, PlanResponseDTO.class);
+      } catch (Exception e) {
+         throw new BusinessException("Erro no mapping do response");
       }
-
-      return GenericMapper.map(plan, PlanResponseDTO.class);
    }
 }

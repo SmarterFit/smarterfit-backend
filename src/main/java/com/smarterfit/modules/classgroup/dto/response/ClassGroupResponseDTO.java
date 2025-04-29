@@ -5,9 +5,10 @@ import java.util.UUID;
 
 import lombok.Builder;
 
+/// TODO: Retornar horários agendados?
+
 @Builder(toBuilder = true)
 public record ClassGroupResponseDTO(
-
          UUID id,
          String title,
          Integer capacity,

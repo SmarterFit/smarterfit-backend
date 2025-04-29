@@ -19,12 +19,12 @@ public interface PaymentRepository extends JpaRepository<Payment, UUID>, JpaSpec
       List<Payment> findBySubscriptionOwnerId(UUID subscriptionOwnerId);
 
       @Modifying
-      @Query("UPDATE Payment p SET p.status = :status WHERE p.subscription.id = :subscriptionId AND p.status = :originalStatus")
+      @Query("UPDATE payment p SET p.status = :status WHERE p.subscription.id = :subscriptionId AND p.status = :originalStatus")
       void updateStatusBySubscriptionId(@Param("subscriptionId") UUID subscriptionId,
                   @Param("status") PaymentStatus status, @Param("originalStatus") PaymentStatus originalStatus);
 
       @Modifying
-      @Query("UPDATE Payment p SET p.status = :status WHERE p.subscription.plan.id = :planId AND p.status = :originalStatus")
+      @Query("UPDATE payment p SET p.status = :status WHERE p.subscription.plan.id = :planId AND p.status = :originalStatus")
       void updateStatusByPlanId(@Param("planId") UUID planId, @Param("status") PaymentStatus status,
                   @Param("originalStatus") PaymentStatus originalStatus);
 

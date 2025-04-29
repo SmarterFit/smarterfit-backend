@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -16,6 +17,7 @@ import com.smarterfit.modules.traininggroup.dto.request.CreateTrainingGroupReque
 import com.smarterfit.modules.traininggroup.dto.request.UpdateTrainingGroupRequestDTO;
 import com.smarterfit.modules.traininggroup.dto.response.TrainingGroupResponseDTO;
 import com.smarterfit.modules.traininggroup.entity.TrainingGroup;
+import com.smarterfit.modules.traininggroup.event.LastParticipantRemovedEvent;
 import com.smarterfit.modules.traininggroup.mapper.TrainingGroupMapper;
 import com.smarterfit.modules.traininggroup.repository.TrainingGroupRepository;
 import com.smarterfit.modules.traininggroup.repository.TrainingGroupUserRepository;
@@ -100,6 +102,12 @@ public class TrainingGroupService {
    @Transactional
    public void deleteTrainingGroup(TrainingGroup trainingGroup) {
       trainingGroupRepository.delete(trainingGroup);
+   }
+
+   @EventListener
+   public void handleLastParticipantRemoved(LastParticipantRemovedEvent event) {
+      TrainingGroup trainingGroup = event.getTrainingGroup();
+      deleteTrainingGroup(trainingGroup);
    }
 
    @Transactional

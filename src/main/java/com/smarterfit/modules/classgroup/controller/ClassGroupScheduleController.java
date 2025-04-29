@@ -1,6 +1,6 @@
 package com.smarterfit.modules.classgroup.controller;
 
-import com.smarterfit.modules.classgroup.dto.request.classgroup.schedule.ClassGroupScheduleRequestDTO;
+import com.smarterfit.modules.classgroup.dto.request.classgroup.schedule.CreateClassGroupScheduleRequestDTO;
 import com.smarterfit.modules.classgroup.dto.response.ClassGroupScheduleResponseDTO;
 import com.smarterfit.modules.classgroup.service.ClassGroupScheduleService;
 
@@ -21,8 +21,10 @@ public class ClassGroupScheduleController {
     }
 
     @PostMapping("/cadastrar")
-    public ResponseEntity<ClassGroupScheduleResponseDTO> createClassGroupSchedule(@RequestBody @Valid ClassGroupScheduleRequestDTO classGroupScheduleDTO) {
-        ClassGroupScheduleResponseDTO responseDTO = classGroupScheduleService.createClassGroupSchedule(classGroupScheduleDTO);
+    public ResponseEntity<ClassGroupScheduleResponseDTO> createClassGroupSchedule(
+            @RequestBody @Valid CreateClassGroupScheduleRequestDTO requestDTO) {
+        ClassGroupScheduleResponseDTO responseDTO = classGroupScheduleService
+                .createClassGroupSchedule(requestDTO);
         return ResponseEntity.status(201).body(responseDTO);
     }
 
@@ -35,8 +37,9 @@ public class ClassGroupScheduleController {
     @PutMapping("/{id}")
     public ResponseEntity<ClassGroupScheduleResponseDTO> updateClassGroupScheduleById(
             @PathVariable UUID id,
-            @RequestBody @Valid ClassGroupScheduleRequestDTO classGroupScheduleDTO) {
-        ClassGroupScheduleResponseDTO responseDTO = classGroupScheduleService.updateClassGroupScheduleById(id, classGroupScheduleDTO);
+            @RequestBody @Valid CreateClassGroupScheduleRequestDTO requestDTO) {
+        ClassGroupScheduleResponseDTO responseDTO = classGroupScheduleService.updateClassGroupScheduleById(id,
+                requestDTO);
         return ResponseEntity.ok(responseDTO);
     }
 

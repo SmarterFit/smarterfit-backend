@@ -76,4 +76,14 @@ public class SubscriptionController {
       subscriptionService.cancelSubscription(id);
       return ResponseEntity.noContent().build();
    }
+
+   /// Acesso: Usuário dono e Funcionários
+   @PatchMapping("/turma/{id}/usuario/{userId}")
+   public ResponseEntity<List<SubscriptionResponseDTO>> getAvailableSubscriptionsByClassGroupAndUser(
+         @PathVariable("id") UUID classGroupId,
+         @PathVariable("userId") UUID userId) {
+      List<SubscriptionResponseDTO> subscriptions = subscriptionService
+            .getAvailableSubscriptionsByClassGroupAndUser(classGroupId, userId);
+      return ResponseEntity.ok(subscriptions);
+   }
 }

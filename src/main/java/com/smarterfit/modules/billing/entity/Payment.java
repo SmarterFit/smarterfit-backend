@@ -27,7 +27,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Entity(name = "subscription_payment")
+@Entity(name = "payment")
 @Table(name = "SF_SUBSCRIPTION_PAYMENT")
 @Getter
 @Setter

@@ -1,6 +1,7 @@
 package com.smarterfit.modules.classgroup.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.smarterfit.modules.billing.entity.Subscription;
 import com.smarterfit.modules.classgroup.entity.id.ClassGroupUserId;
 import com.smarterfit.modules.useraccess.entity.User;
 
@@ -11,14 +12,14 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-@EqualsAndHashCode(of = {"classGroup", "user"})
+@EqualsAndHashCode(of = { "classGroup", "user" })
 @AllArgsConstructor
 @NoArgsConstructor
 @IdClass(ClassGroupUserId.class)
 
 @Entity
 @Table(name = "SF_CLASS_GROUP_USER")
-public class ClassGroupUser{
+public class ClassGroupUser {
     @Id
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "class_group_id", nullable = false)
@@ -28,6 +29,14 @@ public class ClassGroupUser{
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "subscription_id", nullable = false)
+    private Subscription subscription;
+
+    @Column(name = "dt_expired_at")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime expiredAt;
 
     @Column(name = "dt_created_at", nullable = false, updatable = false)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")

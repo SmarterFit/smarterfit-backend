@@ -2,6 +2,7 @@ package com.smarterfit.modules.useraccess.service;
 
 import com.smarterfit.modules.useraccess.dto.request.user.CreateUserRequestDTO;
 import com.smarterfit.modules.useraccess.dto.response.UserResponseDTO;
+import com.smarterfit.modules.useraccess.entity.Profile;
 import com.smarterfit.modules.useraccess.entity.User;
 import com.smarterfit.modules.useraccess.mapper.UserMapper;
 import com.smarterfit.modules.useraccess.repository.UserRepository;
@@ -32,11 +33,11 @@ public class UserService {
 
     @Transactional
     public UserResponseDTO createUser(CreateUserRequestDTO requestDTO) {
-        userValidation.validatePasswords(requestDTO.password(), requestDTO.confirmPassword());
-        userValidation.validateEmailAvailability(requestDTO.email());
-        profileValidation.validateCpfAvailability(requestDTO.cpf());
+        userValidation.validatePasswords(requestDTO.getPassword(), requestDTO.getConfirmPassword());
+        userValidation.validateEmailAvailability(requestDTO.getEmail());
+        profileValidation.validateCpfAvailability(requestDTO.getCpf());
 
-        User user = UserMapper.toEntity(requestDTO);
+        User user = UserMapper.toEntity(requestDTO, new Profile());
 
         userRepository.save(user);
         return UserMapper.toResponse(user);
@@ -52,11 +53,11 @@ public class UserService {
     public UserResponseDTO updateUserById(UUID id, CreateUserRequestDTO requestDTO) {
         User existingUser = userValidation.validateUserById(id);
 
-        if (!existingUser.getEmail().equals(requestDTO.email())) {
-            userValidation.validateEmailAvailability(requestDTO.email());
+        if (!existingUser.getEmail().equals(requestDTO.getEmail())) {
+            userValidation.validateEmailAvailability(requestDTO.getEmail());
         }
 
-        existingUser = UserMapper.toEntity(requestDTO, existingUser);
+        existingUser = UserMapper.toEntity(requestDTO, existingUser.getProfile(), existingUser);
         userRepository.save(existingUser);
 
         return UserMapper.toResponse(existingUser);

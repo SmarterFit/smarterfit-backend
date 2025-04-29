@@ -5,6 +5,7 @@ import com.smarterfit.common.exceptions.BusinessException;
 import com.smarterfit.modules.billing.entity.Plan;
 import com.smarterfit.modules.billing.entity.Subscription;
 import com.smarterfit.modules.billing.service.SubscriptionService;
+import com.smarterfit.modules.billing.validation.SubscriptionValidation;
 import com.smarterfit.modules.classgroup.dto.request.classgroup.CreateClassGroupRequestDTO;
 import com.smarterfit.modules.classgroup.dto.response.ClassGroupResponseDTO;
 import com.smarterfit.modules.classgroup.entity.ClassGroup;
@@ -27,6 +28,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.UUID;
 
+/// TODO: Criar ClassGroupUserService, com controller, mapper, dto e validation separados.
+
 @Service
 public class ClassGroupService {
 
@@ -35,17 +38,20 @@ public class ClassGroupService {
     private final ClassGroupPlanRepository classGroupPlanRepository;
     private final ValidationFaced validationFaced;
     private final SubscriptionService subscriptionService;
+    private final SubscriptionValidation subscriptionValidation;
 
     public ClassGroupService(ClassGroupRepository classGroupRepository,
             ClassGroupUserRepository classGroupUserRepository,
             ClassGroupPlanRepository classGroupPlanRepository,
             ValidationFaced validationFaced,
-            SubscriptionService subscriptionService) {
+            SubscriptionService subscriptionService,
+            SubscriptionValidation subscriptionValidation) {
         this.classGroupRepository = classGroupRepository;
         this.classGroupUserRepository = classGroupUserRepository;
         this.classGroupPlanRepository = classGroupPlanRepository;
         this.validationFaced = validationFaced;
         this.subscriptionService = subscriptionService;
+        this.subscriptionValidation = subscriptionValidation;
     }
 
     @Transactional
@@ -106,17 +112,21 @@ public class ClassGroupService {
     }
 
     @Transactional
-    public void addUserToClassGroup(UUID classGroupId, UUID userId) {
+    public void addUserToClassGroup(UUID classGroupId, UUID userId, UUID subscriptionId) {
         validationFaced.classGroupUserValidation.validateClassGroupUserExists(classGroupId, userId);
+
         ClassGroup classGroup = validationFaced.classGroupValidation.validateClassGroupById(classGroupId);
-        User user = validationFaced.userValidation.validateUserById(userId);
 
         if (isGroupFull(classGroup)) {
             throw new BusinessException("Class group is full");
         }
 
-        Subscription subscription = validationFaced.classGroupValidation
-                .validateUserAccessToClassGroup(classGroupId, userId);
+        User user = validationFaced.userValidation.validateUserById(userId);
+        Subscription subscription = subscriptionValidation.validateSubscriptionById(subscriptionId);
+
+        validationFaced.classGroupValidation
+                .validateUserAccessToClassGroupBySubscription(classGroupId, userId, subscriptionId);
+
         subscriptionService.decrementAvailableClasses(subscription);
 
         incrementGroupMembers(classGroup);
@@ -139,16 +149,27 @@ public class ClassGroupService {
     public void removeUserFromClassGroup(UUID classGroupId, UUID userId) {
         ClassGroupUser classGroupUser = validationFaced.classGroupUserValidation.validateClassGroupUserId(classGroupId,
                 userId);
+
         decrementGroupMembers(classGroupUser.getClassGroup());
+        subscriptionService.incrementAvailableClasses(classGroupUser.getSubscription());
+
         classGroupUserRepository.delete(classGroupUser);
     }
 
     @Transactional
     public void deleteClassGroupById(UUID id) {
         ClassGroup classGroup = validationFaced.classGroupValidation.validateClassGroupById(id);
+
+        // TODO: incrementar a quantidade de turmas disponiveis
+        // THINK: Pensar se é necessário os contadores ou se o custo não é tão alto para
+        // contar em cada interação.
+        // THINK: Pode ser interessante apenas um softdelete (permite rastrear dados
+        // antigos)
+
         classGroupRepository.delete(classGroup);
     }
 
+    /// TODO: Jogar para validação
     private boolean isGroupFull(ClassGroup classGroup) {
         return classGroup.getTotalMembers() >= classGroup.getCapacity();
     }
@@ -167,5 +188,4 @@ public class ClassGroupService {
         classGroupUser.setUser(user);
         classGroupUserRepository.save(classGroupUser);
     }
-
 }

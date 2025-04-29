@@ -18,20 +18,23 @@ public class UserMapper {
         // Private constructor to prevent instantiation
     }
 
-    public static User toEntity(CreateUserRequestDTO dto) {
-        return toEntity(dto, new User());
+    public static User toEntity(CreateUserRequestDTO dto, Profile profile) {
+        return toEntity(dto, profile, new User());
     }
 
-    public static User toEntity(CreateUserRequestDTO dto, User user) {
+    public static User toEntity(CreateUserRequestDTO dto, Profile profile, User user) {
         if (user == null) {
             throw new ResourceNotFoundException("User not found.");
+        }
+        if (profile == null) {
+            throw new ResourceNotFoundException("Profile not found.");
         }
 
         user = GenericMapper.map(dto, user);
 
         // Roles
         Set<UserRole> userRoles = new HashSet<>();
-        for (RoleType role : dto.roles()) {
+        for (RoleType role : dto.getRoles()) {
             UserRole userRole = new UserRole();
             userRole.setUser(user);
             userRole.setRoleType(role);
@@ -42,25 +45,26 @@ public class UserMapper {
         user.getRoles().addAll(userRoles);
 
         // Profile
-        Profile profile = user.getProfile();
-        if (profile == null) {
-            profile = new Profile();
-            profile.setUser(user);
-        }
-
-        profile.setCpf(dto.cpf());
+        profile.setUser(user);
+        profile.setCpf(dto.getCpf());
         user.setProfile(profile);
 
         return user;
     }
 
     public static UserResponseDTO toResponse(User user) {
+
         if (user == null) {
             throw new ResourceNotFoundException("User not found.");
         }
+        UserResponseDTO response;
+        try {
+            response = GenericMapper.map(user, UserResponseDTO.class);
+        } catch (Exception e) {
+            throw new ResourceNotFoundException("Algum erro no mapping");
+        }
 
-        UserResponseDTO response = GenericMapper.map(user, UserResponseDTO.class);
-        response.toBuilder().roles(
+        response = response.toBuilder().roles(
                 user.getRoles().stream().map(role -> role.getRoleType()).collect(Collectors.toSet())).build();
 
         return response;

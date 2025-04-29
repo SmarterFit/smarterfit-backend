@@ -1,6 +1,6 @@
 package com.smarterfit.modules.classgroup.controller;
 
-import com.smarterfit.modules.classgroup.dto.request.classsession.ClassSessionRequestDTO;
+import com.smarterfit.modules.classgroup.dto.request.classsession.CreateClassSessionRequestDTO;
 import com.smarterfit.modules.classgroup.dto.response.ClassSessionResponseDTO;
 import com.smarterfit.modules.classgroup.service.ClassSessionService;
 
@@ -22,8 +22,9 @@ public class ClassSessionController {
     }
 
     @PostMapping("/cadastrar")
-    public ResponseEntity<ClassSessionResponseDTO> createClassSession(@RequestBody @Valid ClassSessionRequestDTO classSessionRequest) {
-        ClassSessionResponseDTO responseDTO = classSessionService.createClassSession(classSessionRequest);
+    public ResponseEntity<ClassSessionResponseDTO> createClassSession(
+            @RequestBody @Valid CreateClassSessionRequestDTO requestDTO) {
+        ClassSessionResponseDTO responseDTO = classSessionService.createClassSession(requestDTO);
         return ResponseEntity.status(201).body(responseDTO);
     }
 
@@ -45,8 +46,8 @@ public class ClassSessionController {
     @PutMapping("/{id}")
     public ResponseEntity<ClassSessionResponseDTO> updateClassSessionById(
             @PathVariable UUID id,
-            @RequestBody @Valid ClassSessionRequestDTO classSessionRequest) {
-        return ResponseEntity.ok(classSessionService.updateClassSessionById(id, classSessionRequest));
+            @RequestBody @Valid CreateClassSessionRequestDTO requestDTO) {
+        return ResponseEntity.ok(classSessionService.updateClassSessionById(id, requestDTO));
     }
 
     @DeleteMapping("/{id}")
@@ -54,5 +55,4 @@ public class ClassSessionController {
         classSessionService.deleteClassSessionById(id);
         return ResponseEntity.noContent().build();
     }
-
 }

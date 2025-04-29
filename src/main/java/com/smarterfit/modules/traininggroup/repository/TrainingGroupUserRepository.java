@@ -24,6 +24,6 @@ public interface TrainingGroupUserRepository extends JpaRepository<TrainingGroup
    Boolean existsByTrainingGroupIdAndIsAdmin(UUID trainingGroupId, boolean isAdmin);
 
    @Modifying
-   @Query("UPDATE TrainingGroupUser t SET t.points = 0 WHERE t.trainingGroup.id = :trainingGroupId")
+   @Query("UPDATE training_group_user t SET t.points = 0 WHERE t.trainingGroup.id = :trainingGroupId")
    void resetPointsByTrainingGroupId(UUID trainingGroupId);
 }

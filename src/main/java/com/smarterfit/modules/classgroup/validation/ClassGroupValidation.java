@@ -1,9 +1,9 @@
 package com.smarterfit.modules.classgroup.validation;
 
+import com.smarterfit.common.exceptions.BusinessException;
 import com.smarterfit.common.exceptions.ResourceAlreadyExistsException;
 import com.smarterfit.common.exceptions.ResourceNotFoundException;
 import com.smarterfit.common.validation.DateValidation;
-import com.smarterfit.modules.billing.entity.Subscription;
 import com.smarterfit.modules.billing.repository.SubscriptionRepository;
 import com.smarterfit.modules.classgroup.entity.ClassGroup;
 import com.smarterfit.modules.classgroup.repository.ClassGroupRepository;
@@ -11,7 +11,6 @@ import com.smarterfit.modules.classgroup.repository.ClassGroupRepository;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
-import java.util.Optional;
 import java.util.UUID;
 
 @Component
@@ -44,14 +43,14 @@ public class ClassGroupValidation {
         DateValidation.validateDateRange(startDate, endDate, Boolean.TRUE);
     }
 
-    public Subscription validateUserAccessToClassGroup(UUID classGroupId, UUID userId) {
-        Optional<Subscription> subscription = subscriptionRepository
-                .findFirstActiveSubscriptionGivingAccessToClassGroup(classGroupId, userId);
+    public void validateUserAccessToClassGroupBySubscription(UUID classGroupId, UUID userId,
+            UUID subscriptionId) {
+        Boolean hasAccess = subscriptionRepository
+                .existsAvailableSubscriptionByClassGroupAndParticipantAndSubscription(classGroupId, userId,
+                        subscriptionId);
 
-        if (subscription.isEmpty()) {
-            throw new ResourceNotFoundException("User does not have access to this class group.");
+        if (!hasAccess) {
+            throw new BusinessException("User does not have access to this class group with this subscription.");
         }
-
-        return subscription.get();
     }
 }

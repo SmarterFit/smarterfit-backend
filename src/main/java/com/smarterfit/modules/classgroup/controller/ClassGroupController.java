@@ -1,6 +1,6 @@
 package com.smarterfit.modules.classgroup.controller;
 
-import com.smarterfit.modules.classgroup.dto.request.classgroup.ClassGroupRequestDTO;
+import com.smarterfit.modules.classgroup.dto.request.classgroup.CreateClassGroupRequestDTO;
 import com.smarterfit.modules.classgroup.dto.response.ClassGroupResponseDTO;
 import com.smarterfit.modules.classgroup.service.ClassGroupService;
 import com.smarterfit.modules.useraccess.dto.response.UserResponseDTO;
@@ -22,8 +22,9 @@ public class ClassGroupController {
     }
 
     @PostMapping("/cadastrar")
-    public ResponseEntity<ClassGroupResponseDTO> createClassGroup(@RequestBody @Valid ClassGroupRequestDTO classGroupRequest) {
-        ClassGroupResponseDTO responseDTO = classGroupService.createClassGroup(classGroupRequest);
+    public ResponseEntity<ClassGroupResponseDTO> createClassGroup(
+            @RequestBody @Valid CreateClassGroupRequestDTO requestDTO) {
+        ClassGroupResponseDTO responseDTO = classGroupService.createClassGroup(requestDTO);
         return ResponseEntity.status(201).body(responseDTO);
     }
 
@@ -35,8 +36,8 @@ public class ClassGroupController {
     @PutMapping("/{id}")
     public ResponseEntity<ClassGroupResponseDTO> updateClassGroupById(
             @PathVariable UUID id,
-            @RequestBody @Valid ClassGroupRequestDTO classGroupRequest) {
-        return ResponseEntity.ok(classGroupService.updateClassGroupById(id, classGroupRequest));
+            @RequestBody @Valid CreateClassGroupRequestDTO requestDTO) {
+        return ResponseEntity.ok(classGroupService.updateClassGroupById(id, requestDTO));
     }
 
     @DeleteMapping("/{id}")
@@ -45,16 +46,16 @@ public class ClassGroupController {
         return ResponseEntity.noContent().build();
     }
 
-
     @PostMapping("/{classGroupId}/planos/{planId}")
     public ResponseEntity<Void> addPlanToClassGroup(@PathVariable UUID classGroupId, @PathVariable UUID planId) {
         classGroupService.addPlanToClassGroup(planId, classGroupId);
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/{classGroupId}/usuarios/{userId}")
-    public ResponseEntity<Void> addUserToClassGroup(@PathVariable UUID classGroupId, @PathVariable UUID userId) {
-        classGroupService.addUserToClassGroup(classGroupId, userId);
+    @PostMapping("/{classGroupId}/usuarios/{userId}/assinatura/{subscriptionId}")
+    public ResponseEntity<Void> addUserToClassGroup(@PathVariable UUID classGroupId, @PathVariable UUID userId,
+            @PathVariable UUID subscriptionId) {
+        classGroupService.addUserToClassGroup(classGroupId, userId, subscriptionId);
         return ResponseEntity.ok().build();
     }
 

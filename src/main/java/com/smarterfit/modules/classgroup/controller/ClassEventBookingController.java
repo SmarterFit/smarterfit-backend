@@ -1,7 +1,7 @@
 package com.smarterfit.modules.classgroup.controller;
 
-import com.smarterfit.modules.classgroup.dto.request.classevent.booking.ClassEventBookingRequestDTO;
-import com.smarterfit.modules.classgroup.dto.request.classevent.booking.ClassEventBookingStatusDTO;
+import com.smarterfit.modules.classgroup.dto.request.classevent.booking.CreateClassEventBookingRequestDTO;
+import com.smarterfit.modules.classgroup.dto.request.classevent.booking.UpdateClassEventBookingRequestDTO;
 import com.smarterfit.modules.classgroup.dto.response.ClassEventBookingResponseDTO;
 import com.smarterfit.modules.classgroup.service.ClassEventBookingService;
 
@@ -23,24 +23,27 @@ public class ClassEventBookingController {
     }
 
     @PostMapping("/cadastrar")
-    public ResponseEntity<ClassEventBookingResponseDTO> createClassEventBooking(@RequestBody @Valid ClassEventBookingRequestDTO classEventBookingRequest) {
-        ClassEventBookingResponseDTO responseDTO = classEventBookingService.createClassEventBooking(classEventBookingRequest);
+    public ResponseEntity<ClassEventBookingResponseDTO> createClassEventBooking(
+            @RequestBody @Valid CreateClassEventBookingRequestDTO requestDTO) {
+        ClassEventBookingResponseDTO responseDTO = classEventBookingService.createClassEventBooking(requestDTO);
         return ResponseEntity.status(201).body(responseDTO);
     }
 
     @GetMapping("/{userId}/{classEventId}")
-    public ResponseEntity<ClassEventBookingResponseDTO> getClassEventBookingById(@PathVariable UUID userId, @PathVariable UUID classEventId) {
+    public ResponseEntity<ClassEventBookingResponseDTO> getClassEventBookingById(@PathVariable UUID userId,
+            @PathVariable UUID classEventId) {
         return ResponseEntity.ok(classEventBookingService.getClassEventBookingById(userId, classEventId));
     }
 
     @PutMapping
     public ResponseEntity<ClassEventBookingResponseDTO> updateClassEventBookingById(
-            @RequestBody @Valid ClassEventBookingStatusDTO dto) {
-        return ResponseEntity.ok(classEventBookingService.updateClassEventBookingById(dto));
+            @RequestBody @Valid UpdateClassEventBookingRequestDTO requestDTO) {
+        return ResponseEntity.ok(classEventBookingService.updateClassEventBookingById(requestDTO));
     }
 
     @GetMapping("/{classEventId}/usuarios")
-    public ResponseEntity<List<ClassEventBookingResponseDTO>> getClassEventBookingsByClassEventId(@PathVariable UUID classEventId) {
+    public ResponseEntity<List<ClassEventBookingResponseDTO>> getClassEventBookingsByClassEventId(
+            @PathVariable UUID classEventId) {
         return ResponseEntity.ok(classEventBookingService.getAllBookingsToClassEvent(classEventId));
     }
 

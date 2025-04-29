@@ -116,27 +116,6 @@ public class SubscriptionService {
    }
 
    @Transactional
-   public void renewSubscription(Subscription subscription) {
-      LocalDateTime now = LocalDateTime.now();
-      LocalDateTime endedIn = subscription.getEndedIn() != null ? subscription.getEndedIn() : now;
-      Integer duration = subscription.getPlan().getDuration();
-      LocalDateTime newEndDate = endedIn.isAfter(now) ? endedIn.plusDays(duration) : now.plusDays(duration);
-      SubscriptionStatus status = subscription.getStatus();
-
-      subscriptionValidation.validateSubscriptionNotIsCanceled(subscription);
-
-      if (status == SubscriptionStatus.PENDING) {
-         subscription.setStartedIn(now);
-      }
-
-      subscription.setStatus(SubscriptionStatus.ACTIVE);
-      subscription.setRenewedIn(now);
-      subscription.setEndedIn(newEndDate);
-
-      subscriptionRepository.save(subscription);
-   }
-
-   @Transactional
    public void cancelSubscriptionsByPlan(UUID planId) {
       subscriptionRepository.updateStatusByPlanId(planId, SubscriptionStatus.CANCELED);
    }
@@ -145,5 +124,20 @@ public class SubscriptionService {
    public void decrementAvailableClasses(Subscription subscription) {
       subscription.setAvailableClasses(subscription.getAvailableClasses() - 1);
       subscriptionRepository.save(subscription);
+   }
+
+   @Transactional
+   public void incrementAvailableClasses(Subscription subscription) {
+      subscription.setAvailableClasses(subscription.getAvailableClasses() + 1);
+      subscriptionRepository.save(subscription);
+   }
+
+   @Transactional(readOnly = true)
+   public List<SubscriptionResponseDTO> getAvailableSubscriptionsByClassGroupAndUser(UUID classGroupId, UUID userId) {
+      List<Subscription> subscriptions = subscriptionRepository
+            .findAvailableSubscriptionsByClassGroupAndParticipant(classGroupId, userId);
+      return subscriptions.stream()
+            .map(SubscriptionMapper::toResponse)
+            .collect(Collectors.toList());
    }
 }

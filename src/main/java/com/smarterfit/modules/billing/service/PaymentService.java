@@ -28,6 +28,7 @@ import com.smarterfit.modules.billing.entity.Subscription;
 import com.smarterfit.modules.billing.mapper.PaymentMapper;
 import com.smarterfit.modules.billing.processor.PaymentProcessor;
 import com.smarterfit.modules.billing.repository.PaymentRepository;
+import com.smarterfit.modules.billing.service.renewal.SubscriptionRenewalService;
 import com.smarterfit.modules.billing.specification.PaymentSpecifications;
 import com.smarterfit.modules.billing.validation.PaymentValidation;
 import com.smarterfit.modules.billing.validation.SubscriptionValidation;
@@ -37,17 +38,17 @@ public class PaymentService {
    private final PaymentRepository paymentRepository;
    private final PaymentValidation paymentValidation;
    private final SubscriptionValidation subscriptionValidation;
-   private final SubscriptionService subscriptionService;
+   private final SubscriptionRenewalService subscriptionRenewalService;
    private final Map<PaymentMethod, PaymentProcessor> paymentProcessors;
 
    @Autowired
    public PaymentService(PaymentRepository paymentRepository, PaymentValidation paymentValidation,
-         SubscriptionValidation subscriptionValidation, SubscriptionService subscriptionService,
+         SubscriptionValidation subscriptionValidation, SubscriptionRenewalService subscriptionRenewalService,
          List<PaymentProcessor> paymentProcessors) {
       this.paymentRepository = paymentRepository;
       this.paymentValidation = paymentValidation;
       this.subscriptionValidation = subscriptionValidation;
-      this.subscriptionService = subscriptionService;
+      this.subscriptionRenewalService = subscriptionRenewalService;
       this.paymentProcessors = paymentProcessors.stream()
             .collect(Collectors.toMap(PaymentProcessor::getPaymentMethod, processor -> processor));
    }
@@ -55,7 +56,7 @@ public class PaymentService {
    @Transactional
    public PaymentResponseDTO createPayment(CreatePaymentRequestDTO requestDTO) {
       Subscription subscription = subscriptionValidation
-            .validateSubscriptionById(requestDTO.subscriptionId());
+            .validateSubscriptionById(requestDTO.getSubscriptionId());
 
       Payment payment = PaymentMapper.toEntity(requestDTO, subscription);
       payment.setExpirationIn(LocalDateTime.now().plusDays(BusinessRules.PAYMENT_EXPIRATION_DAYS));
@@ -109,7 +110,7 @@ public class PaymentService {
          payment.setPaymentDate(LocalDateTime.now());
          paymentRepository.save(payment);
 
-         subscriptionService.renewSubscription(payment.getSubscription());
+         subscriptionRenewalService.renewSubscription(payment.getSubscription());
 
          return response;
       } else {

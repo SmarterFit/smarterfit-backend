@@ -5,11 +5,19 @@ import java.util.UUID;
 
 import com.smarterfit.common.enums.RoleType;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Builder(toBuilder = true)
-public record UserResponseDTO(
-      UUID id,
-      String email,
-      Set<RoleType> roles) {
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@Setter
+public class UserResponseDTO {
+      private UUID id;
+      private String email;
+      private Set<RoleType> roles;
 }

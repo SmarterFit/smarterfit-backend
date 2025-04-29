@@ -1,7 +1,7 @@
 package com.smarterfit.modules.classgroup.service;
 
 import com.smarterfit.common.enums.EventStatus;
-import com.smarterfit.modules.classgroup.dto.request.classevent.ClassEventRequestDTO;
+import com.smarterfit.modules.classgroup.dto.request.classevent.CreateClassEventRequestDTO;
 import com.smarterfit.modules.classgroup.dto.response.ClassEventResponseDTO;
 import com.smarterfit.modules.classgroup.entity.ClassEvent;
 import com.smarterfit.modules.classgroup.entity.ClassGroup;
@@ -21,20 +21,19 @@ public class ClassEventService {
     private final ClassEventRepository classEventRepository;
     private final ValidationFaced validationFaced;
 
-
     public ClassEventService(ClassEventRepository classEventRepository,
-                             ValidationFaced validationFaced) {
+            ValidationFaced validationFaced) {
         this.classEventRepository = classEventRepository;
         this.validationFaced = validationFaced;
     }
 
     @Transactional
-    public ClassEventResponseDTO createClassEvent(ClassEventRequestDTO classEventRequest) {
-        ClassGroup classGroup = validationFaced.classGroupValidation.validateClassGroupById(classEventRequest.classGroupId());
-        validateDates(classEventRequest, classGroup);
+    public ClassEventResponseDTO createClassEvent(CreateClassEventRequestDTO requestDTO) {
+        ClassGroup classGroup = validationFaced.classGroupValidation.validateClassGroupById(requestDTO.classGroupId());
+        validateDates(requestDTO, classGroup);
         // TODO: validar conflitos de horário com o instrutor
 
-        ClassEvent classEvent = ClassEventMapper.toEntity(classEventRequest, classGroup);
+        ClassEvent classEvent = ClassEventMapper.toEntity(requestDTO, classGroup);
         classEventRepository.save(classEvent);
 
         return ClassEventMapper.toResponse(classEvent);
@@ -49,21 +48,20 @@ public class ClassEventService {
     @Transactional(readOnly = true)
     // TODO: incluir filtros por: modalidade, tipo, data, disponibilidade
     public List<ClassEventResponseDTO> getAllClassEvents() {
-        return classEventRepository.findAll().stream().map(ClassEventMapper::toResponse).
-                toList();
+        return classEventRepository.findAll().stream().map(ClassEventMapper::toResponse).toList();
     }
 
     @Transactional
-    public ClassEventResponseDTO updateClassEventById(UUID classEventId, ClassEventRequestDTO classEventRequest) {
-        ClassGroup classGroup = validationFaced.classGroupValidation.validateClassGroupById(classEventRequest.classGroupId());
-        validateDates(classEventRequest, classGroup);
+    public ClassEventResponseDTO updateClassEventById(UUID classEventId, CreateClassEventRequestDTO requestDTO) {
+        ClassGroup classGroup = validationFaced.classGroupValidation.validateClassGroupById(requestDTO.classGroupId());
+        validateDates(requestDTO, classGroup);
         ClassEvent classEvent = validationFaced.classEventValidation.validateClassEventById(classEventId);
 
-        classEvent = ClassEventMapper.toEntity(classEventRequest, classEvent, classGroup);
+        classEvent = ClassEventMapper.toEntity(requestDTO,  classGroup, classEvent);
         classEventRepository.save(classEvent);
+
         return ClassEventMapper.toResponse(classEvent);
     }
-
 
     @Transactional
     public void deleteClassEventById(UUID classEventId) {
@@ -81,14 +79,15 @@ public class ClassEventService {
 
     }
 
-    private void validateDates(ClassEventRequestDTO classEventRequest, ClassGroup classGroup) {
-        validationFaced.classEventValidation.validateClassEventDates(classEventRequest.startDate(), classEventRequest.endDate());
-        validationFaced.classEventValidation.validateEventTimeConflict(classGroup.getId(), classEventRequest.startDate(), classEventRequest.endDate());
+    private void validateDates(CreateClassEventRequestDTO requestDTO, ClassGroup classGroup) {
+        validationFaced.classEventValidation.validateClassEventDates(requestDTO.startDate(), requestDTO.endDate());
+        validationFaced.classEventValidation.validateEventTimeConflict(classGroup.getId(), requestDTO.startDate(),
+                requestDTO.endDate());
     }
 
     public void incrementBooking(ClassEvent classEvent) {
-
-        validationFaced.classEventValidation.validateBookingCount(classEvent.getBookingCount(), classEvent.getCapacity());
+        validationFaced.classEventValidation.validateBookingCount(classEvent.getBookingCount(),
+                classEvent.getCapacity());
         classEvent.setBookingCount(classEvent.getBookingCount() + 1);
         classEventRepository.save(classEvent);
     }
@@ -97,8 +96,5 @@ public class ClassEventService {
         classEvent.setBookingCount(classEvent.getBookingCount() - 1);
         classEventRepository.save(classEvent);
     }
-
-
-
 
 }

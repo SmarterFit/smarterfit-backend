@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.smarterfit.common.enums.SubscriptionStatus;
+import com.smarterfit.modules.classgroup.entity.ClassGroupUser;
 import com.smarterfit.modules.useraccess.entity.User;
 
 import jakarta.persistence.CascadeType;
@@ -82,6 +83,10 @@ public class Subscription {
    @OneToMany(mappedBy = "subscription", cascade = CascadeType.ALL, orphanRemoval = true)
    @Builder.Default
    Set<Payment> payments = new HashSet<>();
+
+   @OneToMany(mappedBy="subscription", cascade = CascadeType.ALL, orphanRemoval = true)
+   @Builder.Default
+   Set<ClassGroupUser> classGroupsUsers = new HashSet<>();
 
    @Column(name = "dt_created_at", nullable = false, updatable = false)
    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")

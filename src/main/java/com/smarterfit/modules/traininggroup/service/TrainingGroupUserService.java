@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,6 +13,7 @@ import com.smarterfit.modules.traininggroup.dto.response.TrainingGroupUserRespon
 import com.smarterfit.modules.traininggroup.entity.TrainingGroup;
 import com.smarterfit.modules.traininggroup.entity.TrainingGroupUser;
 import com.smarterfit.modules.traininggroup.entity.id.TrainingGroupUserId;
+import com.smarterfit.modules.traininggroup.event.LastParticipantRemovedEvent;
 import com.smarterfit.modules.traininggroup.mapper.TrainingGroupMapper;
 import com.smarterfit.modules.traininggroup.mapper.TrainingGroupUserMapper;
 import com.smarterfit.modules.traininggroup.repository.TrainingGroupUserRepository;
@@ -23,7 +25,7 @@ import com.smarterfit.modules.useraccess.validation.UserValidation;
 @Service
 public class TrainingGroupUserService {
    private final TrainingGroupUserRepository trainingGroupUserRepository;
-   private final TrainingGroupService trainingGroupService;
+   private final ApplicationEventPublisher publisher;
    private final TrainingGroupValidation trainingGroupValidation;
    private final UserValidation userValidation;
 
@@ -31,11 +33,11 @@ public class TrainingGroupUserService {
 
    @Autowired
    public TrainingGroupUserService(TrainingGroupUserRepository trainingGroupUserRepository,
-         TrainingGroupService trainingGroupService,
+         ApplicationEventPublisher publisher,
          TrainingGroupValidation trainingGroupValidation, UserValidation userValidation,
          TrainingGroupUserValidation trainingGroupUserValidation) {
       this.trainingGroupUserRepository = trainingGroupUserRepository;
-      this.trainingGroupService = trainingGroupService;
+      this.publisher = publisher;
       this.trainingGroupValidation = trainingGroupValidation;
       this.userValidation = userValidation;
       this.trainingGroupUserValidation = trainingGroupUserValidation;
@@ -66,7 +68,7 @@ public class TrainingGroupUserService {
       trainingGroupUserRepository.delete(trainingGroupUser);
 
       if (trainingGroup.getParticipants().isEmpty()) {
-         trainingGroupService.deleteTrainingGroup(trainingGroup);
+         publisher.publishEvent(new LastParticipantRemovedEvent(trainingGroup));
       } else {
          trainingGroupUserValidation.validateAtLeastOneAdmin(trainingGroup);
       }

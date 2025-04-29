@@ -1,5 +1,7 @@
 package com.smarterfit.modules.classgroup.service;
 
+import com.smarterfit.modules.classgroup.dto.request.classevent.booking.CreateClassEventBookingRequestDTO;
+import com.smarterfit.modules.classgroup.dto.request.classevent.booking.UpdateClassEventBookingRequestDTO;
 import com.smarterfit.modules.classgroup.dto.response.ClassEventBookingResponseDTO;
 import com.smarterfit.modules.classgroup.entity.ClassEvent;
 import com.smarterfit.modules.classgroup.entity.ClassEventBooking;
@@ -26,9 +28,9 @@ public class ClassEventBookingService {
     private final UserValidation userValidation;
 
     public ClassEventBookingService(ClassEventBookingRepository classEventBookingRepository,
-                                    ClassEventBookingValidation classEventBookingValidation,
-                                    ClassEventValidation classEventValidation, UserValidation userValidation,
-                                    ClassEventService classEventService) {
+            ClassEventBookingValidation classEventBookingValidation,
+            ClassEventValidation classEventValidation, UserValidation userValidation,
+            ClassEventService classEventService) {
         this.classEventBookingRepository = classEventBookingRepository;
         this.classEventBookingValidation = classEventBookingValidation;
         this.classEventValidation = classEventValidation;
@@ -37,15 +39,15 @@ public class ClassEventBookingService {
     }
 
     @Transactional
-    public ClassEventBookingResponseDTO createClassEventBooking(ClassEventBookingRequestDTO classEventBookingDTO) {
-        ClassEvent classEvent = classEventValidation.validateClassEventById(classEventBookingDTO.classEventId());
+    public ClassEventBookingResponseDTO createClassEventBooking(CreateClassEventBookingRequestDTO requestDTO) {
+        ClassEvent classEvent = classEventValidation.validateClassEventById(requestDTO.classEventId());
 
         classEventService.incrementBooking(classEvent);
 
-        classEventBookingValidation.validateClassEventBookingExists(classEventBookingDTO.userId(), classEventBookingDTO.classEventId());
-        User user = userValidation.validateUserById(classEventBookingDTO.userId());
+        classEventBookingValidation.validateClassEventBookingExists(requestDTO.userId(), requestDTO.classEventId());
+        User user = userValidation.validateUserById(requestDTO.userId());
 
-        ClassEventBooking classEventBooking = ClassEventBookingMapper.toEntity(classEventBookingDTO, classEvent, user);
+        ClassEventBooking classEventBooking = ClassEventBookingMapper.toEntity(requestDTO, classEvent, user);
         ClassEventBooking savedClassEventBooking = classEventBookingRepository.save(classEventBooking);
 
         return ClassEventBookingMapper.toResponse(savedClassEventBooking);
@@ -54,17 +56,21 @@ public class ClassEventBookingService {
     @Transactional(readOnly = true)
     public ClassEventBookingResponseDTO getClassEventBookingById(UUID userId, UUID classEventId) {
         ClassEventBookingId classEventBookingId = new ClassEventBookingId(userId, classEventId);
-        ClassEventBooking classEventBooking = classEventBookingValidation.validateClassEventBookingById(classEventBookingId);
+        ClassEventBooking classEventBooking = classEventBookingValidation
+                .validateClassEventBookingById(classEventBookingId);
 
         return ClassEventBookingMapper.toResponse(classEventBooking);
     }
 
     @Transactional
-    public ClassEventBookingResponseDTO updateClassEventBookingById(ClassEventBookingStatusDTO statusDTO) {
-        ClassEventBookingId classEventBookingId = new ClassEventBookingId(statusDTO.userId(), statusDTO.classEventId());
-        ClassEventBooking classEventBooking = classEventBookingValidation.validateClassEventBookingById(classEventBookingId);
+    public ClassEventBookingResponseDTO updateClassEventBookingById(UpdateClassEventBookingRequestDTO requestDTO) {
+        ClassEventBookingId classEventBookingId = new ClassEventBookingId(requestDTO.userId(),
+                requestDTO.classEventId());
+        ClassEventBooking classEventBooking = classEventBookingValidation
+                .validateClassEventBookingById(classEventBookingId);
 
-        ClassEventBooking updatedClassEventBooking = ClassEventBookingMapper.toEntityUpdateStatus(statusDTO, classEventBooking);
+        ClassEventBooking updatedClassEventBooking = ClassEventBookingMapper.toEntityUpdateStatus(requestDTO,
+                classEventBooking);
 
         classEventService.decrementBooking(classEventBooking.getClassEvent());
         return ClassEventBookingMapper.toResponse(classEventBookingRepository.save(updatedClassEventBooking));
@@ -76,5 +82,4 @@ public class ClassEventBookingService {
                 .map(ClassEventBookingMapper::toResponse)
                 .toList();
     }
-
 }

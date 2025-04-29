@@ -1,6 +1,6 @@
 package com.smarterfit.modules.classgroup.controller;
 
-import com.smarterfit.modules.classgroup.dto.request.modality.ModalityRequestDTO;
+import com.smarterfit.modules.classgroup.dto.request.modality.CreateModalityRequestDTO;
 import com.smarterfit.modules.classgroup.dto.response.ModalityResponseDTO;
 import com.smarterfit.modules.classgroup.service.ModalityService;
 
@@ -23,8 +23,8 @@ public class ModalityController {
     }
 
     @PostMapping("/cadastrar")
-    public ResponseEntity<ModalityResponseDTO> createModality(@RequestBody @Valid ModalityRequestDTO modalityRequest) {
-        ModalityResponseDTO responseDTO = modalityService.createModality(modalityRequest);
+    public ResponseEntity<ModalityResponseDTO> createModality(@RequestBody @Valid CreateModalityRequestDTO requestDTO) {
+        ModalityResponseDTO responseDTO = modalityService.createModality(requestDTO);
         return ResponseEntity.status(201).body(responseDTO);
     }
 
@@ -37,6 +37,7 @@ public class ModalityController {
     public ResponseEntity<List<ModalityResponseDTO>> getAllModalityByName(@PathVariable String name) {
         return ResponseEntity.ok(modalityService.getAllModalityByName(name));
     }
+
     @GetMapping
     public ResponseEntity<List<ModalityResponseDTO>> getAllModality() {
         return ResponseEntity.ok(modalityService.getAllModality());
@@ -45,8 +46,8 @@ public class ModalityController {
     @PutMapping("/{id}")
     public ResponseEntity<ModalityResponseDTO> updateModalityById(
             @PathVariable UUID id,
-            @RequestBody @Valid ModalityRequestDTO modalityRequest) {
-        return ResponseEntity.ok(modalityService.updateModalityById(id, modalityRequest));
+            @RequestBody @Valid CreateModalityRequestDTO requestDTO) {
+        return ResponseEntity.ok(modalityService.updateModalityById(id, requestDTO));
     }
 
     @DeleteMapping("/{id}")
