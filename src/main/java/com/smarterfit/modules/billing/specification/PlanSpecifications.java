@@ -16,45 +16,45 @@ public class PlanSpecifications {
             List<Predicate> predicates = new ArrayList<>();
 
             // Filtro pelo nome (nameTerm)
-            if (dto.nameTerm() != null && !dto.nameTerm().isEmpty()) {
+            if (dto.getNameTerm() != null && !dto.getNameTerm().isEmpty()) {
                 predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("name")),
-                        "%" + dto.nameTerm().toLowerCase() + "%"));
+                        "%" + dto.getNameTerm().toLowerCase() + "%"));
             }
 
             // Filtro pelo preço (minPrice, maxPrice)
-            if (dto.minPrice() != null) {
-                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("price"), dto.minPrice()));
+            if (dto.getMinPrice() != null) {
+                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("price"), dto.getMinPrice()));
             }
-            if (dto.maxPrice() != null) {
-                predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("price"), dto.maxPrice()));
+            if (dto.getMaxPrice() != null) {
+                predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("price"), dto.getMaxPrice()));
             }
 
             // Filtro pela duração (minDuration, maxDuration)
-            if (dto.minDuration() != null) {
-                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("duration"), dto.minDuration()));
+            if (dto.getMinDuration() != null) {
+                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("duration"), dto.getMinDuration()));
             }
-            if (dto.maxDuration() != null) {
-                predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("duration"), dto.maxDuration()));
+            if (dto.getMaxDuration() != null) {
+                predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("duration"), dto.getMaxDuration()));
             }
 
             // Filtro pelo número máximo de usuários (minMaxUsers, maxMaxUsers)
-            if (dto.minMaxUsers() != null) {
-                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("maxUsers"), dto.minMaxUsers()));
+            if (dto.getMinMaxClasses() != null) {
+                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("maxUsers"), dto.getMinMaxClasses()));
             }
-            if (dto.maxMaxUsers() != null) {
-                predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("maxUsers"), dto.maxMaxUsers()));
+            if (dto.getMaxMaxUsers() != null) {
+                predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("maxUsers"), dto.getMaxMaxUsers()));
             }
 
             // Filtro pelo número máximo de classes (minMaxClasses, maxMaxClasses)
-            if (dto.minMaxClasses() != null) {
-                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("maxClasses"), dto.minMaxClasses()));
+            if (dto.getMinMaxClasses() != null) {
+                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("maxClasses"), dto.getMinMaxClasses()));
             }
-            if (dto.maxMaxClasses() != null) {
-                predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("maxClasses"), dto.maxMaxClasses()));
+            if (dto.getMaxMaxClasses() != null) {
+                predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("maxClasses"), dto.getMaxMaxClasses()));
             }
 
             // Filtro para verificar se deve incluir ou não os planos deletados
-            if (dto.includeDeleted() == null || !dto.includeDeleted()) {
+            if (dto.getIncludeDeleted() == null || !dto.getIncludeDeleted()) {
                 predicates.add(criteriaBuilder.isNull(root.get("deletedAt")));
             }
 

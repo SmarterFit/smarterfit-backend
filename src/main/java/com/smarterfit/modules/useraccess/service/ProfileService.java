@@ -47,7 +47,7 @@ public class ProfileService {
 
         // Validação extra opcional: evitar CPFs duplicados
         // TODO: Validar apenas se for diferente if (!profile.getCpf().equals(requestDTO.cpf()))
-        profileValidation.validateCpfAvailability(requestDTO.cpf(), profile.getId());
+        profileValidation.validateCpfAvailability(requestDTO.getCpf(), profile.getId());
 
         profile = ProfileMapper.toEntity(requestDTO, profile);
         profile.setUser(user);

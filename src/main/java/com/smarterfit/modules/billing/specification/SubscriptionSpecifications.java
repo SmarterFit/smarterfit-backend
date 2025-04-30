@@ -15,24 +15,24 @@ public class SubscriptionSpecifications {
          List<Predicate> predicates = new ArrayList<>();
 
          // Filtro pelo id do dono
-         if (dto.ownerId() != null) {
-            predicates.add(criteriaBuilder.equal(root.get("owner").get("id"), dto.ownerId()));
+         if (dto.getOwnerId() != null) {
+            predicates.add(criteriaBuilder.equal(root.get("owner").get("id"), dto.getOwnerId()));
          }
 
          // Filtro pelo id do participante
-         if (dto.participantId() != null) {
+         if (dto.getParticipantId() != null) {
             predicates.add(
-                  criteriaBuilder.equal(root.join("participants").get("user").get("id"), dto.participantId()));
+                  criteriaBuilder.equal(root.join("participants").get("user").get("id"), dto.getParticipantId()));
          }
 
          // Filtro pelo id do plano
-         if (dto.planId() != null) {
-            predicates.add(criteriaBuilder.equal(root.get("plan").get("id"), dto.planId()));
+         if (dto.getPlanId() != null) {
+            predicates.add(criteriaBuilder.equal(root.get("plan").get("id"), dto.getPlanId()));
          }
 
          // Filtro pelo status
-         if (dto.status() != null && !dto.status().isEmpty()) {
-            predicates.add(root.get("status").in(dto.status()));
+         if (dto.getStatus() != null && !dto.getStatus().isEmpty()) {
+            predicates.add(root.get("status").in(dto.getStatus()));
          }
 
          return criteriaBuilder.and(predicates.toArray(new Predicate[0]));

@@ -46,9 +46,9 @@ public class TrainingGroupService {
 
    @Transactional
    public TrainingGroupResponseDTO createTrainingGroup(CreateTrainingGroupRequestDTO requestDTO) {
-      trainingGroupValidation.validateFutureDateRange(requestDTO.startDate(), requestDTO.endDate());
+      trainingGroupValidation.validateFutureDateRange(requestDTO.getStartDate(), requestDTO.getEndDate());
 
-      User user = userValidation.validateUserById(requestDTO.ownerId());
+      User user = userValidation.validateUserById(requestDTO.getOwnerId());
       TrainingGroup trainingGroup = TrainingGroupMapper.toEntity(requestDTO, user);
       trainingGroup = trainingGroupRepository.save(trainingGroup);
 

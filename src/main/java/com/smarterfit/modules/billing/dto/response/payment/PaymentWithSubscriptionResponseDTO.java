@@ -6,16 +6,24 @@ import java.util.UUID;
 import com.smarterfit.common.enums.PaymentMethod;
 import com.smarterfit.common.enums.PaymentStatus;
 import com.smarterfit.modules.billing.dto.response.SubscriptionResponseDTO;
+
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder(toBuilder = true)
-public record PaymentWithSubscriptionResponseDTO(
-            UUID id,
-            SubscriptionResponseDTO subscription,
-            Double amount,
-            LocalDateTime paymentDate,
-            LocalDateTime expirationIn,
-            PaymentMethod method,
-            PaymentStatus status) {
-
+public class PaymentWithSubscriptionResponseDTO {
+   private UUID id;
+   private SubscriptionResponseDTO subscription;
+   private Double amount;
+   private LocalDateTime paymentDate;
+   private LocalDateTime expirationIn;
+   private PaymentMethod method;
+   private PaymentStatus status;
 }

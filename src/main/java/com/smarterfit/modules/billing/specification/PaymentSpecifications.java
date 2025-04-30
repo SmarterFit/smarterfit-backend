@@ -16,24 +16,24 @@ public class PaymentSpecifications {
          List<Predicate> predicates = new ArrayList<>();
 
          // Filtro pelo id da assinatura
-         if (dto.subscriptionId() != null) {
-            predicates.add(criteriaBuilder.equal(root.get("subscription").get("id"), dto.subscriptionId()));
+         if (dto.getSubscriptionId() != null) {
+            predicates.add(criteriaBuilder.equal(root.get("subscription").get("id"), dto.getSubscriptionId()));
          }
 
          // Filtro pelo id do dono da assinatura
-         if (dto.subscriptionOwnerId() != null) {
+         if (dto.getSubscriptionOwnerId() != null) {
             predicates.add(criteriaBuilder.equal(root.get("subscription").get("owner").get("id"),
-                  dto.subscriptionOwnerId()));
+                  dto.getSubscriptionOwnerId()));
          }
 
          // Filtro pelo método de pagamento
-         if (dto.methods() != null && !dto.methods().isEmpty()) {
-            predicates.add(root.get("method").in(dto.methods()));
+         if (dto.getMethods() != null && !dto.getMethods().isEmpty()) {
+            predicates.add(root.get("method").in(dto.getMethods()));
          }
 
          // Filtro pelo status
-         if (dto.status() != null && !dto.status().isEmpty()) {
-            predicates.add(root.get("status").in(dto.status()));
+         if (dto.getStatus() != null && !dto.getStatus().isEmpty()) {
+            predicates.add(root.get("status").in(dto.getStatus()));
          }
 
          return criteriaBuilder.and(predicates.toArray(new Predicate[0]));

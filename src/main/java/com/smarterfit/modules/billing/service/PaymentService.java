@@ -105,7 +105,7 @@ public class PaymentService {
       PaymentProcessor paymentProcessor = paymentProcessors.get(payment.getMethod());
       PaymentProcessorResponseDTO response = paymentProcessor.processPayment(requestDTO);
 
-      if (response.success()) {
+      if (response.getSuccess()) {
          payment.setStatus(PaymentStatus.PAID);
          payment.setPaymentDate(LocalDateTime.now());
          paymentRepository.save(payment);
@@ -116,7 +116,7 @@ public class PaymentService {
       } else {
          payment.setStatus(PaymentStatus.FAILED);
          paymentRepository.save(payment);
-         throw new BusinessException("Payment failed: " + response.message());
+         throw new BusinessException("Payment failed: " + response.getMessage());
       }
    }
 

@@ -5,13 +5,20 @@ import java.util.UUID;
 
 import com.smarterfit.common.enums.SubscriptionStatus;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder(toBuilder = true)
-public record SearchSubscriptionRequestDTO(
-      UUID ownerId,
-      UUID participantId,
-      UUID planId,
-      List<SubscriptionStatus> status) {
-
+public class SearchSubscriptionRequestDTO {
+      private UUID ownerId;
+      private UUID participantId;
+      private UUID planId;
+      private List<SubscriptionStatus> status;
 }

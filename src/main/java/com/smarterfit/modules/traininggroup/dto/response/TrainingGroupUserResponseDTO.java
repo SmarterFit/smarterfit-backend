@@ -1,11 +1,20 @@
 package com.smarterfit.modules.traininggroup.dto.response;
 
 import com.smarterfit.modules.useraccess.dto.response.UserResponseDTO;
-import lombok.Builder;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder(toBuilder = true)
-public record TrainingGroupUserResponseDTO(
-      UserResponseDTO user,
-      Boolean isAdmin,
-      Integer points) {
+public class TrainingGroupUserResponseDTO {
+      private UserResponseDTO user;
+      private Boolean isAdmin;
+      private Integer points;
 }

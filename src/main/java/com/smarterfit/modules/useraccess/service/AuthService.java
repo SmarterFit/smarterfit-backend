@@ -21,7 +21,7 @@ public class AuthService {
 
    @Transactional(readOnly = true)
    public AuthResponseDTO login(LoginRequestDTO requestDTO) {
-      User user = authValidation.validateUser(requestDTO.email(), requestDTO.password());
+      User user = authValidation.validateUser(requestDTO.getEmail(), requestDTO.getPassword());
 
       return AuthMapper.toResponse("token", user);
    }

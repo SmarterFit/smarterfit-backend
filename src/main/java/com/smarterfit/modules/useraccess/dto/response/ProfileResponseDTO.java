@@ -5,15 +5,10 @@ import java.util.UUID;
 
 import com.smarterfit.common.enums.Gender;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
-
-@Builder(toBuilder = true)
-public record ProfileResponseDTO(
-        UUID id,
-        String fullName,
-        String cpf,
-        String phone,
-        LocalDate birthDate,
-        Gender gender,
-        AddressResponseDTO address) {
+@Setter
+    private LocalDate birthDate;
+    private Gender gender;
+    private AddressResponseDTO address;
 }

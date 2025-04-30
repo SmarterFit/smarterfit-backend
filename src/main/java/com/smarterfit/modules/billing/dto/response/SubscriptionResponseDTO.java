@@ -6,16 +6,24 @@ import java.util.UUID;
 import com.smarterfit.common.enums.SubscriptionStatus;
 import com.smarterfit.modules.useraccess.dto.response.UserResponseDTO;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder(toBuilder = true)
-public record SubscriptionResponseDTO(
-            UUID id,
-            UserResponseDTO owner,
-            LocalDateTime startedIn,
-            LocalDateTime renewedIn,
-            LocalDateTime endedIn,
-            SubscriptionStatus status,
-            Integer availableMembers,
-            Integer availableClasses) {
+public class SubscriptionResponseDTO {
+   private UUID id;
+   private UserResponseDTO owner;
+   private LocalDateTime startedIn;
+   private LocalDateTime renewedIn;
+   private LocalDateTime endedIn;
+   private SubscriptionStatus status;
+   private Integer availableMembers;
+   private Integer availableClasses;
 }

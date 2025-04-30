@@ -57,12 +57,7 @@ public class UserMapper {
         if (user == null) {
             throw new ResourceNotFoundException("User not found.");
         }
-        UserResponseDTO response;
-        try {
-            response = GenericMapper.map(user, UserResponseDTO.class);
-        } catch (Exception e) {
-            throw new ResourceNotFoundException("Algum erro no mapping");
-        }
+        UserResponseDTO response = GenericMapper.map(user, UserResponseDTO.class);
 
         response = response.toBuilder().roles(
                 user.getRoles().stream().map(role -> role.getRoleType()).collect(Collectors.toSet())).build();

@@ -31,7 +31,8 @@ public class SubscriptionMapper {
                   throw new ResourceNotFoundException("Owner not found.");
             }
 
-            Boolean addOwnerAsParticipant = dto.addOwnerAsParticipant() != null ? dto.addOwnerAsParticipant() : true;
+            Boolean addOwnerAsParticipant = dto.getAddOwnerAsParticipant() != null ? dto.getAddOwnerAsParticipant()
+                        : true;
 
             subscription = GenericMapper.map(dto, subscription);
             subscription.setOwner(owner);

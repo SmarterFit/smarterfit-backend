@@ -46,8 +46,8 @@ public class SubscriptionService {
 
    @Transactional
    public SubscriptionResponseDTO createSubscription(CreateSubscriptionRequestDTO requestDTO) {
-      Plan plan = planValidation.validatePlanById(requestDTO.planId());
-      User user = userValidation.validateUserById(requestDTO.ownerId());
+      Plan plan = planValidation.validatePlanById(requestDTO.getPlanId());
+      User user = userValidation.validateUserById(requestDTO.getOwnerId());
 
       Subscription subscription = SubscriptionMapper.toEntity(requestDTO, user, plan);
 
