@@ -56,13 +56,13 @@ public class ClassGroupService {
 
     @Transactional
     public ClassGroupResponseDTO createClassGroup(CreateClassGroupRequestDTO requestDTO) {
-        User user = validationFaced.userValidation.validateUserById(requestDTO.userCreatorId());
+        User user = validationFaced.userValidation.validateUserById(requestDTO.getUserCreatorId());
         RolesValidation.validateUserRole(RoleType.EMPLOYEE, user.getRoles());
 
-        validationFaced.classGroupValidation.validateClassGroupDates(requestDTO.startDate(), requestDTO.endDate());
+        validationFaced.classGroupValidation.validateClassGroupDates(requestDTO.getStartDate(), requestDTO.getEndDate());
 
-        validationFaced.classGroupValidation.validateClassGroupExists(requestDTO.title(), null);
-        Modality modality = validationFaced.modalityValidation.validateModalityById(requestDTO.modalityId());
+        validationFaced.classGroupValidation.validateClassGroupExists(requestDTO.getTitle(), null);
+        Modality modality = validationFaced.modalityValidation.validateModalityById(requestDTO.getModalityId());
 
         ClassGroup classGroup = ClassGroupMapper.toEntity(requestDTO, modality, user);
         classGroupRepository.save(classGroup);
@@ -88,11 +88,11 @@ public class ClassGroupService {
 
     @Transactional
     public ClassGroupResponseDTO updateClassGroupById(UUID classGroupId, CreateClassGroupRequestDTO requestDTO) {
-        validationFaced.classGroupValidation.validateClassGroupDates(requestDTO.startDate(),
-                requestDTO.endDate());
+        validationFaced.classGroupValidation.validateClassGroupDates(requestDTO.getStartDate(),
+                requestDTO.getEndDate());
         ClassGroup classGroup = validationFaced.classGroupValidation.validateClassGroupById(classGroupId);
 
-        Modality modality = validationFaced.modalityValidation.validateModalityById(requestDTO.modalityId());
+        Modality modality = validationFaced.modalityValidation.validateModalityById(requestDTO.getModalityId());
 
         classGroup = ClassGroupMapper.toEntity(requestDTO, modality, classGroup.getCreatedByUser(), classGroup);
         classGroupRepository.save(classGroup);
@@ -111,6 +111,8 @@ public class ClassGroupService {
         classGroupPlanRepository.save(classGroupPlan);
     }
 
+    /// Ações que devem estar em um ClassGroupUserService
+    /// BEGIN
     @Transactional
     public void addUserToClassGroup(UUID classGroupId, UUID userId, UUID subscriptionId) {
         validationFaced.classGroupUserValidation.validateClassGroupUserExists(classGroupId, userId);
@@ -156,15 +158,15 @@ public class ClassGroupService {
         classGroupUserRepository.delete(classGroupUser);
     }
 
+    /// END
+
+
+    /// TODO: softdelete
     @Transactional
     public void deleteClassGroupById(UUID id) {
         ClassGroup classGroup = validationFaced.classGroupValidation.validateClassGroupById(id);
 
-        // TODO: incrementar a quantidade de turmas disponiveis
-        // THINK: Pensar se é necessário os contadores ou se o custo não é tão alto para
-        // contar em cada interação.
-        // THINK: Pode ser interessante apenas um softdelete (permite rastrear dados
-        // antigos)
+        // TODO: incrementar a quantidade de turmas disponiveis nas assinaturas
 
         classGroupRepository.delete(classGroup);
     }

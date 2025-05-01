@@ -26,7 +26,7 @@ public class ModalityService {
 
     @Transactional
     public ModalityResponseDTO createModality(CreateModalityRequestDTO requestDTO) {
-        modalityValidation.existsModalityByName(requestDTO.name());
+        modalityValidation.existsModalityByName(requestDTO.getName());
 
         Modality modality = ModalityMapper.toEntity(requestDTO);
         modalityRepository.save(modality);

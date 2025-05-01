@@ -26,6 +26,8 @@ public class ClassGroupSchedule {
     @JoinColumn(name = "class_group_id", nullable = false)
     private ClassGroup classGroup;
 
+    /// TODO: Adicionar enumeração para os dias da semana (DayOfWeek do java.time.DayOfWeek)
+    /// O mesmo é válido para demais entidades que usam isso.
     /**
      * Days of the week when this class occurs.
      * Values range from 1 to 7, where:

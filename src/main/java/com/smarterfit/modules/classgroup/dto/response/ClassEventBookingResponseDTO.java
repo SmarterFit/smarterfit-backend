@@ -4,12 +4,19 @@ import java.util.UUID;
 
 import com.smarterfit.common.enums.BookingStatus;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder(toBuilder = true)
-public record ClassEventBookingResponseDTO(
-
-                UUID id,
-                UUID classEventId,
-                BookingStatus bookingStatus) {
+public class ClassEventBookingResponseDTO {
+   private UUID id;
+   private UUID classEventId;
+   private BookingStatus bookingStatus;
 }

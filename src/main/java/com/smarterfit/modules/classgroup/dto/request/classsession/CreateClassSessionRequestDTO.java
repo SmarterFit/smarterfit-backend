@@ -4,20 +4,37 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.smarterfit.common.enums.SessionStatus;
 
 import jakarta.validation.constraints.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder(toBuilder = true)
-public record CreateClassSessionRequestDTO(
-            @NotNull(message = "Class group ID is required.") UUID classGroupId,
+public class CreateClassSessionRequestDTO {
 
-            @NotNull(message = "Start time is required.") @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss") LocalDateTime startTime,
+    @NotNull(message = "Class group ID is required.")
+    private UUID classGroupId;
 
-            @NotNull(message = "End time is required.") @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss") LocalDateTime endTime,
+    @NotNull(message = "Start time is required.")
+    @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
+    private LocalDateTime startTime;
 
-            @NotBlank(message = "Status is required.") SessionStatus status,
+    @NotNull(message = "End time is required.")
+    @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
+    private LocalDateTime endTime;
 
-            @Min(value = 1, message = "Minimum capacity must be 1.") @Max(value = 50, message = "Maximum capacity must be 50.") Integer capacity) {
+    @NotBlank(message = "Status is required.")
+    private SessionStatus status;
+
+    @Min(value = 1, message = "Minimum capacity must be 1.")
+    @Max(value = 50, message = "Maximum capacity must be 50.")
+    private Integer capacity;
 }

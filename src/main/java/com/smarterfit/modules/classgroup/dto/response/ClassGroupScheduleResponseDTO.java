@@ -3,14 +3,21 @@ package com.smarterfit.modules.classgroup.dto.response;
 import java.time.LocalTime;
 import java.util.UUID;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder(toBuilder = true)
-public record   ClassGroupScheduleResponseDTO(
-        UUID id,
-        UUID classGroupId,
-        Integer dayOfWeek,
-        LocalTime startTime,
-        LocalTime endTime
-) {
+public class ClassGroupScheduleResponseDTO {
+    private UUID id;
+    private UUID classGroupId;
+    private Integer dayOfWeek;
+    private LocalTime startTime;
+    private LocalTime endTime;
 }

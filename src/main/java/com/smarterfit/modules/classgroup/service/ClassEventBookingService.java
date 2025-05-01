@@ -40,12 +40,13 @@ public class ClassEventBookingService {
 
     @Transactional
     public ClassEventBookingResponseDTO createClassEventBooking(CreateClassEventBookingRequestDTO requestDTO) {
-        ClassEvent classEvent = classEventValidation.validateClassEventById(requestDTO.classEventId());
+        ClassEvent classEvent = classEventValidation.validateClassEventById(requestDTO.getClassEventId());
 
         classEventService.incrementBooking(classEvent);
 
-        classEventBookingValidation.validateClassEventBookingExists(requestDTO.userId(), requestDTO.classEventId());
-        User user = userValidation.validateUserById(requestDTO.userId());
+        classEventBookingValidation.validateClassEventBookingExists(requestDTO.getUserId(),
+                requestDTO.getClassEventId());
+        User user = userValidation.validateUserById(requestDTO.getUserId());
 
         ClassEventBooking classEventBooking = ClassEventBookingMapper.toEntity(requestDTO, classEvent, user);
         ClassEventBooking savedClassEventBooking = classEventBookingRepository.save(classEventBooking);
@@ -64,8 +65,8 @@ public class ClassEventBookingService {
 
     @Transactional
     public ClassEventBookingResponseDTO updateClassEventBookingById(UpdateClassEventBookingRequestDTO requestDTO) {
-        ClassEventBookingId classEventBookingId = new ClassEventBookingId(requestDTO.userId(),
-                requestDTO.classEventId());
+        ClassEventBookingId classEventBookingId = new ClassEventBookingId(requestDTO.getUserId(),
+                requestDTO.getClassEventId());
         ClassEventBooking classEventBooking = classEventBookingValidation
                 .validateClassEventBookingById(classEventBookingId);
 

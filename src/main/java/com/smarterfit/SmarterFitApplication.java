@@ -6,7 +6,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-/// TODO: Trocar todos os records por class com getter, setter, builder, all args e no args constructor
+/// TODO: Evitar uso de contadores
+/// TODO: Evitar que um service chame outro service: utilizar eventos.
+/// 	/// TODO: Separar serviceHandler do service normal. 
+/// TODO: Criar testes de requisições no Hoppscotch
 @SpringBootApplication
 @EnableTransactionManagement
 @EnableScheduling

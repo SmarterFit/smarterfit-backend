@@ -44,7 +44,7 @@ public class ClassSessionService {
 
     @Transactional
     public ClassSessionResponseDTO createClassSession(CreateClassSessionRequestDTO requestDTO) {
-        ClassGroup classGroup = classGroupValidation.validateClassGroupById(requestDTO.classGroupId());
+        ClassGroup classGroup = classGroupValidation.validateClassGroupById(requestDTO.getClassGroupId());
 
         ClassSession classSession = ClassSessionMapper.toEntity(requestDTO, classGroup);
         classSessionRepository.save(classSession);
@@ -68,7 +68,7 @@ public class ClassSessionService {
     @Transactional
     public ClassSessionResponseDTO updateClassSessionById(UUID id, CreateClassSessionRequestDTO requestDTO) {
         ClassSession classSession = classSessionValidation.validateClassSessionById(id);
-        ClassGroup classGroup = classGroupValidation.validateClassGroupById(requestDTO.classGroupId());
+        ClassGroup classGroup = classGroupValidation.validateClassGroupById(requestDTO.getClassGroupId());
 
         ClassSessionMapper.toEntity(requestDTO, classGroup, classSession);
         classSessionRepository.save(classSession);
