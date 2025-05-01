@@ -10,6 +10,11 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 /// TODO: Evitar que um service chame outro service: utilizar eventos.
 /// 	/// TODO: Separar serviceHandler do service normal. 
 /// TODO: Criar testes de requisições no Hoppscotch
+/// TODO: Criar checkin das turmas
+/// TODO: Links checkins com pontuação do training group: Pedro Lucas
+/// /// TODO: A pontuação possui beneficios baseados na quantidade de dias em sequência.
+/// TODO: Registro de horários dos profissionais e possibilidade de agendamento individual.
+/// /// TODO: Registro da presença no agendamento é necessário.
 @SpringBootApplication
 @EnableTransactionManagement
 @EnableScheduling
