@@ -1,6 +1,5 @@
 package com.smarterfit.modules.ai.controller;
 
-import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -9,10 +8,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.smarterfit.modules.ai.dto.request.ChatRequestDTO;
 import com.smarterfit.modules.ai.service.ChatService;
 
-import jakarta.validation.Valid;
 import reactor.core.publisher.Flux;
 
 @RestController
@@ -27,7 +24,7 @@ public class ChatController {
    }
 
    @PostMapping("/ask")
-   public Flux<String> askGroq(@RequestBody String prompt) {
-      return chatService.askGroq(prompt);
+   public ResponseEntity<String> askGroq(@RequestBody String prompt) {
+      return ResponseEntity.ok().body(chatService.askGroq(prompt));
    }
 }

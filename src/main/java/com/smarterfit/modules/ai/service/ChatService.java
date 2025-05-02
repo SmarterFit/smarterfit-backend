@@ -11,19 +11,16 @@ import reactor.core.publisher.Flux;
 @Service
 public class ChatService {
    private ChatClient chatClient;
-   private PlanTools planTools;
 
    @Autowired
    public ChatService(ChatClient chatClient, PlanTools planTools) {
       this.chatClient = chatClient;
-      this.planTools = planTools;
    }
 
-   public Flux<String> askGroq(String userInput) {
+   public String askGroq(String userInput) {
       return chatClient.prompt()
             .user(userInput)
-            .tools(planTools)
-            .stream()
+            .call()
             .content();
    }
 }
