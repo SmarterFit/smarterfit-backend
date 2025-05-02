@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 
 import com.smarterfit.modules.ai.tools.PlanTools;
 
+import reactor.core.publisher.Flux;
+
 @Service
 public class ChatService {
    private ChatClient chatClient;
@@ -15,10 +17,10 @@ public class ChatService {
       this.chatClient = chatClient;
    }
 
-   public String askGroq(String userInput) {
+   public Flux<String> askGroq(String userInput) {
       return chatClient.prompt()
             .user(userInput)
-            .call()
+            .stream()
             .content();
    }
 }

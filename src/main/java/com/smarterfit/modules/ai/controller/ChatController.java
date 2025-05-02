@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.smarterfit.modules.ai.service.ChatService;
 
+import reactor.core.publisher.Flux;
+
 @RestController
 @RequestMapping("/chat")
 @CrossOrigin
@@ -22,7 +24,7 @@ public class ChatController {
    }
 
    @PostMapping("/ask")
-   public ResponseEntity<String> askGroq(@RequestBody String prompt) {
-      return ResponseEntity.ok().body(chatService.askGroq(prompt));
+   public Flux<String> askGroq(@RequestBody String prompt) {
+      return chatService.askGroq(prompt);
    }
 }
