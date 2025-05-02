@@ -67,6 +67,8 @@ public class PaymentController {
       return ResponseEntity.ok(payments);
    }
 
+   ///TODO: Por assinatura
+
    /// Dono da assinatura ou funcionários
    @GetMapping("/buscar")
    public ResponseEntity<Page<PaymentResponseDTO>> searchPayments(@ModelAttribute SearchPaymentRequestDTO requestDTO,

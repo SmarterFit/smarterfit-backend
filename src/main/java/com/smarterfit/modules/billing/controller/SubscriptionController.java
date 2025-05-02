@@ -78,7 +78,7 @@ public class SubscriptionController {
    }
 
    /// Acesso: Usuário dono e Funcionários
-   @PatchMapping("/turma/{id}/usuario/{userId}")
+   @GetMapping("/turma/{id}/usuario/{userId}")
    public ResponseEntity<List<SubscriptionResponseDTO>> getAvailableSubscriptionsByClassGroupAndUser(
          @PathVariable("id") UUID classGroupId,
          @PathVariable("userId") UUID userId) {

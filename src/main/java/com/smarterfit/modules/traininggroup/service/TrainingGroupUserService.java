@@ -25,22 +25,21 @@ import com.smarterfit.modules.useraccess.validation.UserValidation;
 @Service
 public class TrainingGroupUserService {
    private final TrainingGroupUserRepository trainingGroupUserRepository;
-   private final ApplicationEventPublisher publisher;
    private final TrainingGroupValidation trainingGroupValidation;
    private final UserValidation userValidation;
-
    private final TrainingGroupUserValidation trainingGroupUserValidation;
+   private final ApplicationEventPublisher publisher;
 
    @Autowired
    public TrainingGroupUserService(TrainingGroupUserRepository trainingGroupUserRepository,
-         ApplicationEventPublisher publisher,
          TrainingGroupValidation trainingGroupValidation, UserValidation userValidation,
-         TrainingGroupUserValidation trainingGroupUserValidation) {
+         TrainingGroupUserValidation trainingGroupUserValidation,
+         ApplicationEventPublisher publisher) {
       this.trainingGroupUserRepository = trainingGroupUserRepository;
-      this.publisher = publisher;
       this.trainingGroupValidation = trainingGroupValidation;
       this.userValidation = userValidation;
       this.trainingGroupUserValidation = trainingGroupUserValidation;
+      this.publisher = publisher;
    }
 
    @Transactional
@@ -65,7 +64,7 @@ public class TrainingGroupUserService {
             .validateTrainingGroupUserById(new TrainingGroupUserId(groupId, userId));
 
       TrainingGroup trainingGroup = trainingGroupUser.getTrainingGroup();
-      trainingGroupUserRepository.delete(trainingGroupUser);
+      trainingGroup.getParticipants().remove(trainingGroupUser);
 
       if (trainingGroup.getParticipants().isEmpty()) {
          publisher.publishEvent(new LastParticipantRemovedEvent(trainingGroup));

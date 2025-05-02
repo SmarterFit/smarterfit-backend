@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.event.EventListener;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -17,7 +17,7 @@ import com.smarterfit.modules.traininggroup.dto.request.CreateTrainingGroupReque
 import com.smarterfit.modules.traininggroup.dto.request.UpdateTrainingGroupRequestDTO;
 import com.smarterfit.modules.traininggroup.dto.response.TrainingGroupResponseDTO;
 import com.smarterfit.modules.traininggroup.entity.TrainingGroup;
-import com.smarterfit.modules.traininggroup.event.LastParticipantRemovedEvent;
+import com.smarterfit.modules.traininggroup.event.TrainingGroupRestartedEvent;
 import com.smarterfit.modules.traininggroup.mapper.TrainingGroupMapper;
 import com.smarterfit.modules.traininggroup.repository.TrainingGroupRepository;
 import com.smarterfit.modules.traininggroup.repository.TrainingGroupUserRepository;
@@ -31,17 +31,18 @@ public class TrainingGroupService {
    private final TrainingGroupRepository trainingGroupRepository;
    private final TrainingGroupValidation trainingGroupValidation;
    private final UserValidation userValidation;
-   private final TrainingGroupUserService trainingGroupUserService;
+   private final ApplicationEventPublisher publisher;
 
    @Autowired
    public TrainingGroupService(TrainingGroupRepository trainingGroupRepository,
          TrainingGroupUserRepository trainingGroupUserRepository,
-         TrainingGroupValidation trainingGroupValidation, UserValidation userValidation,
-         TrainingGroupUserService trainingGroupUserService) {
+         TrainingGroupValidation trainingGroupValidation,
+         UserValidation userValidation,
+         ApplicationEventPublisher publisher) {
       this.trainingGroupRepository = trainingGroupRepository;
       this.trainingGroupValidation = trainingGroupValidation;
       this.userValidation = userValidation;
-      this.trainingGroupUserService = trainingGroupUserService;
+      this.publisher = publisher;
    }
 
    @Transactional
@@ -104,12 +105,6 @@ public class TrainingGroupService {
       trainingGroupRepository.delete(trainingGroup);
    }
 
-   @EventListener
-   public void handleLastParticipantRemoved(LastParticipantRemovedEvent event) {
-      TrainingGroup trainingGroup = event.getTrainingGroup();
-      deleteTrainingGroup(trainingGroup);
-   }
-
    @Transactional
    public TrainingGroupResponseDTO activateTrainingGroup(UUID groupId) {
       TrainingGroup trainingGroup = trainingGroupValidation.validateTrainingGroupById(groupId);
@@ -149,7 +144,7 @@ public class TrainingGroupService {
       trainingGroup.setEndDate(null);
       trainingGroupRepository.save(trainingGroup);
 
-      trainingGroupUserService.resetPointsByTrainingGroupId(groupId);
+      publisher.publishEvent(new TrainingGroupRestartedEvent(trainingGroup));
 
       return TrainingGroupMapper.toResponse(trainingGroup);
    }

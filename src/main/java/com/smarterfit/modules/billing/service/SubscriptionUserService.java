@@ -66,15 +66,15 @@ public class SubscriptionUserService {
    public void removeMemberFromSubscription(UUID subscriptionId,
          UUID userId) {
       SubscriptionUser subscriptionUser = subscriptionUserValidation
-            .validateSubscriptionUserById(new SubscriptionUserId(subscriptionId, userId));
+            .validateSubscriptionUserById(new SubscriptionUserId(userId, subscriptionId));
 
       subscriptionUserValidation.validateUserJoinedMoreThanDaysAgo(subscriptionUser,
             BusinessRules.PARTICIPATION_MINIMUM_DAYS);
 
       Subscription subscription = subscriptionUser.getSubscription();
       subscription.setAvailableMembers(subscription.getAvailableMembers() + 1);
+      subscription.getParticipants().remove(subscriptionUser);
 
-      subscriptionUserRepository.delete(subscriptionUser);
       subscription = subscriptionRepository.save(subscription);
    }
 

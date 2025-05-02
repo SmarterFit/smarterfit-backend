@@ -9,6 +9,7 @@ import com.smarterfit.common.enums.PaymentStatus;
 import com.smarterfit.common.exceptions.BusinessException;
 import com.smarterfit.common.exceptions.ResourceNotFoundException;
 import com.smarterfit.modules.billing.entity.Payment;
+import com.smarterfit.modules.billing.entity.Subscription;
 import com.smarterfit.modules.billing.repository.PaymentRepository;
 
 @Component
@@ -32,6 +33,12 @@ public class PaymentValidation {
    public void validatePaymentNotExpired(Payment payment) {
       if (payment.getExpirationIn().isBefore(LocalDateTime.now())) {
          throw new BusinessException("Payment has expired");
+      }
+   }
+
+   public void validateNotHasPendingPaymentForSubscription(Subscription subscription) {
+      if (paymentRepository.findBySubscriptionIdAndStatus(subscription.getId(), PaymentStatus.PENDING).isPresent()) {
+         throw new BusinessException("Subscription already has a pending payment");
       }
    }
 }

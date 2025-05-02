@@ -6,6 +6,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -16,6 +17,7 @@ import com.smarterfit.modules.billing.dto.request.plan.CreatePlanRequestDTO;
 import com.smarterfit.modules.billing.dto.request.plan.SearchPlanRequestDTO;
 import com.smarterfit.modules.billing.dto.response.PlanResponseDTO;
 import com.smarterfit.modules.billing.entity.Plan;
+import com.smarterfit.modules.billing.event.PlanDeletedEvent;
 import com.smarterfit.modules.billing.mapper.PlanMapper;
 import com.smarterfit.modules.billing.repository.PlanRepository;
 import com.smarterfit.modules.billing.specification.PlanSpecifications;
@@ -25,16 +27,16 @@ import com.smarterfit.modules.billing.validation.PlanValidation;
 public class PlanService {
    private final PlanRepository planRepository;
    private final PlanValidation planValidation;
-   private final SubscriptionService subscriptionService;
-   private final PaymentService paymentService;
+   private final ApplicationEventPublisher publisher;
 
    @Autowired
-   public PlanService(PlanRepository planRepository, PlanValidation planValidation,
-         SubscriptionService subscriptionService, PaymentService paymentService) {
+   public PlanService(PlanRepository planRepository,
+         PlanValidation planValidation,
+         SubscriptionService subscriptionService, PaymentService paymentService,
+         ApplicationEventPublisher publisher) {
       this.planRepository = planRepository;
       this.planValidation = planValidation;
-      this.subscriptionService = subscriptionService;
-      this.paymentService = paymentService;
+      this.publisher = publisher;
    }
 
    @Transactional
@@ -82,8 +84,7 @@ public class PlanService {
       planValidation.validatePlanNotDeleted(plan);
       planValidation.validateNoActiveSubscriptions(plan);
 
-      subscriptionService.cancelSubscriptionsByPlan(id);
-      paymentService.cancelPaymentsByPlan(id);
+      publisher.publishEvent(new PlanDeletedEvent(plan));
 
       plan.setDeletedAt(LocalDateTime.now());
 

@@ -18,7 +18,7 @@ public class PaymentMapper {
    }
 
    public static Payment toEntity(CreatePaymentRequestDTO dto, Subscription subscription, Payment payment) {
-      if (payment != null) {
+      if (payment == null) {
          throw new ResourceNotFoundException("Payment not found.");
       }
       if (subscription == null) {

@@ -6,6 +6,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -18,6 +19,7 @@ import com.smarterfit.modules.billing.dto.request.subscription.CreateSubscriptio
 import com.smarterfit.modules.billing.dto.response.SubscriptionResponseDTO;
 import com.smarterfit.modules.billing.entity.Plan;
 import com.smarterfit.modules.billing.entity.Subscription;
+import com.smarterfit.modules.billing.event.SubscriptionCanceledEvent;
 import com.smarterfit.modules.billing.mapper.SubscriptionMapper;
 import com.smarterfit.modules.billing.repository.SubscriptionRepository;
 import com.smarterfit.modules.billing.specification.SubscriptionSpecifications;
@@ -32,16 +34,18 @@ public class SubscriptionService {
    private final PlanValidation planValidation;
    private final UserValidation userValidation;
    private final SubscriptionValidation subscriptionValidation;
-   private final PaymentService paymentService;
+   private final ApplicationEventPublisher publisher;
 
    @Autowired
-   public SubscriptionService(SubscriptionRepository subscriptionRepository, PlanValidation planValidation,
-         UserValidation userValidation, SubscriptionValidation subscriptionValidation, PaymentService paymentService) {
+   public SubscriptionService(SubscriptionRepository subscriptionRepository,
+         PlanValidation planValidation,
+         UserValidation userValidation, SubscriptionValidation subscriptionValidation,
+         ApplicationEventPublisher publisher) {
       this.subscriptionRepository = subscriptionRepository;
       this.planValidation = planValidation;
       this.userValidation = userValidation;
       this.subscriptionValidation = subscriptionValidation;
-      this.paymentService = paymentService;
+      this.publisher = publisher;
    }
 
    @Transactional
@@ -94,7 +98,7 @@ public class SubscriptionService {
    public void cancelSubscription(UUID id) {
       Subscription subscription = subscriptionValidation.validateSubscriptionById(id);
 
-      paymentService.cancelPaymentsBySubscription(id);
+      publisher.publishEvent(new SubscriptionCanceledEvent(subscription));
 
       subscription.setStatus(SubscriptionStatus.CANCELED);
       subscriptionRepository.save(subscription);
@@ -139,5 +143,26 @@ public class SubscriptionService {
       return subscriptions.stream()
             .map(SubscriptionMapper::toResponse)
             .collect(Collectors.toList());
+   }
+
+   @Transactional
+   public void renewSubscription(Subscription subscription) {
+      LocalDateTime now = LocalDateTime.now();
+      LocalDateTime endedIn = subscription.getEndedIn() != null ? subscription.getEndedIn() : now;
+      Integer duration = subscription.getPlan().getDuration();
+      LocalDateTime newEndDate = endedIn.isAfter(now) ? endedIn.plusDays(duration) : now.plusDays(duration);
+      SubscriptionStatus status = subscription.getStatus();
+
+      subscriptionValidation.validateSubscriptionNotIsCanceled(subscription);
+
+      if (status == SubscriptionStatus.PENDING) {
+         subscription.setStartedIn(now);
+      }
+
+      subscription.setStatus(SubscriptionStatus.ACTIVE);
+      subscription.setRenewedIn(now);
+      subscription.setEndedIn(newEndDate);
+
+      subscriptionRepository.save(subscription);
    }
 }

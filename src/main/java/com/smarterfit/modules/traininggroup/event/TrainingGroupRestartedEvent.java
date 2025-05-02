@@ -7,10 +7,10 @@ import com.smarterfit.modules.traininggroup.entity.TrainingGroup;
 import lombok.Getter;
 
 @Getter
-public class LastParticipantRemovedEvent extends ApplicationEvent {
+public class TrainingGroupRestartedEvent extends ApplicationEvent {
    private final TrainingGroup trainingGroup;
 
-   public LastParticipantRemovedEvent(TrainingGroup trainingGroup) {
+   public TrainingGroupRestartedEvent(TrainingGroup trainingGroup) {
       super(trainingGroup);
       this.trainingGroup = trainingGroup;
    }

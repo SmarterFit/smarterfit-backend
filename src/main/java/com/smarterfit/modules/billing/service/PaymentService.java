@@ -3,10 +3,12 @@ package com.smarterfit.modules.billing.service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -25,10 +27,10 @@ import com.smarterfit.modules.billing.dto.response.payment.PaymentResponseDTO;
 import com.smarterfit.modules.billing.dto.response.payment.PaymentWithSubscriptionResponseDTO;
 import com.smarterfit.modules.billing.entity.Payment;
 import com.smarterfit.modules.billing.entity.Subscription;
+import com.smarterfit.modules.billing.event.PaymentConfirmedEvent;
 import com.smarterfit.modules.billing.mapper.PaymentMapper;
 import com.smarterfit.modules.billing.processor.PaymentProcessor;
 import com.smarterfit.modules.billing.repository.PaymentRepository;
-import com.smarterfit.modules.billing.service.renewal.SubscriptionRenewalService;
 import com.smarterfit.modules.billing.specification.PaymentSpecifications;
 import com.smarterfit.modules.billing.validation.PaymentValidation;
 import com.smarterfit.modules.billing.validation.SubscriptionValidation;
@@ -38,17 +40,19 @@ public class PaymentService {
    private final PaymentRepository paymentRepository;
    private final PaymentValidation paymentValidation;
    private final SubscriptionValidation subscriptionValidation;
-   private final SubscriptionRenewalService subscriptionRenewalService;
    private final Map<PaymentMethod, PaymentProcessor> paymentProcessors;
+   private final ApplicationEventPublisher publisher;
 
    @Autowired
-   public PaymentService(PaymentRepository paymentRepository, PaymentValidation paymentValidation,
-         SubscriptionValidation subscriptionValidation, SubscriptionRenewalService subscriptionRenewalService,
-         List<PaymentProcessor> paymentProcessors) {
+   public PaymentService(PaymentRepository paymentRepository,
+         PaymentValidation paymentValidation,
+         List<PaymentProcessor> paymentProcessors,
+         SubscriptionValidation subscriptionValidation, ApplicationEventPublisher publisher) {
       this.paymentRepository = paymentRepository;
       this.paymentValidation = paymentValidation;
       this.subscriptionValidation = subscriptionValidation;
-      this.subscriptionRenewalService = subscriptionRenewalService;
+      this.publisher = publisher;
+
       this.paymentProcessors = paymentProcessors.stream()
             .collect(Collectors.toMap(PaymentProcessor::getPaymentMethod, processor -> processor));
    }
@@ -57,6 +61,8 @@ public class PaymentService {
    public PaymentResponseDTO createPayment(CreatePaymentRequestDTO requestDTO) {
       Subscription subscription = subscriptionValidation
             .validateSubscriptionById(requestDTO.getSubscriptionId());
+
+      paymentValidation.validateNotHasPendingPaymentForSubscription(subscription);
 
       Payment payment = PaymentMapper.toEntity(requestDTO, subscription);
       payment.setExpirationIn(LocalDateTime.now().plusDays(BusinessRules.PAYMENT_EXPIRATION_DAYS));
@@ -97,10 +103,11 @@ public class PaymentService {
    @Transactional
    public PaymentProcessorResponseDTO processPayment(UUID id, ProcessorPaymentRequestDTO requestDTO) {
       Payment payment = paymentValidation.validatePaymentById(id);
+      Subscription subscription = payment.getSubscription();
 
       paymentValidation.validatePaymentIsPending(payment);
       paymentValidation.validatePaymentNotExpired(payment);
-      subscriptionValidation.validateSubscriptionNotIsCanceled(payment.getSubscription());
+      subscriptionValidation.validateSubscriptionNotIsCanceled(subscription);
 
       PaymentProcessor paymentProcessor = paymentProcessors.get(payment.getMethod());
       PaymentProcessorResponseDTO response = paymentProcessor.processPayment(requestDTO);
@@ -110,7 +117,7 @@ public class PaymentService {
          payment.setPaymentDate(LocalDateTime.now());
          paymentRepository.save(payment);
 
-         subscriptionRenewalService.renewSubscription(payment.getSubscription());
+         publisher.publishEvent(new PaymentConfirmedEvent(subscription));
 
          return response;
       } else {

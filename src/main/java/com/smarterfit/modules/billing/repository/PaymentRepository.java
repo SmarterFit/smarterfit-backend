@@ -2,6 +2,7 @@ package com.smarterfit.modules.billing.repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,6 +18,8 @@ import com.smarterfit.modules.billing.entity.Payment;
 @Repository
 public interface PaymentRepository extends JpaRepository<Payment, UUID>, JpaSpecificationExecutor<Payment> {
       List<Payment> findBySubscriptionOwnerId(UUID subscriptionOwnerId);
+
+      Optional<Payment> findBySubscriptionIdAndStatus(UUID subscriptionId, PaymentStatus status);
 
       @Modifying
       @Query("UPDATE payment p SET p.status = :status WHERE p.subscription.id = :subscriptionId AND p.status = :originalStatus")

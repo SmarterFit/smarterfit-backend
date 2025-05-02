@@ -19,7 +19,7 @@ public class TrainingGroupMapper {
    }
 
    public static TrainingGroup toEntity(CreateTrainingGroupRequestDTO dto, User user, TrainingGroup trainingGroup) {
-      if (trainingGroup != null) {
+      if (trainingGroup == null) {
          throw new ResourceNotFoundException("TrainingGroup not found.");
       }
 

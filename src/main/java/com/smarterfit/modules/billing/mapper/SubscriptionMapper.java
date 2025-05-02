@@ -21,7 +21,7 @@ public class SubscriptionMapper {
 
       public static Subscription toEntity(CreateSubscriptionRequestDTO dto, User owner, Plan plan,
                   Subscription subscription) {
-            if (subscription != null) {
+            if (subscription == null) {
                   throw new ResourceNotFoundException("Subscription not found.");
             }
             if (plan == null) {
