@@ -1,32 +1,29 @@
 package com.smarterfit.modules.ai.service;
 
 import org.springframework.ai.chat.client.ChatClient;
-import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.smarterfit.modules.ai.tools.PlanTools;
+
+import reactor.core.publisher.Flux;
 
 @Service
 public class ChatService {
    private ChatClient chatClient;
+   private PlanTools planTools;
 
    @Autowired
-   public ChatService(ChatClient.Builder chatClient) {
-      this.chatClient = chatClient.build();
+   public ChatService(ChatClient chatClient, PlanTools planTools) {
+      this.chatClient = chatClient;
+      this.planTools = planTools;
    }
 
-   public String askGroq(String userInput) {
-      String systemMessage = """
-            Você é a LirIA, uma assistente virtual da academia SmarterFit.
-            Sua missão é ajudar os seus clientes a resolver suas dúvidas sobre seus planos de treino.
-            A SmarterFit é uma academia fundada em 1999 pelo professor de Educação Física Bombom, ela oferece planos de treinamento mensais e anuais, com opções individuais e para a familia.
-            Qualquer pergunta que não seja sobre a SmarterFit ou que você não tenha a informação você deve responder com: "Não posso responder perguntas que não sejam da SmarterFit."
-            """;
-
+   public Flux<String> askGroq(String userInput) {
       return chatClient.prompt()
-            .system(systemMessage)
             .user(userInput)
-            .call()
+            .tools(planTools)
+            .stream()
             .content();
    }
-
 }
