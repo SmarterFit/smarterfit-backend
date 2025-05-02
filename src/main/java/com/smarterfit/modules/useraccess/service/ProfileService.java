@@ -1,5 +1,6 @@
 package com.smarterfit.modules.useraccess.service;
 
+import com.smarterfit.common.util.CryptoUtil;
 import com.smarterfit.modules.useraccess.dto.request.profile.CreateProfileRequestDTO;
 import com.smarterfit.modules.useraccess.dto.response.ProfileResponseDTO;
 import com.smarterfit.modules.useraccess.entity.Profile;
@@ -24,12 +25,11 @@ public class ProfileService {
 
     @Autowired
     public ProfileService(ProfileRepository profileRepository, ProfileValidation profileValidation,
-                          UserValidation userValidation) {
+            UserValidation userValidation) {
         this.profileRepository = profileRepository;
         this.profileValidation = profileValidation;
         this.userValidation = userValidation;
     }
-
 
     @Transactional(readOnly = true)
     public ProfileResponseDTO getProfileById(UUID id) {
@@ -46,11 +46,16 @@ public class ProfileService {
         Profile profile = user.getProfile();
 
         // Validação extra opcional: evitar CPFs duplicados
-        // TODO: Validar apenas se for diferente if (!profile.getCpf().equals(requestDTO.cpf()))
-        profileValidation.validateCpfAvailability(requestDTO.getCpf(), profile.getId());
+        // TODO: Validar apenas se for diferente if
+        // (!profile.getCpf().equals(requestDTO.cpf()))
+        String encryptedCpf = CryptoUtil.encrypt(requestDTO.getCpf());
+
+        profileValidation.validateCpfAvailability(encryptedCpf, profile.getId());
 
         profile = ProfileMapper.toEntity(requestDTO, profile);
         profile.setUser(user);
+
+        profile.setCpf(encryptedCpf);
 
         profileRepository.save(profile);
         return ProfileMapper.toResponse(profile);

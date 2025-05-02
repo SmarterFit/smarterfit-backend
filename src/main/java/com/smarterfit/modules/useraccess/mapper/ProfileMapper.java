@@ -2,6 +2,7 @@ package com.smarterfit.modules.useraccess.mapper;
 
 import com.smarterfit.common.exceptions.ResourceNotFoundException;
 import com.smarterfit.common.mapper.GenericMapper;
+import com.smarterfit.common.util.CryptoUtil;
 import com.smarterfit.modules.useraccess.dto.request.profile.CreateProfileRequestDTO;
 import com.smarterfit.modules.useraccess.dto.response.AddressResponseDTO;
 import com.smarterfit.modules.useraccess.dto.response.ProfileResponseDTO;
@@ -45,6 +46,8 @@ public class ProfileMapper {
             AddressResponseDTO responseAddress = AddressMapper.toResponse(profile.getAddress());
             response = response.toBuilder().address(responseAddress).build();
         }
+
+        response = response.toBuilder().cpf(CryptoUtil.decrypt(profile.getCpf())).build();
 
         return response;
     }

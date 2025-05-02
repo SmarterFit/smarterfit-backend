@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.smarterfit.common.dto.response.JwtToken;
+import com.smarterfit.common.util.JwtUtil;
 import com.smarterfit.modules.useraccess.dto.request.user.LoginRequestDTO;
 import com.smarterfit.modules.useraccess.dto.response.AuthResponseDTO;
 import com.smarterfit.modules.useraccess.entity.User;
@@ -23,6 +25,8 @@ public class AuthService {
    public AuthResponseDTO login(LoginRequestDTO requestDTO) {
       User user = authValidation.validateUser(requestDTO.getEmail(), requestDTO.getPassword());
 
-      return AuthMapper.toResponse("token", user);
+      JwtToken accessToken = JwtUtil.generateToken(requestDTO.getEmail());
+
+      return AuthMapper.toResponse(accessToken, user);
    }
 }

@@ -1,5 +1,6 @@
 package com.smarterfit.modules.useraccess.service;
 
+import com.smarterfit.common.util.CryptoUtil;
 import com.smarterfit.modules.useraccess.dto.request.user.CreateUserRequestDTO;
 import com.smarterfit.modules.useraccess.dto.response.UserResponseDTO;
 import com.smarterfit.modules.useraccess.entity.Profile;
@@ -10,6 +11,7 @@ import com.smarterfit.modules.useraccess.validation.ProfileValidation;
 import com.smarterfit.modules.useraccess.validation.UserValidation;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,22 +24,32 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserValidation userValidation;
     private final ProfileValidation profileValidation;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserService(UserRepository userRepository, UserValidation userValidation,
-            ProfileValidation profileValidation) {
+    public UserService(UserRepository userRepository,
+            UserValidation userValidation,
+            ProfileValidation profileValidation,
+            PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.userValidation = userValidation;
         this.profileValidation = profileValidation;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Transactional
     public UserResponseDTO createUser(CreateUserRequestDTO requestDTO) {
+        String encryptedCpf = CryptoUtil.encrypt(requestDTO.getCpf());
+
         userValidation.validatePasswords(requestDTO.getPassword(), requestDTO.getConfirmPassword());
         userValidation.validateEmailAvailability(requestDTO.getEmail());
-        profileValidation.validateCpfAvailability(requestDTO.getCpf());
+        profileValidation.validateCpfAvailability(encryptedCpf);
 
         User user = UserMapper.toEntity(requestDTO, new Profile());
+
+        String encryptedPassword = passwordEncoder.encode(requestDTO.getPassword());
+        user.setPassword(encryptedPassword);
+        user.getProfile().setCpf(encryptedCpf);
 
         userRepository.save(user);
         return UserMapper.toResponse(user);
