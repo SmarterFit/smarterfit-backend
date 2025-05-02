@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.smarterfit.modules.ai.service.ChatService;
 
-import reactor.core.publisher.Flux;
-
 @RestController
 @RequestMapping("/chat")
 @CrossOrigin

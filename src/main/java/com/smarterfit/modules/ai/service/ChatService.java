@@ -6,8 +6,6 @@ import org.springframework.stereotype.Service;
 
 import com.smarterfit.modules.ai.tools.PlanTools;
 
-import reactor.core.publisher.Flux;
-
 @Service
 public class ChatService {
    private ChatClient chatClient;
