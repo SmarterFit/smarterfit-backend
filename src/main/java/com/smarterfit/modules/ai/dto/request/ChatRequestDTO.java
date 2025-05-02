@@ -7,8 +7,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-public record ChatRequestDTO(
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder(toBuilder = true)
+public class ChatRequestDTO {
    @NotBlank
-   String prompt
-) {
+   private String prompt;
 }

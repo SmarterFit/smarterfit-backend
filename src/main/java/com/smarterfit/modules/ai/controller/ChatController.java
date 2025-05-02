@@ -5,13 +5,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.smarterfit.modules.ai.dto.request.ChatRequestDTO;
 import com.smarterfit.modules.ai.service.ChatService;
 
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/chat")
@@ -25,8 +26,7 @@ public class ChatController {
    }
 
    @PostMapping("/ask")
-   public ResponseEntity<ChatResponse> askGroq(@RequestBody ChatRequestDTO requestDTO) {
-      System.out.println("Recebido: " + requestDTO.prompt());
-      return ResponseEntity.ok().body(chatService.askGroq(requestDTO.prompt()));
+   public ResponseEntity<String> askGroq(@RequestBody String prompt) {
+      return ResponseEntity.ok().body(chatService.askGroq(prompt));
    }
 }
