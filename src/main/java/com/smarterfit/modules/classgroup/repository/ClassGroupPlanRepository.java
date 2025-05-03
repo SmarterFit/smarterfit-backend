@@ -5,6 +5,7 @@ import com.smarterfit.modules.classgroup.entity.id.ClassGroupPlanId;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -15,4 +16,5 @@ public interface ClassGroupPlanRepository extends JpaRepository<ClassGroupPlan, 
     void deleteByPlanIdAndClassGroupId(UUID planId, UUID classGroupId);
 
     Optional<ClassGroupPlan> findByPlanIdAndClassGroupId(UUID planId, UUID classGroupId);
+
 }

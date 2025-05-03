@@ -45,12 +45,25 @@ public class ClassGroupValidation {
 
     public void validateUserAccessToClassGroupBySubscription(UUID classGroupId, UUID userId,
             UUID subscriptionId) {
-        Boolean hasAccess = subscriptionRepository
+        boolean hasAccess = subscriptionRepository
                 .existsAvailableSubscriptionByClassGroupAndParticipantAndSubscription(classGroupId, userId,
                         subscriptionId);
 
         if (!hasAccess) {
             throw new BusinessException("User does not have access to this class group with this subscription.");
+        }
+    }
+
+    public void isGroupFull(ClassGroup classGroup) {
+        if(classGroup.getTotalMembers() >= classGroup.getCapacity()){
+            throw new BusinessException("Class group is full");
+        }
+    }
+
+
+    public void validateModalityNotInUse(UUID modalityId) {
+        if(classGroupRepository.classGroupHasModality(modalityId)){
+            throw new BusinessException("Modality is in use by class group: ");
         }
     }
 }

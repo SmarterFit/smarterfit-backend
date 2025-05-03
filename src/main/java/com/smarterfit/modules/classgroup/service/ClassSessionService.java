@@ -83,10 +83,11 @@ public class ClassSessionService {
     }
 
     public void generateDailySessions() {
-        List<ClassGroupSchedule> schedules = classGroupScheduleRepository.findAll();
         LocalDate today = LocalDate.now();
+        List<ClassGroupSchedule> schedules = classGroupScheduleRepository.findValidSchedules(today);
 
         for (ClassGroupSchedule schedule : schedules) {
+
             boolean sessionExists = classGroupScheduleValidation.validateNoScheduleConflict(
                     schedule.getClassGroup().getId(),
                     schedule.getDayOfWeek(),
@@ -94,7 +95,6 @@ public class ClassSessionService {
                     schedule.getEndTime());
 
             if (!sessionExists) {
-                // TODO: verificar se classgroup quer criar aulas automaticamente
                 LocalDateTime startDateTime = today.atTime(schedule.getStartTime());
                 LocalDateTime endDateTime = today.atTime(schedule.getEndTime());
 

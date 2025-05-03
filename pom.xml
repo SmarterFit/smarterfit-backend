@@ -31,11 +31,6 @@
 	</properties>
 	<dependencies>
 
-		<dependency>
-			<groupId>org.springframework.ai</groupId>
-			<artifactId>spring-ai-starter-model-openai</artifactId>
-			<version>1.0.0-M8</version>
-		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

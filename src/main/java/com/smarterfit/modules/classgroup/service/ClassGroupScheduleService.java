@@ -8,7 +8,6 @@ import com.smarterfit.modules.classgroup.mapper.ClassGroupScheduleMapper;
 import com.smarterfit.modules.classgroup.repository.ClassGroupScheduleRepository;
 import com.smarterfit.modules.classgroup.validation.ClassGroupScheduleValidation;
 import com.smarterfit.modules.classgroup.validation.ClassGroupValidation;
-
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;

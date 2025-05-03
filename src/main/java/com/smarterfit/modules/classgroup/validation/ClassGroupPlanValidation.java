@@ -23,6 +23,12 @@ public class ClassGroupPlanValidation {
         }
     }
 
+    public void validateClassGroupPlanNotExists(UUID planId, UUID classGroupId) {
+        if (!classGroupPlanRepository.existsByPlanIdAndClassGroupId(planId, classGroupId)) {
+            throw new ResourceAlreadyExistsException("Plan name not exists for this class group.");
+        }
+    }
+
     public ClassGroupPlan validateClassGroupPlanById(UUID planId, UUID classGroupId) {
         return classGroupPlanRepository.findByPlanIdAndClassGroupId(planId, classGroupId)
                 .orElseThrow(() -> new IllegalArgumentException("Class group plan not found."));

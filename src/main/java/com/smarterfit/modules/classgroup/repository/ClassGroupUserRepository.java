@@ -28,5 +28,7 @@ public interface ClassGroupUserRepository  extends JpaRepository<ClassGroupUser,
     List<ClassGroup> findClassGroupsByUserId(@Param("userId") UUID userId);
 
 
+    List<ClassGroupUser> findAllByClassGroupId(UUID classGroupId);
+
 
 }

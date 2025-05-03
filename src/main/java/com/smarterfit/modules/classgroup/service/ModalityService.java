@@ -5,8 +5,8 @@ import com.smarterfit.modules.classgroup.dto.response.ModalityResponseDTO;
 import com.smarterfit.modules.classgroup.entity.Modality;
 import com.smarterfit.modules.classgroup.mapper.ModalityMapper;
 import com.smarterfit.modules.classgroup.repository.ModalityRepository;
+import com.smarterfit.modules.classgroup.validation.ClassGroupValidation;
 import com.smarterfit.modules.classgroup.validation.ModalityValidation;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,10 +18,13 @@ public class ModalityService {
 
     private final ModalityRepository modalityRepository;
     private final ModalityValidation modalityValidation;
+    private final ClassGroupValidation classGroupValidation;
 
-    public ModalityService(ModalityRepository modalityRepository, ModalityValidation modalityValidation) {
+    public ModalityService(ModalityRepository modalityRepository, ModalityValidation modalityValidation,
+                           ClassGroupValidation classGroupValidation) {
         this.modalityRepository = modalityRepository;
         this.modalityValidation = modalityValidation;
+        this.classGroupValidation = classGroupValidation;
     }
 
     @Transactional
@@ -65,7 +68,7 @@ public class ModalityService {
     @Transactional
     public void deleteModalityById(UUID id) {
         Modality modality = modalityValidation.validateModalityById(id);
-        // TODO: Verificar se existem classgroups com essa modalidade
+        classGroupValidation.validateModalityNotInUse(id);
         modalityRepository.delete(modality);
 
     }
