@@ -25,6 +25,5 @@ public class ClassGroupResponseDTO {
     private ModalityResponseDTO modalityDTO;
     private LocalDate startDate;
     private LocalDate endDate;
-    private String nameCreator;
-    
+    private String nameCreator; 
 }

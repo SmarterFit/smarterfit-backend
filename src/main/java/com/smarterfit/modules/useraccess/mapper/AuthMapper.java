@@ -1,5 +1,6 @@
 package com.smarterfit.modules.useraccess.mapper;
 
+import com.smarterfit.common.dto.response.JwtToken;
 import com.smarterfit.common.exceptions.ResourceNotFoundException;
 import com.smarterfit.modules.useraccess.dto.response.AuthResponseDTO;
 import com.smarterfit.modules.useraccess.entity.User;
@@ -9,11 +10,11 @@ public class AuthMapper {
       // Private constructor to prevent instantiation
    }
 
-   public static AuthResponseDTO toResponse(String token, User user) {
+   public static AuthResponseDTO toResponse(JwtToken accessToken, User user) {
       if (user == null) {
          throw new ResourceNotFoundException("User not found.");
       }
 
-      return new AuthResponseDTO(token, UserMapper.toResponse(user));
+      return new AuthResponseDTO(accessToken, UserMapper.toResponse(user));
    }
 }

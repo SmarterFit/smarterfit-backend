@@ -46,6 +46,7 @@ public class UserMapper {
 
         // Profile
         profile.setUser(user);
+        profile.setFullName(dto.getName());
         profile.setCpf(dto.getCpf());
         user.setProfile(profile);
 

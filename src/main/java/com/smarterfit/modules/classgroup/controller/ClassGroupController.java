@@ -14,6 +14,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/turma")
+@CrossOrigin
 public class ClassGroupController {
     public final ClassGroupService classGroupService;
 
@@ -33,6 +34,11 @@ public class ClassGroupController {
         return ResponseEntity.ok(classGroupService.getClassGroupById(id));
     }
 
+    @GetMapping
+    public ResponseEntity<List<ClassGroupResponseDTO>> getAllClassGroup() {
+        return ResponseEntity.ok(classGroupService.getAllClassGroups());
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<ClassGroupResponseDTO> updateClassGroupById(
             @PathVariable UUID id,
@@ -45,7 +51,5 @@ public class ClassGroupController {
         classGroupService.deleteClassGroupById(id);
         return ResponseEntity.noContent().build();
     }
-
-
 
 }
