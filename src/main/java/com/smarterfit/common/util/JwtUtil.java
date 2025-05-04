@@ -37,7 +37,6 @@ public class JwtUtil {
       JwtToken jwtToken = new JwtToken();
       jwtToken.setToken(token);
       jwtToken.setType(tokenType);
-      jwtToken.setExpiresIn(expiresIn);
 
       return jwtToken;
    }
