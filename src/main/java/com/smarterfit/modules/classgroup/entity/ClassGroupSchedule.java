@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.UUID;
@@ -33,8 +34,9 @@ public class ClassGroupSchedule {
      * Values range from 1 to 7, where:
      * 1 = Monday, 2 = Tuesday, ..., 6 = Saturday, 7 = Sunday.
      */
-    @Column(name = "weekday", nullable = false)
-    private Integer dayOfWeek;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "week_day", nullable = false)
+    private DayOfWeek dayOfWeek;
 
     @Column(name = "start_time", nullable = false)
     private LocalTime startTime;

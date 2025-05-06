@@ -1,5 +1,6 @@
 package com.smarterfit.modules.classgroup.service;
 
+import com.smarterfit.common.enums.RoleType;
 import com.smarterfit.common.enums.SessionStatus;
 import com.smarterfit.modules.classgroup.dto.request.classsession.CreateClassSessionRequestDTO;
 import com.smarterfit.modules.classgroup.dto.response.ClassSessionResponseDTO;
@@ -13,6 +14,8 @@ import com.smarterfit.modules.classgroup.validation.ClassGroupScheduleValidation
 import com.smarterfit.modules.classgroup.validation.ClassGroupValidation;
 import com.smarterfit.modules.classgroup.validation.ClassSessionValidation;
 
+import com.smarterfit.modules.useraccess.validation.RolesValidation;
+import com.smarterfit.modules.useraccess.validation.UserValidation;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,21 +32,24 @@ public class ClassSessionService {
     private final ClassSessionValidation classSessionValidation;
     private final ClassGroupScheduleValidation classGroupScheduleValidation;
     private final ClassGroupScheduleRepository classGroupScheduleRepository;
+    private final UserValidation userValidation;
 
     public ClassSessionService(ClassSessionRepository classSessionRepository, ClassGroupValidation classGroupValidation,
             ClassSessionValidation classSessionValidation,
             ClassGroupScheduleValidation classGroupScheduleValidation,
-            ClassGroupScheduleRepository classGroupScheduleRepository) {
+            ClassGroupScheduleRepository classGroupScheduleRepository,
+                               UserValidation userValidation) {
         this.classSessionRepository = classSessionRepository;
         this.classGroupValidation = classGroupValidation;
         this.classSessionValidation = classSessionValidation;
-
+        this.userValidation = userValidation;
         this.classGroupScheduleValidation = classGroupScheduleValidation;
         this.classGroupScheduleRepository = classGroupScheduleRepository;
     }
 
     @Transactional
-    public ClassSessionResponseDTO createClassSession(CreateClassSessionRequestDTO requestDTO) {
+    public ClassSessionResponseDTO createClassSession(CreateClassSessionRequestDTO requestDTO, UUID requesterId) {
+        RolesValidation.validateUserRole(RoleType.EMPLOYEE, userValidation.validateUserById(requesterId).getRoles());
         ClassGroup classGroup = classGroupValidation.validateClassGroupById(requestDTO.getClassGroupId());
 
         ClassSession classSession = ClassSessionMapper.toEntity(requestDTO, classGroup);
@@ -66,7 +72,9 @@ public class ClassSessionService {
     }
 
     @Transactional
-    public ClassSessionResponseDTO updateClassSessionById(UUID id, CreateClassSessionRequestDTO requestDTO) {
+    public ClassSessionResponseDTO updateClassSessionById(UUID id, CreateClassSessionRequestDTO requestDTO, UUID requesterId) {
+        RolesValidation.validateUserRole(RoleType.EMPLOYEE, userValidation.validateUserById(requesterId).getRoles());
+
         ClassSession classSession = classSessionValidation.validateClassSessionById(id);
         ClassGroup classGroup = classGroupValidation.validateClassGroupById(requestDTO.getClassGroupId());
 
@@ -77,7 +85,9 @@ public class ClassSessionService {
     }
 
     @Transactional
-    public void deleteClassSessionById(UUID id) {
+    public void deleteClassSessionById(UUID id, UUID requesterId) {
+        RolesValidation.validateUserRole(RoleType.EMPLOYEE, userValidation.validateUserById(requesterId).getRoles());
+
         ClassSession classSession = classSessionValidation.validateClassSessionById(id);
         classSessionRepository.delete(classSession);
     }

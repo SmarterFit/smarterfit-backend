@@ -1,15 +1,13 @@
 package com.smarterfit.modules.classgroup.controller;
 
-import com.smarterfit.modules.classgroup.dto.request.classgroup.CreateClassGroupRequestDTO;
+import com.smarterfit.modules.classgroup.dto.request.classgroup.ClassGroupRequestDTO;
 import com.smarterfit.modules.classgroup.dto.response.ClassGroupResponseDTO;
 import com.smarterfit.modules.classgroup.service.ClassGroupService;
-import com.smarterfit.modules.useraccess.dto.response.UserResponseDTO;
 
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -23,8 +21,10 @@ public class ClassGroupController {
 
     @PostMapping("/cadastrar")
     public ResponseEntity<ClassGroupResponseDTO> createClassGroup(
-            @RequestBody @Valid CreateClassGroupRequestDTO requestDTO) {
-        ClassGroupResponseDTO responseDTO = classGroupService.createClassGroup(requestDTO);
+            @RequestBody @Valid ClassGroupRequestDTO requestDTO,
+            @RequestHeader("X-User-Id") UUID requesterId) {
+
+        ClassGroupResponseDTO responseDTO = classGroupService.createClassGroup(requestDTO, requesterId);
         return ResponseEntity.status(201).body(responseDTO);
     }
 
@@ -36,13 +36,15 @@ public class ClassGroupController {
     @PutMapping("/{id}")
     public ResponseEntity<ClassGroupResponseDTO> updateClassGroupById(
             @PathVariable UUID id,
-            @RequestBody @Valid CreateClassGroupRequestDTO requestDTO) {
-        return ResponseEntity.ok(classGroupService.updateClassGroupById(id, requestDTO));
+            @RequestBody @Valid ClassGroupRequestDTO requestDTO,
+            @RequestHeader("X-User-Id") UUID requesterId) {
+        return ResponseEntity.ok(classGroupService.updateClassGroupById(id, requestDTO, requesterId));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteClassGroupById(@PathVariable UUID id) {
-        classGroupService.deleteClassGroupById(id);
+    public ResponseEntity<Void> deleteClassGroupById(@PathVariable UUID id,
+                                                     @RequestHeader("X-User-Id") UUID requesterId) {
+        classGroupService.deleteClassGroupById(id, requesterId);
         return ResponseEntity.noContent().build();
     }
 

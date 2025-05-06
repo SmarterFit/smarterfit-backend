@@ -1,14 +1,13 @@
 package com.smarterfit.modules.classgroup.service;
 
 import com.smarterfit.common.enums.RoleType;
-import com.smarterfit.modules.classgroup.dto.request.classgroup.CreateClassGroupRequestDTO;
+import com.smarterfit.modules.classgroup.dto.request.classgroup.ClassGroupRequestDTO;
 import com.smarterfit.modules.classgroup.dto.response.ClassGroupResponseDTO;
 import com.smarterfit.modules.classgroup.entity.ClassGroup;
 import com.smarterfit.modules.classgroup.entity.ClassGroupUser;
 import com.smarterfit.modules.classgroup.entity.Modality;
 import com.smarterfit.modules.classgroup.event.ClassGroupDeactivatedEvent;
 import com.smarterfit.modules.classgroup.mapper.ClassGroupMapper;
-import com.smarterfit.modules.classgroup.repository.ClassGroupPlanRepository;
 import com.smarterfit.modules.classgroup.repository.ClassGroupRepository;
 import com.smarterfit.modules.classgroup.repository.ClassGroupUserRepository;
 import com.smarterfit.modules.classgroup.validation.ValidationFaced;
@@ -27,39 +26,36 @@ public class ClassGroupService {
 
     private final ClassGroupRepository classGroupRepository;
     private final ClassGroupUserRepository classGroupUserRepository;
-    private final ClassGroupPlanRepository classGroupPlanRepository;
     private final ValidationFaced validationFaced;
     private final ApplicationEventPublisher publisher;
 
 
     public ClassGroupService(ClassGroupRepository classGroupRepository,
             ClassGroupUserRepository classGroupUserRepository,
-            ClassGroupPlanRepository classGroupPlanRepository,
             ValidationFaced validationFaced,
                              ApplicationEventPublisher publisher) {
 
         this.classGroupRepository = classGroupRepository;
         this.classGroupUserRepository = classGroupUserRepository;
-        this.classGroupPlanRepository = classGroupPlanRepository;
         this.validationFaced = validationFaced;
         this.publisher = publisher;
 
     }
 
     @Transactional
-    public ClassGroupResponseDTO createClassGroup(CreateClassGroupRequestDTO requestDTO) {
-        User user = validationFaced.userValidation.validateUserById(requestDTO.getUserCreatorId());
-        RolesValidation.validateUserRole(RoleType.EMPLOYEE, user.getRoles());
+    public ClassGroupResponseDTO createClassGroup(ClassGroupRequestDTO requestDTO, UUID requesterId) {
+        User creatorUser = validationFaced.userValidation.validateUserById(requesterId);
+        RolesValidation.validateUserRole(RoleType.TRAINER, creatorUser.getRoles());
 
         validationFaced.classGroupValidation.validateClassGroupDates(requestDTO.getStartDate(), requestDTO.getEndDate());
 
         validationFaced.classGroupValidation.validateClassGroupExists(requestDTO.getTitle(), null);
         Modality modality = validationFaced.modalityValidation.validateModalityById(requestDTO.getModalityId());
 
-        ClassGroup classGroup = ClassGroupMapper.toEntity(requestDTO, modality, user);
+        ClassGroup classGroup = ClassGroupMapper.toEntity(requestDTO, modality, creatorUser);
         classGroupRepository.save(classGroup);
 
-        return ClassGroupMapper.toResponse(classGroup, user.getProfile().getFullName());
+        return ClassGroupMapper.toResponse(classGroup, creatorUser.getProfile().getFullName());
     }
 
     @Transactional(readOnly = true)
@@ -79,7 +75,9 @@ public class ClassGroupService {
     }
 
     @Transactional
-    public ClassGroupResponseDTO updateClassGroupById(UUID classGroupId, CreateClassGroupRequestDTO requestDTO) {
+    public ClassGroupResponseDTO updateClassGroupById(UUID classGroupId, ClassGroupRequestDTO requestDTO, UUID requesterId) {
+        RolesValidation.validateUserRole(RoleType.TRAINER, validationFaced.userValidation.validateUserById(requesterId).getRoles());
+
         validationFaced.classGroupValidation.validateClassGroupDates(requestDTO.getStartDate(),
                 requestDTO.getEndDate());
         ClassGroup classGroup = validationFaced.classGroupValidation.validateClassGroupById(classGroupId);
@@ -93,7 +91,8 @@ public class ClassGroupService {
     }
 
     @Transactional
-    public void deleteClassGroupById(UUID id) {
+    public void deleteClassGroupById(UUID id, UUID requesterId) {
+        RolesValidation.validateUserRole(RoleType.TRAINER, validationFaced.userValidation.validateUserById(requesterId).getRoles());
         ClassGroup classGroup = validationFaced.classGroupValidation.validateClassGroupById(id);
         classGroup.setActive(false);
         publisher.publishEvent(new ClassGroupDeactivatedEvent(classGroup));
@@ -101,13 +100,6 @@ public class ClassGroupService {
     }
 
 
-    private void incrementGroupMembers(ClassGroup classGroup) {
-        classGroup.setTotalMembers(classGroup.getTotalMembers() + 1);
-    }
-
-    private void decrementGroupMembers(ClassGroup classGroup) {
-        classGroup.setTotalMembers(classGroup.getTotalMembers() - 1);
-    }
 
     private void saveUserToGroup(ClassGroup classGroup, User user) {
         ClassGroupUser classGroupUser = new ClassGroupUser();

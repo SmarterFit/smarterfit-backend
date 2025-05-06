@@ -5,6 +5,10 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import com.smarterfit.common.enums.RoleType;
+import com.smarterfit.modules.useraccess.entity.User;
+import com.smarterfit.modules.useraccess.validation.RolesValidation;
+import com.smarterfit.modules.useraccess.validation.UserValidation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
@@ -27,20 +31,25 @@ import com.smarterfit.modules.billing.validation.PlanValidation;
 public class PlanService {
    private final PlanRepository planRepository;
    private final PlanValidation planValidation;
+   private final UserValidation userValidation;
    private final ApplicationEventPublisher publisher;
 
    @Autowired
    public PlanService(PlanRepository planRepository,
          PlanValidation planValidation,
          SubscriptionService subscriptionService, PaymentService paymentService,
+         UserValidation userValidation,
          ApplicationEventPublisher publisher) {
       this.planRepository = planRepository;
       this.planValidation = planValidation;
+      this.userValidation = userValidation;
       this.publisher = publisher;
    }
 
    @Transactional
-   public PlanResponseDTO createPlan(CreatePlanRequestDTO requestDTO) {
+   public PlanResponseDTO createPlan(CreatePlanRequestDTO requestDTO, UUID requesterId) {
+        RolesValidation.validateUserRole(RoleType.ADMIN, userValidation.validateUserById(requesterId).getRoles());
+
       Plan plan = PlanMapper.toEntity(requestDTO);
       planRepository.save(plan);
       return PlanMapper.toResponse(plan);
@@ -69,7 +78,9 @@ public class PlanService {
    }
 
    @Transactional
-   public PlanResponseDTO updatePlan(UUID id, CreatePlanRequestDTO requestDTO) {
+   public PlanResponseDTO updatePlan(UUID id, CreatePlanRequestDTO requestDTO, UUID requesterId) {
+      RolesValidation.validateUserRole(RoleType.ADMIN, userValidation.validateUserById(requesterId).getRoles());
+
       Plan plan = planValidation.validatePlanById(id);
       plan = PlanMapper.toEntity(requestDTO, plan);
 
@@ -78,7 +89,9 @@ public class PlanService {
    }
 
    @Transactional
-   public void deletePlan(UUID id) {
+   public void deletePlan(UUID id, UUID requesterId) {
+      RolesValidation.validateUserRole(RoleType.ADMIN, userValidation.validateUserById(requesterId).getRoles());
+
       Plan plan = planValidation.validatePlanById(id);
 
       planValidation.validatePlanNotDeleted(plan);

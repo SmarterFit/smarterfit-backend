@@ -4,9 +4,9 @@ import com.smarterfit.common.exceptions.ResourceNotFoundException;
 import com.smarterfit.common.validation.DateValidation;
 import com.smarterfit.modules.classgroup.entity.ClassGroupSchedule;
 import com.smarterfit.modules.classgroup.repository.ClassGroupScheduleRepository;
-
 import org.springframework.stereotype.Component;
 
+import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.util.UUID;
 
@@ -24,8 +24,8 @@ public class ClassGroupScheduleValidation {
                 .orElseThrow(() -> new ResourceNotFoundException("Class group  schedule not found."));
     }
 
-    public boolean validateNoScheduleConflict(UUID classGroupId, Integer dayOfWeek, LocalTime startTime,
-            LocalTime endTime) {
+    public boolean validateNoScheduleConflict(UUID classGroupId, DayOfWeek dayOfWeek, LocalTime startTime,
+                                              LocalTime endTime) {
         boolean existsConflict = classGroupScheduleRepository.existsOverlappingSchedule(
                 classGroupId, dayOfWeek, startTime, endTime);
 

@@ -7,16 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.smarterfit.modules.billing.dto.request.plan.CreatePlanRequestDTO;
 import com.smarterfit.modules.billing.dto.request.plan.SearchPlanRequestDTO;
@@ -37,8 +28,9 @@ public class PlanController {
    }
 
    @PostMapping
-   public ResponseEntity<PlanResponseDTO> createPlan(@RequestBody @Valid CreatePlanRequestDTO requestDTO) {
-      PlanResponseDTO responseDTO = planService.createPlan(requestDTO);
+   public ResponseEntity<PlanResponseDTO> createPlan(@RequestBody @Valid CreatePlanRequestDTO requestDTO,
+                                                     @RequestHeader("X-User-Id") UUID requesterId) {
+      PlanResponseDTO responseDTO = planService.createPlan(requestDTO, requesterId);
       return ResponseEntity.status(201).body(responseDTO);
    }
 
@@ -60,13 +52,14 @@ public class PlanController {
 
    @PutMapping("/{id}")
    public ResponseEntity<PlanResponseDTO> updatePlan(@PathVariable UUID id,
-         @RequestBody @Valid CreatePlanRequestDTO requestDTO) {
-      return ResponseEntity.ok(planService.updatePlan(id, requestDTO));
+                                                     @RequestBody @Valid CreatePlanRequestDTO requestDTO,
+                                                     @RequestHeader("X-User-Id") UUID requesterId) {
+      return ResponseEntity.ok(planService.updatePlan(id, requestDTO, requesterId));
    }
 
    @DeleteMapping("/{id}")
-   public ResponseEntity<Void> deletePlan(@PathVariable UUID id) {
-      planService.deletePlan(id);
+   public ResponseEntity<Void> deletePlan(@PathVariable UUID id,  @RequestHeader("X-User-Id") UUID requesterId) {
+      planService.deletePlan(id, requesterId);
       return ResponseEntity.noContent().build();
    }
 }

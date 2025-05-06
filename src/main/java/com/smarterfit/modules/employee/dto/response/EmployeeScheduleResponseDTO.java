@@ -1,4 +1,4 @@
-package com.smarterfit.modules.classgroup.dto.response;
+package com.smarterfit.modules.employee.dto.response;
 
 import lombok.*;
 
@@ -11,9 +11,10 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(toBuilder = true)
-public class ClassGroupScheduleResponseDTO {
+public class EmployeeScheduleResponseDTO {
+
     private UUID id;
-    private UUID classGroupId;
+    private UUID userId;
     private DayOfWeek dayOfWeek;
     private LocalTime startTime;
     private LocalTime endTime;

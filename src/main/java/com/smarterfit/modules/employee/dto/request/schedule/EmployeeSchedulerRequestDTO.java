@@ -1,14 +1,8 @@
-package com.smarterfit.modules.classgroup.dto.request.classgroup.schedule;
-
+package com.smarterfit.modules.employee.dto.request.schedule;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.DayOfWeek;
 import java.time.LocalTime;
@@ -19,10 +13,10 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(toBuilder = true)
-public class CreateClassGroupScheduleRequestDTO {
+public class EmployeeSchedulerRequestDTO {
 
-    @NotNull(message = "Class group ID is required")
-    private UUID classGroupId;
+    @NotNull(message = "User ID is required")
+    private UUID userId;
 
     /**
      * Days of the week when this class occurs.

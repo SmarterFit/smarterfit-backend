@@ -17,4 +17,7 @@ public interface ClassGroupPlanRepository extends JpaRepository<ClassGroupPlan, 
 
     Optional<ClassGroupPlan> findByPlanIdAndClassGroupId(UUID planId, UUID classGroupId);
 
+    List<ClassGroupPlan> findAllByClassGroupId(UUID classGroupId);
+
+
 }

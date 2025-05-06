@@ -23,8 +23,9 @@ public class ModalityController {
     }
 
     @PostMapping("/cadastrar")
-    public ResponseEntity<ModalityResponseDTO> createModality(@RequestBody @Valid CreateModalityRequestDTO requestDTO) {
-        ModalityResponseDTO responseDTO = modalityService.createModality(requestDTO);
+    public ResponseEntity<ModalityResponseDTO> createModality(@RequestBody @Valid CreateModalityRequestDTO requestDTO,
+                                                              @RequestAttribute("X-User-Id") UUID requesterId) {
+        ModalityResponseDTO responseDTO = modalityService.createModality(requestDTO, requesterId);
         return ResponseEntity.status(201).body(responseDTO);
     }
 
@@ -46,13 +47,15 @@ public class ModalityController {
     @PutMapping("/{id}")
     public ResponseEntity<ModalityResponseDTO> updateModalityById(
             @PathVariable UUID id,
-            @RequestBody @Valid CreateModalityRequestDTO requestDTO) {
-        return ResponseEntity.ok(modalityService.updateModalityById(id, requestDTO));
+            @RequestBody @Valid CreateModalityRequestDTO requestDTO,
+            @RequestAttribute("X-User-Id") UUID requesterId) {
+        return ResponseEntity.ok(modalityService.updateModalityById(id, requestDTO, requesterId));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteModalityById(@PathVariable UUID id) {
-        modalityService.deleteModalityById(id);
+    public ResponseEntity<Void> deleteModalityById(@PathVariable UUID id,
+                                                   @RequestAttribute("X-User-Id") UUID requesterId) {
+        modalityService.deleteModalityById(id, requesterId);
         return ResponseEntity.noContent().build();
     }
 

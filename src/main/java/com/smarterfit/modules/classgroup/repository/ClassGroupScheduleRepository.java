@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import com.smarterfit.modules.classgroup.entity.ClassGroupSchedule;
 import org.springframework.data.repository.query.Param;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -15,13 +16,18 @@ import java.util.UUID;
 public interface ClassGroupScheduleRepository extends JpaRepository<ClassGroupSchedule, UUID> {
 
     @Query("""
-    SELECT CASE WHEN COUNT(cgs) > 1 THEN TRUE ELSE FALSE END
+    SELECT CASE WHEN COUNT(cgs) > 0 THEN TRUE ELSE FALSE END
     FROM ClassGroupSchedule cgs
     WHERE cgs.classGroup.id = :classGroupId
       AND cgs.dayOfWeek = :dayOfWeek
-      AND ((cgs.startTime < :endTime AND cgs.endTime > :startTime))
-    """)
-    boolean existsOverlappingSchedule(UUID classGroupId, Integer dayOfWeek, LocalTime startTime, LocalTime endTime);
+      AND NOT (cgs.endTime <= :startTime OR cgs.startTime >= :endTime)
+""")
+    boolean existsOverlappingSchedule(
+            @Param("classGroupId") UUID classGroupId,
+            @Param("dayOfWeek") DayOfWeek dayOfWeek,
+            @Param("startTime") LocalTime startTime,
+            @Param("endTime") LocalTime endTime
+    );
 
     @Query("""
         SELECT cgs FROM ClassGroupSchedule cgs

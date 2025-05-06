@@ -1,5 +1,6 @@
 package com.smarterfit.modules.classgroup.service;
 
+import com.smarterfit.common.enums.RoleType;
 import com.smarterfit.modules.classgroup.dto.request.modality.CreateModalityRequestDTO;
 import com.smarterfit.modules.classgroup.dto.response.ModalityResponseDTO;
 import com.smarterfit.modules.classgroup.entity.Modality;
@@ -7,6 +8,8 @@ import com.smarterfit.modules.classgroup.mapper.ModalityMapper;
 import com.smarterfit.modules.classgroup.repository.ModalityRepository;
 import com.smarterfit.modules.classgroup.validation.ClassGroupValidation;
 import com.smarterfit.modules.classgroup.validation.ModalityValidation;
+import com.smarterfit.modules.useraccess.validation.RolesValidation;
+import com.smarterfit.modules.useraccess.validation.UserValidation;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,16 +22,19 @@ public class ModalityService {
     private final ModalityRepository modalityRepository;
     private final ModalityValidation modalityValidation;
     private final ClassGroupValidation classGroupValidation;
+    private final UserValidation userValidation;
 
     public ModalityService(ModalityRepository modalityRepository, ModalityValidation modalityValidation,
-                           ClassGroupValidation classGroupValidation) {
+                           ClassGroupValidation classGroupValidation, UserValidation userValidation) {
         this.modalityRepository = modalityRepository;
         this.modalityValidation = modalityValidation;
         this.classGroupValidation = classGroupValidation;
+        this.userValidation = userValidation;
     }
 
     @Transactional
-    public ModalityResponseDTO createModality(CreateModalityRequestDTO requestDTO) {
+    public ModalityResponseDTO createModality(CreateModalityRequestDTO requestDTO, UUID requesterId) {
+        RolesValidation.validateUserRole(RoleType.ADMIN, userValidation.validateUserById(requesterId).getRoles());
         modalityValidation.existsModalityByName(requestDTO.getName());
 
         Modality modality = ModalityMapper.toEntity(requestDTO);
@@ -57,7 +63,9 @@ public class ModalityService {
     }
 
     @Transactional
-    public ModalityResponseDTO updateModalityById(UUID id, CreateModalityRequestDTO requestDTO) {
+    public ModalityResponseDTO updateModalityById(UUID id, CreateModalityRequestDTO requestDTO, UUID requesterId) {
+        RolesValidation.validateUserRole(RoleType.ADMIN, userValidation.validateUserById(requesterId).getRoles());
+
         Modality modality = modalityValidation.validateModalityById(id);
 
         modality = ModalityMapper.toEntity(requestDTO, modality);
@@ -66,7 +74,8 @@ public class ModalityService {
     }
 
     @Transactional
-    public void deleteModalityById(UUID id) {
+    public void deleteModalityById(UUID id, UUID requesterId) {
+        RolesValidation.validateUserRole(RoleType.ADMIN, userValidation.validateUserById(requesterId).getRoles());
         Modality modality = modalityValidation.validateModalityById(id);
         classGroupValidation.validateModalityNotInUse(id);
         modalityRepository.delete(modality);

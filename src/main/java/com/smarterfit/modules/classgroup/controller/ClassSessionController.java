@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/turma-aula")
+@RequestMapping("/turma/aula")
 public class ClassSessionController {
 
     public final ClassSessionService classSessionService;
@@ -23,8 +23,9 @@ public class ClassSessionController {
 
     @PostMapping("/cadastrar")
     public ResponseEntity<ClassSessionResponseDTO> createClassSession(
-            @RequestBody @Valid CreateClassSessionRequestDTO requestDTO) {
-        ClassSessionResponseDTO responseDTO = classSessionService.createClassSession(requestDTO);
+            @RequestBody @Valid CreateClassSessionRequestDTO requestDTO,
+            @RequestAttribute("X-User-Id") UUID requesterId) {
+        ClassSessionResponseDTO responseDTO = classSessionService.createClassSession(requestDTO, requesterId);
         return ResponseEntity.status(201).body(responseDTO);
     }
 
@@ -46,13 +47,17 @@ public class ClassSessionController {
     @PutMapping("/{id}")
     public ResponseEntity<ClassSessionResponseDTO> updateClassSessionById(
             @PathVariable UUID id,
-            @RequestBody @Valid CreateClassSessionRequestDTO requestDTO) {
-        return ResponseEntity.ok(classSessionService.updateClassSessionById(id, requestDTO));
+            @RequestBody @Valid CreateClassSessionRequestDTO requestDTO,
+            @RequestAttribute("X-User-Id") UUID requesterId) {
+        return ResponseEntity.ok(classSessionService.updateClassSessionById(id, requestDTO, requesterId));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteClassSessionById(@PathVariable UUID id) {
-        classSessionService.deleteClassSessionById(id);
+    public ResponseEntity<Void> deleteClassSessionById(
+            @PathVariable UUID id,
+            @RequestAttribute("X-User-Id") UUID requesterId) {
+
+        classSessionService.deleteClassSessionById(id, requesterId);
         return ResponseEntity.noContent().build();
     }
 }

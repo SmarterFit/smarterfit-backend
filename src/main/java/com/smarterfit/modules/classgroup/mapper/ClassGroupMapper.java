@@ -2,7 +2,7 @@ package com.smarterfit.modules.classgroup.mapper;
 
 import com.smarterfit.common.exceptions.ResourceNotFoundException;
 import com.smarterfit.common.mapper.GenericMapper;
-import com.smarterfit.modules.classgroup.dto.request.classgroup.CreateClassGroupRequestDTO;
+import com.smarterfit.modules.classgroup.dto.request.classgroup.ClassGroupRequestDTO;
 import com.smarterfit.modules.classgroup.dto.response.ClassGroupResponseDTO;
 import com.smarterfit.modules.classgroup.entity.ClassGroup;
 import com.smarterfit.modules.classgroup.entity.Modality;
@@ -13,12 +13,12 @@ public class ClassGroupMapper {
         // Private constructor to prevent instantiation
     }
 
-    public static ClassGroup toEntity(CreateClassGroupRequestDTO dto, Modality modality, User creator) {
+    public static ClassGroup toEntity(ClassGroupRequestDTO dto, Modality modality, User creator) {
         return toEntity(dto, modality, creator, new ClassGroup());
     }
 
-    public static ClassGroup toEntity(CreateClassGroupRequestDTO dto, Modality modality,
-            User creator, ClassGroup classGroup) {
+    public static ClassGroup toEntity(ClassGroupRequestDTO dto, Modality modality,
+                                      User creator, ClassGroup classGroup) {
         if (classGroup == null) {
             throw new ResourceNotFoundException("Class Group not found.");
         }
