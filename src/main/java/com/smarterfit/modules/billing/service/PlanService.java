@@ -31,24 +31,20 @@ import com.smarterfit.modules.billing.validation.PlanValidation;
 public class PlanService {
    private final PlanRepository planRepository;
    private final PlanValidation planValidation;
-   private final UserValidation userValidation;
    private final ApplicationEventPublisher publisher;
 
    @Autowired
    public PlanService(PlanRepository planRepository,
          PlanValidation planValidation,
-         SubscriptionService subscriptionService, PaymentService paymentService,
-         UserValidation userValidation,
          ApplicationEventPublisher publisher) {
+
       this.planRepository = planRepository;
       this.planValidation = planValidation;
-      this.userValidation = userValidation;
       this.publisher = publisher;
    }
 
    @Transactional
-   public PlanResponseDTO createPlan(CreatePlanRequestDTO requestDTO, UUID requesterId) {
-        RolesValidation.validateUserRole(RoleType.ADMIN, userValidation.validateUserById(requesterId).getRoles());
+   public PlanResponseDTO createPlan(CreatePlanRequestDTO requestDTO) {
 
       Plan plan = PlanMapper.toEntity(requestDTO);
       planRepository.save(plan);
@@ -78,9 +74,7 @@ public class PlanService {
    }
 
    @Transactional
-   public PlanResponseDTO updatePlan(UUID id, CreatePlanRequestDTO requestDTO, UUID requesterId) {
-      RolesValidation.validateUserRole(RoleType.ADMIN, userValidation.validateUserById(requesterId).getRoles());
-
+   public PlanResponseDTO updatePlan(UUID id, CreatePlanRequestDTO requestDTO) {
       Plan plan = planValidation.validatePlanById(id);
       plan = PlanMapper.toEntity(requestDTO, plan);
 
@@ -89,9 +83,7 @@ public class PlanService {
    }
 
    @Transactional
-   public void deletePlan(UUID id, UUID requesterId) {
-      RolesValidation.validateUserRole(RoleType.ADMIN, userValidation.validateUserById(requesterId).getRoles());
-
+   public void deletePlan(UUID id) {
       Plan plan = planValidation.validatePlanById(id);
 
       planValidation.validatePlanNotDeleted(plan);

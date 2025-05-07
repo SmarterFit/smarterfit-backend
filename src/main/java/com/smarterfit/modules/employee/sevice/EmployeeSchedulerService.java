@@ -34,15 +34,11 @@ public class EmployeeSchedulerService {
     }
 
     @Transactional
-    public EmployeeScheduleResponseDTO createEmployeeSchedule(EmployeeSchedulerRequestDTO employeeScheduleRequestDTO, UUID requesterId) {
+    public EmployeeScheduleResponseDTO createEmployeeSchedule(EmployeeSchedulerRequestDTO employeeScheduleRequestDTO) {
         User user = userValidation.validateUserById(employeeScheduleRequestDTO.getUserId());
-        User creator = userValidation.validateUserById(requesterId);
-
-        RolesValidation.validateUserRole(RoleType.ADMIN, creator.getRoles());
         RolesValidation.validateUserRole(RoleType.EMPLOYEE, user.getRoles());
 
         employeeSchedulerValidation.validateNoScheduleConflict(user.getId(),employeeScheduleRequestDTO);
-
 
         EmployeeSchedule employeeSchedule = EmployeeSchedulerMapper.toEntity(employeeScheduleRequestDTO);
         return EmployeeSchedulerMapper.toResponse(employeeSchedulerRepository.save(employeeSchedule));
@@ -59,11 +55,8 @@ public class EmployeeSchedulerService {
     }
 
     @Transactional
-    public EmployeeScheduleResponseDTO updateEmployeeScheduleById(UUID id, EmployeeSchedulerRequestDTO employeeScheduleRequestDTO, UUID requesterId) {
+    public EmployeeScheduleResponseDTO updateEmployeeScheduleById(UUID id, EmployeeSchedulerRequestDTO employeeScheduleRequestDTO) {
         User user = userValidation.validateUserById(employeeScheduleRequestDTO.getUserId());
-        User creator = userValidation.validateUserById(requesterId);
-
-        RolesValidation.validateUserRole(RoleType.ADMIN, creator.getRoles());
 
         EmployeeSchedule employeeSchedule = employeeSchedulerValidation.validateEmployeeScheduleById(id);
 
@@ -76,10 +69,7 @@ public class EmployeeSchedulerService {
     }
 
     @Transactional
-    public void deleteEmployeeScheduleById(UUID id, UUID requesterId) {
-        User creator = userValidation.validateUserById(requesterId);
-        RolesValidation.validateUserRole(RoleType.ADMIN, creator.getRoles());
-
+    public void deleteEmployeeScheduleById(UUID id) {
         EmployeeSchedule employeeSchedule = employeeSchedulerValidation.validateEmployeeScheduleById(id);
         employeeSchedulerRepository.delete(employeeSchedule);
     }

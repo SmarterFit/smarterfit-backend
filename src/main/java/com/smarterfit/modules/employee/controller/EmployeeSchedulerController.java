@@ -1,5 +1,7 @@
 package com.smarterfit.modules.employee.controller;
 
+import com.smarterfit.common.enums.RoleType;
+import com.smarterfit.common.security.RequireRole;
 import com.smarterfit.modules.employee.dto.request.schedule.EmployeeSchedulerRequestDTO;
 import com.smarterfit.modules.employee.dto.response.EmployeeScheduleResponseDTO;
 import com.smarterfit.modules.employee.sevice.EmployeeSchedulerService;
@@ -21,10 +23,10 @@ public class EmployeeSchedulerController {
         this.employeeSchedulerService = employeeSchedulerService;
     }
 
+    @RequireRole(RoleType.ADMIN)
     @PostMapping("/cadastrar")
-    public ResponseEntity<EmployeeScheduleResponseDTO> create(@RequestBody @Valid EmployeeSchedulerRequestDTO requestDTO,
-                                                              @RequestHeader("X-User-Id") UUID requesterId) {
-        EmployeeScheduleResponseDTO response = employeeSchedulerService.createEmployeeSchedule(requestDTO, requesterId);
+    public ResponseEntity<EmployeeScheduleResponseDTO> create(@RequestBody @Valid EmployeeSchedulerRequestDTO requestDTO) {
+        EmployeeScheduleResponseDTO response = employeeSchedulerService.createEmployeeSchedule(requestDTO);
         return ResponseEntity.status(201).body(response);
     }
 
@@ -34,18 +36,18 @@ public class EmployeeSchedulerController {
         return ResponseEntity.ok(schedules);
     }
 
+    @RequireRole(RoleType.ADMIN)
     @PutMapping("/{id}")
     public ResponseEntity<EmployeeScheduleResponseDTO> update(@PathVariable UUID id,
-                                                              @RequestBody @Valid EmployeeSchedulerRequestDTO requestDTO,
-                                                              @RequestHeader("X-User-Id") UUID requesterId) {
-        EmployeeScheduleResponseDTO updated = employeeSchedulerService.updateEmployeeScheduleById(id, requestDTO, requesterId);
+                                                              @RequestBody @Valid EmployeeSchedulerRequestDTO requestDTO) {
+        EmployeeScheduleResponseDTO updated = employeeSchedulerService.updateEmployeeScheduleById(id, requestDTO);
         return ResponseEntity.ok(updated);
     }
 
+    @RequireRole(RoleType.ADMIN)
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable UUID id,
-                                       @RequestHeader("X-User-Id") UUID requesterId) {
-        employeeSchedulerService.deleteEmployeeScheduleById(id, requesterId);
+    public ResponseEntity<Void> delete(@PathVariable UUID id) {
+        employeeSchedulerService.deleteEmployeeScheduleById(id);
         return ResponseEntity.noContent().build();
     }
 }

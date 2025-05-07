@@ -21,25 +21,21 @@ import java.util.UUID;
 public class ClassGroupPlanService {
     private final ClassGroupPlanRepository classGroupPlanRepository;
     private final ValidationFaced validationFaced;
-    private final UserValidation userValidation;
     private final ApplicationEventPublisher publisher;
 
 
     public ClassGroupPlanService(ClassGroupPlanRepository classGroupPlanRepository,
                              ValidationFaced validationFaced,
-                                UserValidation userValidation,
                              ApplicationEventPublisher publisher) {
 
         this.classGroupPlanRepository = classGroupPlanRepository;
         this.validationFaced = validationFaced;
-        this.userValidation = userValidation;
         this.publisher = publisher;
 
     }
 
     @Transactional
-    public void addPlanToClassGroup(CreateClassGroupPlanDTO requestDTO, UUID requesterId) {
-        RolesValidation.validateUserRole(RoleType.ADMIN, userValidation.validateUserById(requesterId).getRoles());
+    public void addPlanToClassGroup(CreateClassGroupPlanDTO requestDTO) {
 
         validationFaced.classGroupPlanValidation.validateClassGroupPlanExists(requestDTO.getPlanId(), requestDTO.getClassGroupId());
         ClassGroup classGroup = validationFaced.classGroupValidation.validateClassGroupById(requestDTO.getClassGroupId());
@@ -51,9 +47,7 @@ public class ClassGroupPlanService {
     }
 
     @Transactional
-    public void removePlanToClassGroup(UUID planId, UUID classGroupId, UUID requesterId) {
-        RolesValidation.validateUserRole(RoleType.ADMIN, userValidation.validateUserById(requesterId).getRoles());
-
+    public void removePlanToClassGroup(UUID planId, UUID classGroupId) {
         validationFaced.classGroupPlanValidation.validateClassGroupPlanNotExists(planId, classGroupId);
 
         ClassGroupPlan classGroupPlan = validationFaced.classGroupPlanValidation

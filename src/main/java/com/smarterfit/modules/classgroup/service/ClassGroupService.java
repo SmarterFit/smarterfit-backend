@@ -45,8 +45,6 @@ public class ClassGroupService {
     @Transactional
     public ClassGroupResponseDTO createClassGroup(ClassGroupRequestDTO requestDTO, UUID requesterId) {
         User creatorUser = validationFaced.userValidation.validateUserById(requesterId);
-        RolesValidation.validateUserRole(RoleType.TRAINER, creatorUser.getRoles());
-
         validationFaced.classGroupValidation.validateClassGroupDates(requestDTO.getStartDate(), requestDTO.getEndDate());
 
         validationFaced.classGroupValidation.validateClassGroupExists(requestDTO.getTitle(), null);
@@ -75,9 +73,7 @@ public class ClassGroupService {
     }
 
     @Transactional
-    public ClassGroupResponseDTO updateClassGroupById(UUID classGroupId, ClassGroupRequestDTO requestDTO, UUID requesterId) {
-        RolesValidation.validateUserRole(RoleType.TRAINER, validationFaced.userValidation.validateUserById(requesterId).getRoles());
-
+    public ClassGroupResponseDTO updateClassGroupById(UUID classGroupId, ClassGroupRequestDTO requestDTO) {
         validationFaced.classGroupValidation.validateClassGroupDates(requestDTO.getStartDate(),
                 requestDTO.getEndDate());
         ClassGroup classGroup = validationFaced.classGroupValidation.validateClassGroupById(classGroupId);
@@ -91,8 +87,7 @@ public class ClassGroupService {
     }
 
     @Transactional
-    public void deleteClassGroupById(UUID id, UUID requesterId) {
-        RolesValidation.validateUserRole(RoleType.TRAINER, validationFaced.userValidation.validateUserById(requesterId).getRoles());
+    public void deleteClassGroupById(UUID id) {
         ClassGroup classGroup = validationFaced.classGroupValidation.validateClassGroupById(id);
         classGroup.setActive(false);
         publisher.publishEvent(new ClassGroupDeactivatedEvent(classGroup));

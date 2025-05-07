@@ -32,24 +32,21 @@ public class ClassSessionService {
     private final ClassSessionValidation classSessionValidation;
     private final ClassGroupScheduleValidation classGroupScheduleValidation;
     private final ClassGroupScheduleRepository classGroupScheduleRepository;
-    private final UserValidation userValidation;
 
     public ClassSessionService(ClassSessionRepository classSessionRepository, ClassGroupValidation classGroupValidation,
             ClassSessionValidation classSessionValidation,
             ClassGroupScheduleValidation classGroupScheduleValidation,
-            ClassGroupScheduleRepository classGroupScheduleRepository,
-                               UserValidation userValidation) {
+            ClassGroupScheduleRepository classGroupScheduleRepository) {
+
         this.classSessionRepository = classSessionRepository;
         this.classGroupValidation = classGroupValidation;
         this.classSessionValidation = classSessionValidation;
-        this.userValidation = userValidation;
         this.classGroupScheduleValidation = classGroupScheduleValidation;
         this.classGroupScheduleRepository = classGroupScheduleRepository;
     }
 
     @Transactional
-    public ClassSessionResponseDTO createClassSession(CreateClassSessionRequestDTO requestDTO, UUID requesterId) {
-        RolesValidation.validateUserRole(RoleType.EMPLOYEE, userValidation.validateUserById(requesterId).getRoles());
+    public ClassSessionResponseDTO createClassSession(CreateClassSessionRequestDTO requestDTO) {
         ClassGroup classGroup = classGroupValidation.validateClassGroupById(requestDTO.getClassGroupId());
 
         ClassSession classSession = ClassSessionMapper.toEntity(requestDTO, classGroup);
@@ -72,8 +69,7 @@ public class ClassSessionService {
     }
 
     @Transactional
-    public ClassSessionResponseDTO updateClassSessionById(UUID id, CreateClassSessionRequestDTO requestDTO, UUID requesterId) {
-        RolesValidation.validateUserRole(RoleType.EMPLOYEE, userValidation.validateUserById(requesterId).getRoles());
+    public ClassSessionResponseDTO updateClassSessionById(UUID id, CreateClassSessionRequestDTO requestDTO) {
 
         ClassSession classSession = classSessionValidation.validateClassSessionById(id);
         ClassGroup classGroup = classGroupValidation.validateClassGroupById(requestDTO.getClassGroupId());
@@ -85,9 +81,7 @@ public class ClassSessionService {
     }
 
     @Transactional
-    public void deleteClassSessionById(UUID id, UUID requesterId) {
-        RolesValidation.validateUserRole(RoleType.EMPLOYEE, userValidation.validateUserById(requesterId).getRoles());
-
+    public void deleteClassSessionById(UUID id) {
         ClassSession classSession = classSessionValidation.validateClassSessionById(id);
         classSessionRepository.delete(classSession);
     }

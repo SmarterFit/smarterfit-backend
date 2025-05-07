@@ -1,5 +1,7 @@
 package com.smarterfit.modules.classgroup.controller;
 
+import com.smarterfit.common.enums.RoleType;
+import com.smarterfit.common.security.RequireRole;
 import com.smarterfit.modules.classgroup.dto.request.classgroup.schedule.CreateClassGroupScheduleRequestDTO;
 import com.smarterfit.modules.classgroup.dto.response.ClassGroupScheduleResponseDTO;
 import com.smarterfit.modules.classgroup.service.ClassGroupScheduleService;
@@ -20,13 +22,13 @@ public class ClassGroupScheduleController {
         this.classGroupScheduleService = classGroupScheduleService;
     }
 
+    @RequireRole(RoleType.EMPLOYEE)
     @PostMapping("/cadastrar")
     public ResponseEntity<ClassGroupScheduleResponseDTO> createClassGroupSchedule(
-            @RequestBody @Valid CreateClassGroupScheduleRequestDTO requestDTO,
-            @RequestAttribute("X-User-Id") UUID requesterId) {
+            @RequestBody @Valid CreateClassGroupScheduleRequestDTO requestDTO) {
 
         ClassGroupScheduleResponseDTO responseDTO = classGroupScheduleService
-                .createClassGroupSchedule(requestDTO, requesterId);
+                .createClassGroupSchedule(requestDTO);
         return ResponseEntity.status(201).body(responseDTO);
     }
 
@@ -36,22 +38,22 @@ public class ClassGroupScheduleController {
         return ResponseEntity.ok(responseDTO);
     }
 
+    @RequireRole(RoleType.EMPLOYEE)
     @PutMapping("/{id}")
     public ResponseEntity<ClassGroupScheduleResponseDTO> updateClassGroupScheduleById(
             @PathVariable UUID id,
-            @RequestBody @Valid CreateClassGroupScheduleRequestDTO requestDTO,
-            @RequestAttribute("X-User-Id") UUID requesterId) {
+            @RequestBody @Valid CreateClassGroupScheduleRequestDTO requestDTO) {
         ClassGroupScheduleResponseDTO responseDTO = classGroupScheduleService.updateClassGroupScheduleById(id,
-                requestDTO, requesterId);
+                requestDTO);
         return ResponseEntity.ok(responseDTO);
     }
 
+    @RequireRole(RoleType.EMPLOYEE)
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteClassGroupScheduleById(
-            @PathVariable UUID id,
-            @RequestAttribute("X-User-Id") UUID requesterId) {
+            @PathVariable UUID id) {
 
-        classGroupScheduleService.deleteClassGroupScheduleById(id, requesterId);
+        classGroupScheduleService.deleteClassGroupScheduleById(id);
         return ResponseEntity.noContent().build();
     }
 

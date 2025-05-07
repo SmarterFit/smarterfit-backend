@@ -21,24 +21,18 @@ public class ClassGroupScheduleService {
     private final ClassGroupScheduleRepository classGroupScheduleRepository;
     private final ClassGroupScheduleValidation classGroupScheduleValidation;
     private final ClassGroupValidation classGroupValidation;
-    private final UserValidation userValidation;
 
     public ClassGroupScheduleService(ClassGroupScheduleRepository classGroupScheduleRepository,
             ClassGroupScheduleValidation classGroupScheduleValidation,
-            UserValidation userValidation,
             ClassGroupValidation classGroupValidation) {
+
         this.classGroupScheduleRepository = classGroupScheduleRepository;
         this.classGroupScheduleValidation = classGroupScheduleValidation;
-        this.userValidation = userValidation;
         this.classGroupValidation = classGroupValidation;
     }
 
     @Transactional
-    public ClassGroupScheduleResponseDTO createClassGroupSchedule(CreateClassGroupScheduleRequestDTO requestDTO,
-            UUID requesterId) {
-
-        RolesValidation.validateUserRole(RoleType.EMPLOYEE, userValidation.validateUserById(requesterId).getRoles());
-
+    public ClassGroupScheduleResponseDTO createClassGroupSchedule(CreateClassGroupScheduleRequestDTO requestDTO) {
         classGroupScheduleValidation.validateClassSchedulesDates(requestDTO.getStartTime(), requestDTO.getEndTime());
         ClassGroup classGroup = classGroupValidation.validateClassGroupById(requestDTO.getClassGroupId());
 
@@ -57,9 +51,7 @@ public class ClassGroupScheduleService {
 
     @Transactional
     public ClassGroupScheduleResponseDTO updateClassGroupScheduleById(UUID id,
-            CreateClassGroupScheduleRequestDTO requestDTO, UUID requesterId) {
-        RolesValidation.validateUserRole(RoleType.EMPLOYEE, userValidation.validateUserById(requesterId).getRoles());
-
+            CreateClassGroupScheduleRequestDTO requestDTO) {
 
         ClassGroup classGroup = classGroupValidation.validateClassGroupById(requestDTO.getClassGroupId());
         ClassGroupSchedule classGroupSchedule = classGroupScheduleValidation.validateClassGroupScheduleById(id);
@@ -73,10 +65,7 @@ public class ClassGroupScheduleService {
     }
 
     @Transactional
-    public void deleteClassGroupScheduleById(UUID id, UUID requesterId) {
-        RolesValidation.validateUserRole(RoleType.EMPLOYEE, userValidation.validateUserById(requesterId).getRoles());
-
-
+    public void deleteClassGroupScheduleById(UUID id) {
         ClassGroupSchedule classGroupSchedule = classGroupScheduleValidation.validateClassGroupScheduleById(id);
         classGroupScheduleRepository.delete(classGroupSchedule);
     }

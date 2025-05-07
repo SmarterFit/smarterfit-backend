@@ -3,6 +3,8 @@ package com.smarterfit.modules.billing.controller;
 import java.util.List;
 import java.util.UUID;
 
+import com.smarterfit.common.enums.RoleType;
+import com.smarterfit.common.security.RequireRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,10 +29,10 @@ public class PlanController {
       this.planService = planService;
    }
 
+   @RequireRole(RoleType.ADMIN)
    @PostMapping
-   public ResponseEntity<PlanResponseDTO> createPlan(@RequestBody @Valid CreatePlanRequestDTO requestDTO,
-                                                     @RequestHeader("X-User-Id") UUID requesterId) {
-      PlanResponseDTO responseDTO = planService.createPlan(requestDTO, requesterId);
+   public ResponseEntity<PlanResponseDTO> createPlan(@RequestBody @Valid CreatePlanRequestDTO requestDTO) {
+      PlanResponseDTO responseDTO = planService.createPlan(requestDTO);
       return ResponseEntity.status(201).body(responseDTO);
    }
 
@@ -50,16 +52,17 @@ public class PlanController {
       return ResponseEntity.ok(planService.searchPlans(requestDTO, pageable));
    }
 
+   @RequireRole(RoleType.ADMIN)
    @PutMapping("/{id}")
    public ResponseEntity<PlanResponseDTO> updatePlan(@PathVariable UUID id,
-                                                     @RequestBody @Valid CreatePlanRequestDTO requestDTO,
-                                                     @RequestHeader("X-User-Id") UUID requesterId) {
-      return ResponseEntity.ok(planService.updatePlan(id, requestDTO, requesterId));
+                                                     @RequestBody @Valid CreatePlanRequestDTO requestDTO) {
+      return ResponseEntity.ok(planService.updatePlan(id, requestDTO));
    }
 
+   @RequireRole(RoleType.ADMIN)
    @DeleteMapping("/{id}")
-   public ResponseEntity<Void> deletePlan(@PathVariable UUID id,  @RequestHeader("X-User-Id") UUID requesterId) {
-      planService.deletePlan(id, requesterId);
+   public ResponseEntity<Void> deletePlan(@PathVariable UUID id) {
+      planService.deletePlan(id);
       return ResponseEntity.noContent().build();
    }
 }

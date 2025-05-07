@@ -1,5 +1,7 @@
 package com.smarterfit.modules.classgroup.controller;
 
+import com.smarterfit.common.enums.RoleType;
+import com.smarterfit.common.security.RequireRole;
 import com.smarterfit.modules.classgroup.dto.request.classsession.CreateClassSessionRequestDTO;
 import com.smarterfit.modules.classgroup.dto.response.ClassSessionResponseDTO;
 import com.smarterfit.modules.classgroup.service.ClassSessionService;
@@ -21,11 +23,11 @@ public class ClassSessionController {
         this.classSessionService = classSessionService;
     }
 
+    @RequireRole(RoleType.EMPLOYEE)
     @PostMapping("/cadastrar")
     public ResponseEntity<ClassSessionResponseDTO> createClassSession(
-            @RequestBody @Valid CreateClassSessionRequestDTO requestDTO,
-            @RequestAttribute("X-User-Id") UUID requesterId) {
-        ClassSessionResponseDTO responseDTO = classSessionService.createClassSession(requestDTO, requesterId);
+            @RequestBody @Valid CreateClassSessionRequestDTO requestDTO) {
+        ClassSessionResponseDTO responseDTO = classSessionService.createClassSession(requestDTO);
         return ResponseEntity.status(201).body(responseDTO);
     }
 
@@ -39,25 +41,26 @@ public class ClassSessionController {
         return ResponseEntity.ok(classSessionService.getAllClassSession());
     }
 
+    @RequireRole(RoleType.EMPLOYEE)
     @PostMapping("/agendar")
     public void scheduleClassSession() {
         classSessionService.generateDailySessions();
     }
 
+    @RequireRole(RoleType.EMPLOYEE)
     @PutMapping("/{id}")
     public ResponseEntity<ClassSessionResponseDTO> updateClassSessionById(
             @PathVariable UUID id,
-            @RequestBody @Valid CreateClassSessionRequestDTO requestDTO,
-            @RequestAttribute("X-User-Id") UUID requesterId) {
-        return ResponseEntity.ok(classSessionService.updateClassSessionById(id, requestDTO, requesterId));
+            @RequestBody @Valid CreateClassSessionRequestDTO requestDTO) {
+        return ResponseEntity.ok(classSessionService.updateClassSessionById(id, requestDTO));
     }
 
+    @RequireRole(RoleType.EMPLOYEE)
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteClassSessionById(
-            @PathVariable UUID id,
-            @RequestAttribute("X-User-Id") UUID requesterId) {
+            @PathVariable UUID id) {
 
-        classSessionService.deleteClassSessionById(id, requesterId);
+        classSessionService.deleteClassSessionById(id);
         return ResponseEntity.noContent().build();
     }
 }
