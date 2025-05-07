@@ -7,6 +7,7 @@ import com.smarterfit.modules.billing.entity.Subscription;
 import com.smarterfit.modules.billing.service.SubscriptionService;
 import com.smarterfit.modules.billing.validation.SubscriptionValidation;
 import com.smarterfit.modules.classgroup.dto.request.classgroup.CreateClassGroupRequestDTO;
+import com.smarterfit.modules.classgroup.dto.request.classgroup.SearchClassGroupRequestDTO;
 import com.smarterfit.modules.classgroup.dto.response.ClassGroupResponseDTO;
 import com.smarterfit.modules.classgroup.entity.ClassGroup;
 import com.smarterfit.modules.classgroup.entity.ClassGroupPlan;
@@ -16,12 +17,17 @@ import com.smarterfit.modules.classgroup.mapper.ClassGroupMapper;
 import com.smarterfit.modules.classgroup.repository.ClassGroupPlanRepository;
 import com.smarterfit.modules.classgroup.repository.ClassGroupRepository;
 import com.smarterfit.modules.classgroup.repository.ClassGroupUserRepository;
+import com.smarterfit.modules.classgroup.specification.ClassSpecifications;
 import com.smarterfit.modules.classgroup.validation.ValidationFaced;
 import com.smarterfit.modules.useraccess.dto.response.UserResponseDTO;
 import com.smarterfit.modules.useraccess.entity.User;
 import com.smarterfit.modules.useraccess.mapper.UserMapper;
 import com.smarterfit.modules.useraccess.validation.RolesValidation;
 
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,6 +52,7 @@ public class ClassGroupService {
             ValidationFaced validationFaced,
             SubscriptionService subscriptionService,
             SubscriptionValidation subscriptionValidation) {
+
         this.classGroupRepository = classGroupRepository;
         this.classGroupUserRepository = classGroupUserRepository;
         this.classGroupPlanRepository = classGroupPlanRepository;
@@ -85,6 +92,16 @@ public class ClassGroupService {
                         classGroup.getCreatedByUser().getProfile().getFullName()))
                 .toList();
     }
+
+    @Transactional(readOnly = true)
+    public Page<ClassGroupResponseDTO> searchClass(SearchClassGroupRequestDTO searchDTO, Pageable pageable){
+        Specification<ClassGroup> specification = ClassSpecifications.searchByFilters(searchDTO);
+
+        Page<ClassGroup> classGroups = classGroupRepository.findAll(specification, pageable);
+
+        return  classGroups.map(ClassGroupMapper::toResponse);
+    }
+
 
     @Transactional
     public ClassGroupResponseDTO updateClassGroupById(UUID classGroupId, CreateClassGroupRequestDTO requestDTO) {

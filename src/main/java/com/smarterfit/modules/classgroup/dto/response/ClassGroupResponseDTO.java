@@ -1,6 +1,7 @@
 package com.smarterfit.modules.classgroup.dto.response;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 import lombok.AllArgsConstructor;
@@ -25,5 +26,6 @@ public class ClassGroupResponseDTO {
     private LocalDate startDate;
     private LocalDate endDate;
     private String nameCreator;
+    private List<ClassGroupScheduleResponseDTO> schedulesDTO;
     
 }

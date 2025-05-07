@@ -1,5 +1,6 @@
 package com.smarterfit.modules.classgroup.dto.response;
 
+import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.util.UUID;
 
@@ -17,7 +18,7 @@ import lombok.Setter;
 public class ClassGroupScheduleResponseDTO {
     private UUID id;
     private UUID classGroupId;
-    private Integer dayOfWeek;
+    private DayOfWeek dayOfWeek;
     private LocalTime startTime;
     private LocalTime endTime;
 }

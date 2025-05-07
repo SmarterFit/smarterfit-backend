@@ -4,10 +4,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import com.smarterfit.modules.classgroup.entity.ClassGroupSchedule;
+import org.springframework.stereotype.Repository;
 
 import java.time.LocalTime;
 import java.util.UUID;
 
+@Repository
 public interface ClassGroupScheduleRepository extends JpaRepository<ClassGroupSchedule, UUID> {
 
     @Query("""

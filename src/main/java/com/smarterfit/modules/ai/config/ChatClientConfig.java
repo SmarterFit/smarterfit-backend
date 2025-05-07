@@ -3,6 +3,7 @@ package com.smarterfit.modules.ai.config;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
+import com.smarterfit.modules.ai.tools.ClassTools;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,10 +20,12 @@ public class ChatClientConfig {
    private Resource systemPrompt;
 
    private PlanTools planTools;
+   private ClassTools classTools;
 
    @Autowired
-   public ChatClientConfig(PlanTools planTools) {
+   public ChatClientConfig(PlanTools planTools, ClassTools classTools) {
       this.planTools = planTools;
+      this.classTools = classTools;
    }
 
    @Bean
@@ -39,7 +42,7 @@ public class ChatClientConfig {
       }
 
       return chatClient
-            .defaultTools(planTools)
+            .defaultTools(classTools)
             .build();
    }
 }
