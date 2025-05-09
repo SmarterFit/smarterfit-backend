@@ -19,8 +19,8 @@ public class ChatClientConfig {
    @Value("classpath:prompts/smarterfit-system.txt")
    private Resource systemPrompt;
 
-   private PlanTools planTools;
-   private ClassTools classTools;
+   private final PlanTools planTools;
+   private final ClassTools classTools;
 
    @Autowired
    public ChatClientConfig(PlanTools planTools, ClassTools classTools) {

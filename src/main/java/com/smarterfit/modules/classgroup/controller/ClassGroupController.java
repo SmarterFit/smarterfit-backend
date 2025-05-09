@@ -26,8 +26,7 @@ public class ClassGroupController {
     @PostMapping("/cadastrar")
     public ResponseEntity<ClassGroupResponseDTO> createClassGroup(
             @RequestBody @Valid ClassGroupRequestDTO requestDTO,
-            @RequestHeader("X-User-Id") UUID requesterId,
-            HttpServletRequest request) {
+            @RequestHeader("X-User-Id") UUID requesterId) {
 
         ClassGroupResponseDTO responseDTO = classGroupService.createClassGroup(requestDTO, requesterId);
         return ResponseEntity.status(201).body(responseDTO);

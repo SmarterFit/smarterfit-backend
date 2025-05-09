@@ -1,19 +1,20 @@
 package com.smarterfit.modules.classgroup.service;
 
-import com.smarterfit.common.enums.RoleType;
 import com.smarterfit.modules.classgroup.dto.request.classgroup.ClassGroupRequestDTO;
+import com.smarterfit.modules.classgroup.dto.request.classgroup.SearchClassGroupRequestDTO;
 import com.smarterfit.modules.classgroup.dto.response.ClassGroupResponseDTO;
 import com.smarterfit.modules.classgroup.entity.ClassGroup;
-import com.smarterfit.modules.classgroup.entity.ClassGroupUser;
 import com.smarterfit.modules.classgroup.entity.Modality;
 import com.smarterfit.modules.classgroup.event.ClassGroupDeactivatedEvent;
 import com.smarterfit.modules.classgroup.mapper.ClassGroupMapper;
 import com.smarterfit.modules.classgroup.repository.ClassGroupRepository;
-import com.smarterfit.modules.classgroup.repository.ClassGroupUserRepository;
+import com.smarterfit.modules.classgroup.specification.ClassSpecifications;
 import com.smarterfit.modules.classgroup.validation.ValidationFaced;
 import com.smarterfit.modules.useraccess.entity.User;
-import com.smarterfit.modules.useraccess.validation.RolesValidation;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,18 +26,15 @@ import java.util.UUID;
 public class ClassGroupService {
 
     private final ClassGroupRepository classGroupRepository;
-    private final ClassGroupUserRepository classGroupUserRepository;
     private final ValidationFaced validationFaced;
     private final ApplicationEventPublisher publisher;
 
 
     public ClassGroupService(ClassGroupRepository classGroupRepository,
-            ClassGroupUserRepository classGroupUserRepository,
             ValidationFaced validationFaced,
                              ApplicationEventPublisher publisher) {
 
         this.classGroupRepository = classGroupRepository;
-        this.classGroupUserRepository = classGroupUserRepository;
         this.validationFaced = validationFaced;
         this.publisher = publisher;
 
@@ -94,12 +92,15 @@ public class ClassGroupService {
         classGroupRepository.save(classGroup);
     }
 
+    @Transactional(readOnly = true)
+    public Page<ClassGroupResponseDTO> searchClass(SearchClassGroupRequestDTO searchDTO, Pageable pageable){
+        Specification<ClassGroup> specification = ClassSpecifications.searchByFilters(searchDTO);
 
+        Page<ClassGroup> classGroups = classGroupRepository.findAll(specification, pageable);
 
-    private void saveUserToGroup(ClassGroup classGroup, User user) {
-        ClassGroupUser classGroupUser = new ClassGroupUser();
-        classGroupUser.setClassGroup(classGroup);
-        classGroupUser.setUser(user);
-        classGroupUserRepository.save(classGroupUser);
+        return  classGroups.map(ClassGroupMapper::toResponse);
     }
+
+
+
 }

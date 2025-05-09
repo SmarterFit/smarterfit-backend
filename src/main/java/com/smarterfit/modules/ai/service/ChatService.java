@@ -11,7 +11,7 @@ import reactor.core.publisher.Flux;
 
 @Service
 public class ChatService {
-   private ChatClient chatClient;
+   private final ChatClient chatClient;
 
    @Autowired
    public ChatService(ChatClient chatClient, ClassTools classTools) {

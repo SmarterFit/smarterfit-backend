@@ -33,12 +33,12 @@ public class RoleValidationInterceptor implements HandlerInterceptor {
 
         RequireRole requireRole = handlerMethod.getMethodAnnotation(RequireRole.class);
 
-        // Se não tem anotação, não precisa validar role
+        // Se não tem anotação, não precisa validar
         if (requireRole == null) {
             return true;
         }
 
-        // 1. Ler o UUID do header
+        // 1. Read UUID from header
         String userIdHeader = request.getHeader("X-User-Id");
         if (userIdHeader == null) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -73,7 +73,6 @@ public class RoleValidationInterceptor implements HandlerInterceptor {
             response.getWriter().write("Access denied: " + e.getMessage());
             return false;
         }
-
 
         return true;
     }

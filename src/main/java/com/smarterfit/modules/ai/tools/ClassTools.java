@@ -14,41 +14,80 @@ import java.util.List;
 
 @Component
 public class ClassTools {
+
     private final ClassGroupService classGroupService;
 
     public ClassTools(ClassGroupService classGroupService) {
         this.classGroupService = classGroupService;
     }
 
-    @Tool(description = "Buscar turmas disponíveis com base em filtros.")
-    public List<ClassGroupResponseDTO> searchClassGroup(
-            @ToolParam(description = "Termo de título ou descrição") String titleTerm,
-            @ToolParam(description = "Capacidade mínima da turma") Integer minCapacity,
-            @ToolParam(description = "Capacidade máxima da turma") Integer maxCapacity,
-            @ToolParam(description = "Nome da modalidade") String modality,
-            @ToolParam(description = "Número mínimo de alunos") Integer minTotalMembers,
-            @ToolParam(description = "Número máximo de alunos") Integer maxTotalMembers,
-            @ToolParam(description = "Dias da semana desejados") List<DayOfWeek> daysOfWeek,
-            @ToolParam(description = "Data inicial da turma (de)") LocalDate startDateFrom,
-            @ToolParam(description = "Data inicial da turma (até)") LocalDate startDateTo,
-            @ToolParam(description = "Data final da turma (de)") LocalDate endDateFrom,
-            @ToolParam(description = "Data final da turma (até)") LocalDate endDateTo,
-            @ToolParam(description = "É uma turma de evento") Boolean isEvent
+    @Tool(description = "Buscar turmas com base em múltiplos filtros.")
+    public List<ClassGroupResponseDTO> searchClasses(
+            @ToolParam(required = false, description = "Termo presente no título ou descrição") String titleTerm,
+            @ToolParam(required = false, description = "Capacidade mínima da turma") Integer minCapacity,
+            @ToolParam(required = false, description = "Capacidade máxima da turma") Integer maxCapacity,
+            @ToolParam(required = false, description = "Nome da modalidade") String modality,
+            @ToolParam(required = false, description = "Número mínimo de alunos") Integer minMembers,
+            @ToolParam(required = false, description = "Número máximo de alunos") Integer maxMembers,
+            @ToolParam(required = false, description = "Lista de dias da semana (ex: MONDAY, TUESDAY)") List<DayOfWeek> daysOfWeek,
+            @ToolParam(required = false, description = "Data de início mínima") LocalDate startFrom,
+            @ToolParam(required = false, description = "Data de início máxima") LocalDate startTo,
+            @ToolParam(required = false, description = "Data de término mínima") LocalDate endFrom,
+            @ToolParam(required = false, description = "Data de término máxima") LocalDate endTo,
+            @ToolParam(required = false, description = "Buscar apenas turmas que são eventos") Boolean isEvent
     ) {
-        SearchClassGroupRequestDTO request = new SearchClassGroupRequestDTO();
-        request.setTitleTerm(titleTerm);
-        request.setMinCapacity(minCapacity);
-        request.setMaxCapacity(maxCapacity);
-        request.setModality(modality);
-        request.setMinTotalMembers(minTotalMembers);
-        request.setMaxTotalMembers(maxTotalMembers);
-        request.setDaysOfWeek(daysOfWeek);
-        request.setStartDateFrom(startDateFrom);
-        request.setStartDateTo(startDateTo);
-        request.setEndDateFrom(endDateFrom);
-        request.setEndDateTo(endDateTo);
-        request.setIsEvent(isEvent);
+        // Log para verificar os parâmetros recebidos
+        System.out.println("Iniciando a busca com os seguintes parâmetros:");
+        System.out.println("titleTerm: " + titleTerm);
+        System.out.println("minCapacity: " + minCapacity);
+        System.out.println("maxCapacity: " + maxCapacity);
+        System.out.println("modality: " + modality);
+        System.out.println("minMembers: " + minMembers);
+        System.out.println("maxMembers: " + maxMembers);
+        System.out.println("daysOfWeek: " + daysOfWeek);
+        System.out.println("startFrom: " + startFrom);
+        System.out.println("startTo: " + startTo);
+        System.out.println("endFrom: " + endFrom);
+        System.out.println("endTo: " + endTo);
+        System.out.println("isEvent: " + isEvent);
 
+        SearchClassGroupRequestDTO request = new SearchClassGroupRequestDTO();
+
+        if (titleTerm != null) request.setTitleTerm(titleTerm);
+        if (minCapacity != null) request.setMinCapacity(minCapacity);
+        if (maxCapacity != null) request.setMaxCapacity(maxCapacity);
+        if (modality != null) request.setModality(modality);
+        if (minMembers != null) request.setMinTotalMembers(minMembers);
+        if (maxMembers != null) request.setMaxTotalMembers(maxMembers);
+        if (daysOfWeek != null) request.setDaysOfWeek(daysOfWeek);
+        if (startFrom != null) request.setStartDateFrom(startFrom);
+        if (startTo != null) request.setStartDateTo(startTo);
+        if (endFrom != null) request.setEndDateFrom(endFrom);
+        if (endTo != null) request.setEndDateTo(endTo);
+        if (isEvent != null) request.setIsEvent(isEvent);
+
+        // Log para verificar os parâmetros antes da busca
+        System.out.println("Parametros de busca após a preparação do request:");
+        System.out.println(request);
+
+        List<ClassGroupResponseDTO> result = search(request);
+
+        // Log para verificar o resultado da busca
+        System.out.println("Resultados encontrados:");
+        if (result != null && !result.isEmpty()) {
+            for (ClassGroupResponseDTO classGroup : result) {
+                System.out.println("Turma encontrada: " + classGroup.getTitle());
+            }
+        } else {
+            System.out.println("Nenhuma turma encontrada.");
+        }
+
+        return result;
+    }
+
+    private List<ClassGroupResponseDTO> search(SearchClassGroupRequestDTO request) {
+        // Log de entrada no método de busca
+        System.out.println("Iniciando a busca no serviço com os parâmetros: " + request);
         return classGroupService.searchClass(request, Pageable.unpaged()).getContent();
     }
 }
