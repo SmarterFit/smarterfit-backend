@@ -26,6 +26,10 @@ public class ProfileMapper {
 
         profile = GenericMapper.map(dto, profile);
 
+        if (profile.getAddress() == null) {
+            profile.setAddress(new Address());
+        }
+
         if (dto.getAddresses() != null) {
             Address address = AddressMapper.toEntity(dto.getAddresses(), profile.getAddress());
             address.setProfile(profile);
