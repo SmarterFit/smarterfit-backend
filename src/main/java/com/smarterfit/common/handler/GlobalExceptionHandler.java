@@ -43,12 +43,28 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler({MethodArgumentNotValidException.class,
             HttpMessageNotReadableException.class, MethodArgumentTypeMismatchException.class})
-    public ResponseEntity<ApiError> argumentNotValidException(MethodArgumentNotValidException ex) {
-        List<String> errorList = ex.getBindingResult()
-                .getFieldErrors()
-                .stream()
-                .map(error -> error.getField() + ": " + error.getDefaultMessage())
-                .collect(Collectors.toList());
+    public ResponseEntity<ApiError> handleValidationExceptions(Exception ex) {
+        List<String> errorList;
+
+        if (ex instanceof MethodArgumentNotValidException) {
+            // Tratar MethodArgumentNotValidException
+            MethodArgumentNotValidException mavnEx = (MethodArgumentNotValidException) ex;
+            errorList = mavnEx.getBindingResult()
+                    .getFieldErrors()
+                    .stream()
+                    .map(error -> error.getField() + ": " + error.getDefaultMessage())
+                    .collect(Collectors.toList());
+        } else if (ex instanceof HttpMessageNotReadableException) {
+            // Tratar HttpMessageNotReadableException
+            errorList = List.of("Malformed JSON request.");
+        } else if (ex instanceof MethodArgumentTypeMismatchException) {
+            // Tratar MethodArgumentTypeMismatchException
+            MethodArgumentTypeMismatchException matmEx = (MethodArgumentTypeMismatchException) ex;
+            errorList = List.of("Invalid argument type for parameter: " + matmEx.getName());
+        } else {
+            errorList = List.of("Unexpected error occurred.");
+        }
+
         return createResponseApiError(HttpStatus.BAD_REQUEST, errorList);
     }
 

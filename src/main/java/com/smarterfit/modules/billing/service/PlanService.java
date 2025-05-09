@@ -5,6 +5,10 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import com.smarterfit.common.enums.RoleType;
+import com.smarterfit.modules.useraccess.entity.User;
+import com.smarterfit.modules.useraccess.validation.RolesValidation;
+import com.smarterfit.modules.useraccess.validation.UserValidation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
@@ -32,8 +36,8 @@ public class PlanService {
    @Autowired
    public PlanService(PlanRepository planRepository,
          PlanValidation planValidation,
-         SubscriptionService subscriptionService, PaymentService paymentService,
          ApplicationEventPublisher publisher) {
+
       this.planRepository = planRepository;
       this.planValidation = planValidation;
       this.publisher = publisher;
@@ -41,6 +45,7 @@ public class PlanService {
 
    @Transactional
    public PlanResponseDTO createPlan(CreatePlanRequestDTO requestDTO) {
+
       Plan plan = PlanMapper.toEntity(requestDTO);
       planRepository.save(plan);
       return PlanMapper.toResponse(plan);

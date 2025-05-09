@@ -21,6 +21,7 @@ public class ClassGroupResponseDTO {
     private UUID id;
     private String title;
     private Integer capacity;
+    private Integer totalMembers;
     private String description;
     private ModalityResponseDTO modalityDTO;
     private LocalDate startDate;

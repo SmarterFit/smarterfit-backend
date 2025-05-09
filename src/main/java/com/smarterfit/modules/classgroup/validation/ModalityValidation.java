@@ -27,5 +27,4 @@ public class ModalityValidation {
             throw new ResourceNotFoundException("Modality already exists");
         }
     }
-
 }

@@ -3,20 +3,13 @@ package com.smarterfit.modules.billing.controller;
 import java.util.List;
 import java.util.UUID;
 
+import com.smarterfit.common.enums.RoleType;
+import com.smarterfit.common.security.RequireRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.smarterfit.modules.billing.dto.request.plan.CreatePlanRequestDTO;
 import com.smarterfit.modules.billing.dto.request.plan.SearchPlanRequestDTO;
@@ -36,6 +29,7 @@ public class PlanController {
       this.planService = planService;
    }
 
+   @RequireRole(RoleType.ADMIN)
    @PostMapping
    public ResponseEntity<PlanResponseDTO> createPlan(@RequestBody @Valid CreatePlanRequestDTO requestDTO) {
       PlanResponseDTO responseDTO = planService.createPlan(requestDTO);
@@ -58,12 +52,14 @@ public class PlanController {
       return ResponseEntity.ok(planService.searchPlans(requestDTO, pageable));
    }
 
+   @RequireRole(RoleType.ADMIN)
    @PutMapping("/{id}")
    public ResponseEntity<PlanResponseDTO> updatePlan(@PathVariable UUID id,
-         @RequestBody @Valid CreatePlanRequestDTO requestDTO) {
+                                                     @RequestBody @Valid CreatePlanRequestDTO requestDTO) {
       return ResponseEntity.ok(planService.updatePlan(id, requestDTO));
    }
 
+   @RequireRole(RoleType.ADMIN)
    @DeleteMapping("/{id}")
    public ResponseEntity<Void> deletePlan(@PathVariable UUID id) {
       planService.deletePlan(id);

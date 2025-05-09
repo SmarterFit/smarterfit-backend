@@ -1,5 +1,6 @@
 package com.smarterfit.modules.classgroup.service;
 
+import com.smarterfit.common.enums.RoleType;
 import com.smarterfit.modules.classgroup.dto.request.classgroup.schedule.CreateClassGroupScheduleRequestDTO;
 import com.smarterfit.modules.classgroup.dto.response.ClassGroupScheduleResponseDTO;
 import com.smarterfit.modules.classgroup.entity.ClassGroup;
@@ -8,8 +9,10 @@ import com.smarterfit.modules.classgroup.mapper.ClassGroupScheduleMapper;
 import com.smarterfit.modules.classgroup.repository.ClassGroupScheduleRepository;
 import com.smarterfit.modules.classgroup.validation.ClassGroupScheduleValidation;
 import com.smarterfit.modules.classgroup.validation.ClassGroupValidation;
-
+import com.smarterfit.modules.useraccess.validation.RolesValidation;
+import com.smarterfit.modules.useraccess.validation.UserValidation;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
@@ -22,11 +25,13 @@ public class ClassGroupScheduleService {
     public ClassGroupScheduleService(ClassGroupScheduleRepository classGroupScheduleRepository,
             ClassGroupScheduleValidation classGroupScheduleValidation,
             ClassGroupValidation classGroupValidation) {
+
         this.classGroupScheduleRepository = classGroupScheduleRepository;
         this.classGroupScheduleValidation = classGroupScheduleValidation;
         this.classGroupValidation = classGroupValidation;
     }
 
+    @Transactional
     public ClassGroupScheduleResponseDTO createClassGroupSchedule(CreateClassGroupScheduleRequestDTO requestDTO) {
         classGroupScheduleValidation.validateClassSchedulesDates(requestDTO.getStartTime(), requestDTO.getEndTime());
         ClassGroup classGroup = classGroupValidation.validateClassGroupById(requestDTO.getClassGroupId());
@@ -38,13 +43,16 @@ public class ClassGroupScheduleService {
         return ClassGroupScheduleMapper.toResponse(savedClassGroupSchedule);
     }
 
+    @Transactional(readOnly = true)
     public ClassGroupScheduleResponseDTO getClassGroupScheduleById(UUID id) {
         ClassGroupSchedule classGroupSchedule = classGroupScheduleValidation.validateClassGroupScheduleById(id);
         return ClassGroupScheduleMapper.toResponse(classGroupSchedule);
     }
 
+    @Transactional
     public ClassGroupScheduleResponseDTO updateClassGroupScheduleById(UUID id,
             CreateClassGroupScheduleRequestDTO requestDTO) {
+
         ClassGroup classGroup = classGroupValidation.validateClassGroupById(requestDTO.getClassGroupId());
         ClassGroupSchedule classGroupSchedule = classGroupScheduleValidation.validateClassGroupScheduleById(id);
 
@@ -56,6 +64,7 @@ public class ClassGroupScheduleService {
         return ClassGroupScheduleMapper.toResponse(savedClassGroupSchedule);
     }
 
+    @Transactional
     public void deleteClassGroupScheduleById(UUID id) {
         ClassGroupSchedule classGroupSchedule = classGroupScheduleValidation.validateClassGroupScheduleById(id);
         classGroupScheduleRepository.delete(classGroupSchedule);

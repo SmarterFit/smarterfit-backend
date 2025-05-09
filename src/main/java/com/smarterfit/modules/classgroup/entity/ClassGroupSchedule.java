@@ -31,8 +31,9 @@ public class ClassGroupSchedule {
      * Days of the week when this class occurs.
      * 1 = Monday, 2 = Tuesday, ..., 6 = Saturday, 7 = Sunday.
      */
-    @Column(name = "weekday", nullable = false)
-    private Integer dayOfWeek;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "week_day", nullable = false)
+    private DayOfWeek dayOfWeek;
 
     @Column(name = "start_time", nullable = false)
     private LocalTime startTime;
