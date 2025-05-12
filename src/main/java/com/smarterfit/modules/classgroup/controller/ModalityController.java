@@ -1,9 +1,13 @@
 package com.smarterfit.modules.classgroup.controller;
 
+import com.smarterfit.common.enums.RoleType;
+import com.smarterfit.common.security.RequireRole;
 import com.smarterfit.modules.classgroup.dto.request.modality.CreateModalityRequestDTO;
 import com.smarterfit.modules.classgroup.dto.response.ModalityResponseDTO;
 import com.smarterfit.modules.classgroup.service.ModalityService;
 
+import com.smarterfit.modules.useraccess.entity.User;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,8 +26,11 @@ public class ModalityController {
         this.modalityService = modalityService;
     }
 
+
+    @RequireRole(RoleType.ADMIN)
     @PostMapping("/cadastrar")
     public ResponseEntity<ModalityResponseDTO> createModality(@RequestBody @Valid CreateModalityRequestDTO requestDTO) {
+
         ModalityResponseDTO responseDTO = modalityService.createModality(requestDTO);
         return ResponseEntity.status(201).body(responseDTO);
     }
@@ -43,6 +50,7 @@ public class ModalityController {
         return ResponseEntity.ok(modalityService.getAllModality());
     }
 
+    @RequireRole(RoleType.ADMIN)
     @PutMapping("/{id}")
     public ResponseEntity<ModalityResponseDTO> updateModalityById(
             @PathVariable UUID id,
@@ -50,6 +58,7 @@ public class ModalityController {
         return ResponseEntity.ok(modalityService.updateModalityById(id, requestDTO));
     }
 
+    @RequireRole(RoleType.ADMIN)
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteModalityById(@PathVariable UUID id) {
         modalityService.deleteModalityById(id);

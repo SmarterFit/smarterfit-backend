@@ -66,4 +66,10 @@ public class ClassGroupValidation {
             throw new BusinessException("Modality is in use by class group: ");
         }
     }
+
+    public void validateClassGroupsIsActive(ClassGroup classGroup) {
+        if(!classGroup.isActive()){
+            throw new BusinessException("Class group is not active");
+        }
+    }
 }

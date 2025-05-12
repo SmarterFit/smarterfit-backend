@@ -1,5 +1,6 @@
 package com.smarterfit.modules.classgroup.service;
 
+import com.smarterfit.common.enums.RoleType;
 import com.smarterfit.common.enums.SubscriptionTypeEvent;
 import com.smarterfit.modules.billing.entity.Subscription;
 import com.smarterfit.modules.billing.event.SubscriptionEvent;
@@ -14,6 +15,7 @@ import com.smarterfit.modules.classgroup.validation.ValidationFaced;
 import com.smarterfit.modules.useraccess.dto.response.UserResponseDTO;
 import com.smarterfit.modules.useraccess.entity.User;
 import com.smarterfit.modules.useraccess.mapper.UserMapper;
+import com.smarterfit.modules.useraccess.validation.RolesValidation;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,22 +44,32 @@ public class ClassGroupUserService {
     @Transactional
     public void addUserToClassGroup(CreateClassGroupUserDTO requestDTO) {
         validationFaced.classGroupUserValidation.validateClassGroupUserExists(requestDTO.getClassGroupId(), requestDTO.getUserId());
-
         ClassGroup classGroup = validationFaced.classGroupValidation.validateClassGroupById(requestDTO.getClassGroupId());
-
-        validationFaced.classGroupValidation.isGroupFull(classGroup);
+        validationFaced.classGroupValidation.validateClassGroupsIsActive(classGroup);
 
         User user = validationFaced.userValidation.validateUserById(requestDTO.getUserId());
-        Subscription subscription = subscriptionValidation.validateSubscriptionById(requestDTO.getSubscriptionId());
 
-        validationFaced.classGroupValidation
-                .validateUserAccessToClassGroupBySubscription(requestDTO.getClassGroupId(), requestDTO.getUserId(),
-                        requestDTO.getSubscriptionId());
+        Subscription subscription;
+        if(requestDTO.getSubscriptionId() == null) {
+            // CASE ADMIN OR EMPLOYEE
+            RolesValidation.validateUserRole(RoleType.EMPLOYEE, user.getRoles());
+        }
+        else {
+            //CASE USER
+            validationFaced.classGroupValidation.isGroupFull(classGroup);
+            subscription = subscriptionValidation.validateSubscriptionById(requestDTO.getSubscriptionId());
+            validationFaced.classGroupValidation
+                    .validateUserAccessToClassGroupBySubscription(requestDTO.getClassGroupId(), requestDTO.getUserId(),
+                            requestDTO.getSubscriptionId());
 
-        publisher.publishEvent(new SubscriptionEvent(SubscriptionTypeEvent.DECREMENT_AVAILABLE_CLASSES,
-                subscription));
+            validationFaced.classGroupPlanValidation.validateClassGroupPlanAndSubscription(classGroup.getId(),
+                    subscription.getPlan().getId());
+            publisher.publishEvent(new SubscriptionEvent(SubscriptionTypeEvent.DECREMENT_AVAILABLE_CLASSES,
+                    subscription));
+            incrementGroupMembers(classGroup);
+        }
 
-        incrementGroupMembers(classGroup);
+
         saveUserToGroup(classGroup, user);
     }
 

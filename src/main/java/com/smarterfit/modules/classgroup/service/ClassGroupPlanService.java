@@ -1,11 +1,16 @@
 package com.smarterfit.modules.classgroup.service;
 
+import com.smarterfit.common.enums.RoleType;
 import com.smarterfit.modules.billing.entity.Plan;
+import com.smarterfit.modules.classgroup.dto.request.classgroupplan.CreateClassGroupPlanDTO;
 import com.smarterfit.modules.classgroup.entity.ClassGroup;
 import com.smarterfit.modules.classgroup.entity.ClassGroupPlan;
 import com.smarterfit.modules.classgroup.event.ClassGroupDeactivatedEvent;
 import com.smarterfit.modules.classgroup.repository.ClassGroupPlanRepository;
 import com.smarterfit.modules.classgroup.validation.ValidationFaced;
+import com.smarterfit.modules.useraccess.entity.UserRole;
+import com.smarterfit.modules.useraccess.validation.RolesValidation;
+import com.smarterfit.modules.useraccess.validation.UserValidation;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,11 +35,12 @@ public class ClassGroupPlanService {
     }
 
     @Transactional
-    public void addPlanToClassGroup(UUID planId, UUID classGroupId) {
-        validationFaced.classGroupPlanValidation.validateClassGroupPlanExists(planId, classGroupId);
-        ClassGroup classGroup = validationFaced.classGroupValidation.validateClassGroupById(classGroupId);
+    public void addPlanToClassGroup(CreateClassGroupPlanDTO requestDTO) {
 
-        Plan plan = validationFaced.planValidation.validatePlanById(planId);
+        validationFaced.classGroupPlanValidation.validateClassGroupPlanExists(requestDTO.getPlanId(), requestDTO.getClassGroupId());
+        ClassGroup classGroup = validationFaced.classGroupValidation.validateClassGroupById(requestDTO.getClassGroupId());
+
+        Plan plan = validationFaced.planValidation.validatePlanById(requestDTO.getPlanId());
         ClassGroupPlan classGroupPlan = new ClassGroupPlan(classGroup, plan);
 
         classGroupPlanRepository.save(classGroupPlan);

@@ -26,10 +26,10 @@ public class CreateClassEventRequestDTO {
     private Integer capacity;
 
     @NotNull(message = "Start date is required")
-    @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime startDate;
 
     @NotNull(message = "End date is required")
-    @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime endDate;
 }

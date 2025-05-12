@@ -2,23 +2,27 @@ package com.smarterfit.modules.classgroup.mapper;
 
 import com.smarterfit.common.exceptions.ResourceNotFoundException;
 import com.smarterfit.common.mapper.GenericMapper;
-import com.smarterfit.modules.classgroup.dto.request.classgroup.CreateClassGroupRequestDTO;
+import com.smarterfit.modules.classgroup.dto.request.classgroup.ClassGroupRequestDTO;
 import com.smarterfit.modules.classgroup.dto.response.ClassGroupResponseDTO;
+import com.smarterfit.modules.classgroup.dto.response.ClassGroupScheduleResponseDTO;
 import com.smarterfit.modules.classgroup.entity.ClassGroup;
+import com.smarterfit.modules.classgroup.entity.ClassGroupSchedule;
 import com.smarterfit.modules.classgroup.entity.Modality;
 import com.smarterfit.modules.useraccess.entity.User;
+
+import java.util.stream.Collectors;
 
 public class ClassGroupMapper {
     private ClassGroupMapper() {
         // Private constructor to prevent instantiation
     }
 
-    public static ClassGroup toEntity(CreateClassGroupRequestDTO dto, Modality modality, User creator) {
+    public static ClassGroup toEntity(ClassGroupRequestDTO dto, Modality modality, User creator) {
         return toEntity(dto, modality, creator, new ClassGroup());
     }
 
-    public static ClassGroup toEntity(CreateClassGroupRequestDTO dto, Modality modality,
-            User creator, ClassGroup classGroup) {
+    public static ClassGroup toEntity(ClassGroupRequestDTO dto, Modality modality,
+                                      User creator, ClassGroup classGroup) {
         if (classGroup == null) {
             throw new ResourceNotFoundException("Class Group not found.");
         }
@@ -42,8 +46,29 @@ public class ClassGroupMapper {
         }
 
         ClassGroupResponseDTO response = GenericMapper.map(classGroup, ClassGroupResponseDTO.class);
-        response = response.toBuilder().modalityDTO(ModalityMapper.toResponse(classGroup.getModality()))
-                .nameCreator(nameCreator).build();
+
+        response = response.toBuilder()
+                .modalityDTO(ModalityMapper.toResponse(classGroup.getModality()))
+                .nameCreator(nameCreator)
+                .schedulesDTO(classGroup.getSchedules().stream().map(ClassGroupScheduleMapper::toResponse).
+                        collect(Collectors.toList()))
+                .build();
+
+        return response;
+    }
+
+    public static ClassGroupResponseDTO toResponse(ClassGroup classGroup) {
+        if (classGroup == null) {
+            throw new ResourceNotFoundException("Class Group not found.");
+        }
+
+        ClassGroupResponseDTO response = GenericMapper.map(classGroup, ClassGroupResponseDTO.class);
+
+        response = response.toBuilder()
+                .modalityDTO(ModalityMapper.toResponse(classGroup.getModality()))
+                .schedulesDTO(classGroup.getSchedules().stream().map(ClassGroupScheduleMapper::toResponse).
+                        collect(Collectors.toList()))
+                .build();
 
         return response;
     }

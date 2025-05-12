@@ -17,6 +17,5 @@ public class CreateClassGroupUserDTO {
     @NotNull(message = "User ID is required")
     UUID userId;
 
-    @NotNull(message = "Subscription ID is required")
     UUID subscriptionId;
 }

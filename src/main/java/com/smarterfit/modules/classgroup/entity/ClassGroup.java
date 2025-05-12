@@ -8,6 +8,8 @@ import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -53,6 +55,12 @@ public class ClassGroup {
 
     @Column(name = "is_active", nullable = false)
     private boolean isActive = true;
+
+    @Column(name = "is_event", nullable = false)
+    private boolean isEvent = false;
+
+    @OneToMany(mappedBy = "classGroup", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<ClassGroupSchedule> schedules = new ArrayList<>();
 
     @Column(name = "dt_created_at", nullable = false, updatable = false)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")

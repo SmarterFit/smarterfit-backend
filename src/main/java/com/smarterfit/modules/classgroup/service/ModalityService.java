@@ -58,6 +58,7 @@ public class ModalityService {
 
     @Transactional
     public ModalityResponseDTO updateModalityById(UUID id, CreateModalityRequestDTO requestDTO) {
+
         Modality modality = modalityValidation.validateModalityById(id);
 
         modality = ModalityMapper.toEntity(requestDTO, modality);

@@ -18,7 +18,7 @@ public class RolesValidation {
 
         if (!allowedRoles.contains(role)) {
             throw new PermissionDeniedException(
-                    String.format("Access denied: role '%s' does not have permission.", role)
+                    String.format("Access denied: the role does not have '%s' permission.", role)
             );
         }
     }

@@ -31,7 +31,7 @@ public class ClassGroupUser {
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "subscription_id", nullable = false)
+    @JoinColumn(name = "subscription_id")
     private Subscription subscription;
 
     @Column(name = "dt_expired_at")

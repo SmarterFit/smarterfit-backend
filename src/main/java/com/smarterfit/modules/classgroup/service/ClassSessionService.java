@@ -1,5 +1,6 @@
 package com.smarterfit.modules.classgroup.service;
 
+import com.smarterfit.common.enums.RoleType;
 import com.smarterfit.common.enums.SessionStatus;
 import com.smarterfit.modules.classgroup.dto.request.classsession.CreateClassSessionRequestDTO;
 import com.smarterfit.modules.classgroup.dto.response.ClassSessionResponseDTO;
@@ -13,6 +14,8 @@ import com.smarterfit.modules.classgroup.validation.ClassGroupScheduleValidation
 import com.smarterfit.modules.classgroup.validation.ClassGroupValidation;
 import com.smarterfit.modules.classgroup.validation.ClassSessionValidation;
 
+import com.smarterfit.modules.useraccess.validation.RolesValidation;
+import com.smarterfit.modules.useraccess.validation.UserValidation;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,10 +37,10 @@ public class ClassSessionService {
             ClassSessionValidation classSessionValidation,
             ClassGroupScheduleValidation classGroupScheduleValidation,
             ClassGroupScheduleRepository classGroupScheduleRepository) {
+
         this.classSessionRepository = classSessionRepository;
         this.classGroupValidation = classGroupValidation;
         this.classSessionValidation = classSessionValidation;
-
         this.classGroupScheduleValidation = classGroupScheduleValidation;
         this.classGroupScheduleRepository = classGroupScheduleRepository;
     }
@@ -67,6 +70,7 @@ public class ClassSessionService {
 
     @Transactional
     public ClassSessionResponseDTO updateClassSessionById(UUID id, CreateClassSessionRequestDTO requestDTO) {
+
         ClassSession classSession = classSessionValidation.validateClassSessionById(id);
         ClassGroup classGroup = classGroupValidation.validateClassGroupById(requestDTO.getClassGroupId());
 
