@@ -25,21 +25,24 @@ public class UserService {
     private final UserValidation userValidation;
     private final ProfileValidation profileValidation;
     private final PasswordEncoder passwordEncoder;
+    private final CryptoUtil cryptoUtil;
 
     @Autowired
     public UserService(UserRepository userRepository,
             UserValidation userValidation,
             ProfileValidation profileValidation,
-            PasswordEncoder passwordEncoder) {
+            PasswordEncoder passwordEncoder,
+                       CryptoUtil cryptoUtil) {
         this.userRepository = userRepository;
         this.userValidation = userValidation;
         this.profileValidation = profileValidation;
         this.passwordEncoder = passwordEncoder;
+        this.cryptoUtil = cryptoUtil;
     }
 
     @Transactional
     public UserResponseDTO createUser(CreateUserRequestDTO requestDTO) {
-        String encryptedCpf = CryptoUtil.encrypt(requestDTO.getCpf());
+        String encryptedCpf = cryptoUtil.encrypt(requestDTO.getCpf());
 
         userValidation.validatePasswords(requestDTO.getPassword(), requestDTO.getConfirmPassword());
         userValidation.validateEmailAvailability(requestDTO.getEmail());

@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -43,6 +44,11 @@ public class ClassGroupController {
             @PathVariable UUID id,
             @RequestBody @Valid ClassGroupRequestDTO requestDTO) {
         return ResponseEntity.ok(classGroupService.updateClassGroupById(id, requestDTO));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ClassGroupResponseDTO>> getAllClassGroup() {
+        return ResponseEntity.ok(classGroupService.getAllClassGroups());
     }
 
     @RequireRole(RoleType.TRAINER)

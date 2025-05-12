@@ -11,8 +11,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class CryptoUtil {
-   private static String ENCRYPTION_KEY;
-   private static String ALGORITHM;
+   private final String ENCRYPTION_KEY;
+   private final String ALGORITHM;
 
    @Autowired
    public CryptoUtil(@Value("${encryption.key}") String encryptionKey,
@@ -21,7 +21,7 @@ public class CryptoUtil {
       ALGORITHM = algorithm;
    }
 
-   public static String encrypt(String value) {
+   public String encrypt(String value) {
       try {
          SecretKeySpec key = new SecretKeySpec(ENCRYPTION_KEY.getBytes(), ALGORITHM);
 
@@ -36,7 +36,7 @@ public class CryptoUtil {
       }
    }
 
-   public static String decrypt(String value) {
+   public String decrypt(String value) {
       try {
          SecretKeySpec key = new SecretKeySpec(ENCRYPTION_KEY.getBytes(), ALGORITHM);
 

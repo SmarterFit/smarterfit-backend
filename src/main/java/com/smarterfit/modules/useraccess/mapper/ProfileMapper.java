@@ -51,7 +51,7 @@ public class ProfileMapper {
             response = response.toBuilder().address(responseAddress).build();
         }
 
-        response = response.toBuilder().cpf(CryptoUtil.decrypt(profile.getCpf())).build();
+        response = response.toBuilder().cpf(profile.getCpf()).build();
 
         return response;
     }

@@ -22,13 +22,15 @@ public class ProfileService {
     private final ProfileRepository profileRepository;
     private final ProfileValidation profileValidation;
     private final UserValidation userValidation;
+    private final CryptoUtil cryptoUtil;
 
     @Autowired
     public ProfileService(ProfileRepository profileRepository, ProfileValidation profileValidation,
-            UserValidation userValidation) {
+            UserValidation userValidation, CryptoUtil cryptoUtil) {
         this.profileRepository = profileRepository;
         this.profileValidation = profileValidation;
         this.userValidation = userValidation;
+        this.cryptoUtil = cryptoUtil;
     }
 
     @Transactional(readOnly = true)
@@ -38,7 +40,7 @@ public class ProfileService {
 
         return ProfileMapper.toResponse(profile);
     }
-
+    // TODO: Criptografar o cpf e salvar dentro do banco
     @Transactional
     public ProfileResponseDTO updateProfile(UUID id, CreateProfileRequestDTO requestDTO) {
         User user = userValidation.validateUserById(id);
@@ -48,7 +50,7 @@ public class ProfileService {
         // Validação extra opcional: evitar CPFs duplicados
         // TODO: Validar apenas se for diferente if
         // (!profile.getCpf().equals(requestDTO.cpf()))
-        String encryptedCpf = CryptoUtil.encrypt(requestDTO.getCpf());
+        String encryptedCpf = cryptoUtil.encrypt(requestDTO.getCpf());
 
         profileValidation.validateCpfAvailability(encryptedCpf, profile.getId());
 
