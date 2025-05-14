@@ -1,6 +1,7 @@
 package com.smarterfit.modules.useraccess.validation;
 
 import com.smarterfit.common.exceptions.BusinessException;
+import com.smarterfit.common.exceptions.ResourceAlreadyExistsException;
 import com.smarterfit.common.exceptions.ResourceNotFoundException;
 import com.smarterfit.modules.useraccess.entity.User;
 import com.smarterfit.modules.useraccess.repository.UserRepository;
@@ -29,13 +30,13 @@ public class UserValidation {
 
     public void validateEmailAvailability(String email) {
         userRepository.findByEmail(email).ifPresent(user -> {
-            throw new BusinessException("E-mail is already in use.");
+            throw new ResourceAlreadyExistsException("E-mail is already in use.");
         });
     }
 
     public void validatePasswords(String password, String confirmPassword) {
         if (!password.equals(confirmPassword)) {
-            throw new BusinessException("The passwords don't match.");
+            throw new IllegalArgumentException("The passwords don't match.");
         }
     }
 

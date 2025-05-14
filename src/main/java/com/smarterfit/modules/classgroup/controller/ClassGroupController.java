@@ -16,6 +16,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/turma")
+@CrossOrigin
 public class ClassGroupController {
     public final ClassGroupService classGroupService;
 

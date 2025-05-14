@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
+/// TODO: Para criar, editar e deletar usuários é necessário verificar algumas permissões
+/// Exemplo: Um usuário com papel diferente de Member só pode ser criado por um usuário com papel igual ou superior.
 @RestController
 @RequestMapping("/usuarios")
 @CrossOrigin

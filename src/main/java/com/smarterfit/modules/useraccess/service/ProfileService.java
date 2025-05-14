@@ -37,9 +37,11 @@ public class ProfileService {
     public ProfileResponseDTO getProfileById(UUID id) {
         User user = userValidation.validateUserById(id);
         Profile profile = user.getProfile();
+        profile.setCpf(cryptoUtil.decrypt(profile.getCpf()));
 
         return ProfileMapper.toResponse(profile);
     }
+
     // TODO: Criptografar o cpf e salvar dentro do banco
     @Transactional
     public ProfileResponseDTO updateProfile(UUID id, CreateProfileRequestDTO requestDTO) {

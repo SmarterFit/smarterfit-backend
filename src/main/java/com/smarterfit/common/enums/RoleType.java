@@ -8,6 +8,5 @@ public enum RoleType {
     RECEPTIONIST,
     EMPLOYEE,
     ADMIN;
-
 }
 

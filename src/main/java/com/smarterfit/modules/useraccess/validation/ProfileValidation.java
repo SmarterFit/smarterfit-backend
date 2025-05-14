@@ -22,9 +22,10 @@ public class ProfileValidation {
 
     public void validateCpfAvailability(String cpf) {
         profileRepository.findByCpf(cpf).ifPresent(p -> {
-            throw new BusinessException("CPF is already in use.");
+            throw new ResourceAlreadyExistsException("CPF is already in use.");
         });
     }
+
     public void validateCpfAvailability(String cpf, UUID currentProfileId) {
         profileRepository.findByCpf(cpf).ifPresent(existing -> {
             if (!existing.getId().equals(currentProfileId)) {
@@ -33,14 +34,13 @@ public class ProfileValidation {
         });
     }
 
-
     public Profile validateProfile(User user) {
         Profile profile = user.getProfile();
 
         if (profile == null) {
             throw new ResourceNotFoundException("Profile not found for user.");
         }
-        
+
         return profile;
     }
 }
