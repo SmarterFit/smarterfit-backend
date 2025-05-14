@@ -1,5 +1,6 @@
 package com.smarterfit.modules.classgroup.validation;
 
+import com.smarterfit.common.exceptions.ResourceAlreadyExistsException;
 import com.smarterfit.common.exceptions.ResourceNotFoundException;
 import com.smarterfit.modules.classgroup.entity.Modality;
 import com.smarterfit.modules.classgroup.repository.ModalityRepository;
@@ -24,7 +25,7 @@ public class ModalityValidation {
 
     public void existsModalityByName(String name) {
         if (classGroupRepository.existsByName(name)) {
-            throw new ResourceNotFoundException("Modality already exists");
+            throw new ResourceAlreadyExistsException("Modality already exists");
         }
     }
 }

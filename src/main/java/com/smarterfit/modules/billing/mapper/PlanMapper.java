@@ -3,7 +3,7 @@ package com.smarterfit.modules.billing.mapper;
 import com.smarterfit.common.exceptions.ResourceNotFoundException;
 import com.smarterfit.common.mapper.GenericMapper;
 import com.smarterfit.modules.billing.dto.request.plan.CreatePlanRequestDTO;
-import com.smarterfit.modules.billing.dto.response.PlanResponseDTO;
+import com.smarterfit.modules.billing.dto.response.plan.CreatedPlanResponseDTO;
 import com.smarterfit.modules.billing.entity.Plan;
 
 public class PlanMapper {
@@ -25,11 +25,11 @@ public class PlanMapper {
       return plan;
    }
 
-   public static PlanResponseDTO toResponse(Plan plan) {
+   public static CreatedPlanResponseDTO toResponse(Plan plan) {
       if (plan == null) {
          throw new ResourceNotFoundException("Plan not found.");
       }
 
-      return GenericMapper.map(plan, PlanResponseDTO.class);
+      return GenericMapper.map(plan, CreatedPlanResponseDTO.class);
    }
 }

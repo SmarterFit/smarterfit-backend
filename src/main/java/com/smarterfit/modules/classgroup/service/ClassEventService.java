@@ -30,7 +30,7 @@ public class ClassEventService {
     @Transactional
     public ClassEventResponseDTO createClassEvent(CreateClassEventRequestDTO requestDTO) {
         ClassGroup classGroup = validationFaced.classGroupValidation.validateClassGroupById(requestDTO.getClassGroupId());
-        validateDates(requestDTO, classGroup);
+        validationFaced.classEventValidation.validateDates(requestDTO, classGroup);
         // TODO: validar conflitos de horário com o instrutor
 
         ClassEvent classEvent = ClassEventMapper.toEntity(requestDTO, classGroup);
@@ -52,15 +52,16 @@ public class ClassEventService {
     }
 
     @Transactional
-    public ClassEventResponseDTO updateClassEventById(UUID classEventId, CreateClassEventRequestDTO requestDTO) {
+    public void updateClassEventById(UUID classEventId, CreateClassEventRequestDTO requestDTO) {
         ClassGroup classGroup = validationFaced.classGroupValidation.validateClassGroupById(requestDTO.getClassGroupId());
-        validateDates(requestDTO, classGroup);
         ClassEvent classEvent = validationFaced.classEventValidation.validateClassEventById(classEventId);
 
-        classEvent = ClassEventMapper.toEntity(requestDTO,  classGroup, classEvent);
-        classEventRepository.save(classEvent);
+        validationFaced.classEventValidation.validateDates(requestDTO, classGroup, classEventId);
+        ClassEvent updatedClassEvent = ClassEventMapper.toEntity(requestDTO,  classGroup, classEvent);
 
-        return ClassEventMapper.toResponse(classEvent);
+        classEventRepository.save(updatedClassEvent);
+
+        ClassEventMapper.toResponse(updatedClassEvent);
     }
 
     /// TODO: softdelete
@@ -80,12 +81,7 @@ public class ClassEventService {
 
     }
 
-    /// TODO: Essa tarefa deve estar no validation
-    private void validateDates(CreateClassEventRequestDTO requestDTO, ClassGroup classGroup) {
-        validationFaced.classEventValidation.validateClassEventDates(requestDTO.getStartDate(), requestDTO.getEndDate());
-        validationFaced.classEventValidation.validateEventTimeConflict(classGroup.getId(), requestDTO.getStartDate(),
-                requestDTO.getEndDate());
-    }
+
 
     public void incrementBooking(ClassEvent classEvent) {
         validationFaced.classEventValidation.validateBookingCount(classEvent.getBookingCount(),

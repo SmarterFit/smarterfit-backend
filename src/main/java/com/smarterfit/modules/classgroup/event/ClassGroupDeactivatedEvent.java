@@ -13,5 +13,4 @@ public class ClassGroupDeactivatedEvent extends ApplicationEvent {
         this.classGroup = classGroup;
     }
 
-
 }

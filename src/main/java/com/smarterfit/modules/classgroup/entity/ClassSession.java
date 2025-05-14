@@ -35,7 +35,7 @@ public class ClassSession {
 
     @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)
-    private SessionStatus status;
+    private SessionStatus status = SessionStatus.CONFIRMED;
 
     @Column(name = "dt_created_at", nullable = false, updatable = false)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")

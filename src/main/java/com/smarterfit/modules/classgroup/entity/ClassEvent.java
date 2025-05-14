@@ -16,7 +16,7 @@ import java.util.UUID;
 @EqualsAndHashCode(of = "id")
 @Entity
 @Table(name = "SF_CLASS_EVENT")
-public class ClassEvent {
+public class ClassEvent  {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;

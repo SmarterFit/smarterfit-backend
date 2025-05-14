@@ -16,7 +16,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder(toBuilder = true)
 public class ClassEventBookingResponseDTO {
-   private UUID id;
+   private UUID userId;
    private UUID classEventId;
    private BookingStatus bookingStatus;
 }

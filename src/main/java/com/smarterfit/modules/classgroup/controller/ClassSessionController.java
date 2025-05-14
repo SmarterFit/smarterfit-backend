@@ -3,6 +3,7 @@ package com.smarterfit.modules.classgroup.controller;
 import com.smarterfit.common.enums.RoleType;
 import com.smarterfit.common.security.RequireRole;
 import com.smarterfit.modules.classgroup.dto.request.classsession.CreateClassSessionRequestDTO;
+import com.smarterfit.modules.classgroup.dto.request.classsession.UpdateClassSessionRequestDTO;
 import com.smarterfit.modules.classgroup.dto.response.ClassSessionResponseDTO;
 import com.smarterfit.modules.classgroup.service.ClassSessionService;
 
@@ -12,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
-
+@CrossOrigin
 @RestController
 @RequestMapping("/turma/aula")
 public class ClassSessionController {
@@ -36,9 +37,9 @@ public class ClassSessionController {
         return ResponseEntity.ok(classSessionService.getClassSessionById(id));
     }
 
-    @GetMapping
-    public ResponseEntity<List<ClassSessionResponseDTO>> getAllClassSession() {
-        return ResponseEntity.ok(classSessionService.getAllClassSession());
+    @GetMapping("/agendada/{classGroupId}")
+    public ResponseEntity<List<ClassSessionResponseDTO>> getAllClassSessionByClass(@PathVariable UUID classGroupId) {
+        return ResponseEntity.ok(classSessionService.getAllClassSessionByGroup(classGroupId));
     }
 
     @RequireRole(RoleType.EMPLOYEE)
@@ -48,10 +49,10 @@ public class ClassSessionController {
     }
 
     @RequireRole(RoleType.EMPLOYEE)
-    @PutMapping("/{id}")
+    @PutMapping("alterar/{id}")
     public ResponseEntity<ClassSessionResponseDTO> updateClassSessionById(
             @PathVariable UUID id,
-            @RequestBody @Valid CreateClassSessionRequestDTO requestDTO) {
+            @RequestBody @Valid UpdateClassSessionRequestDTO requestDTO) {
         return ResponseEntity.ok(classSessionService.updateClassSessionById(id, requestDTO));
     }
 

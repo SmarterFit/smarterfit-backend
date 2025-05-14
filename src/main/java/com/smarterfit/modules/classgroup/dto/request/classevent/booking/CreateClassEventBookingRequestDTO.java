@@ -25,12 +25,4 @@ public class CreateClassEventBookingRequestDTO {
 
     @NotNull(message = "Class group ID is required")
     private UUID classEventId;
-
-    @NotNull(message = "Booking date is required")
-    private LocalDateTime bookingDate;
-
-    @NotBlank(message = "Booking time is required")
-    private BookingStatus bookingStatus;
-
-    private AttendanceStatus attendanceStatus;
 }

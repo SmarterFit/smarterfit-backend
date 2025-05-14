@@ -10,12 +10,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(toBuilder = true)
-public class CreateClassGroupUserDTO {
-    @NotNull(message = "User ID is required")
+public class EmployeeClassGroupUserDTO {
+    @NotNull(message = "ClassGroup ID is required")
     UUID classGroupId;
-
-    @NotNull(message = "User ID is required")
-    UUID userId;
-
-    UUID subscriptionId;
 }

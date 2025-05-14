@@ -2,14 +2,17 @@ package com.smarterfit.modules.classgroup.controller;
 
 import com.smarterfit.common.enums.RoleType;
 import com.smarterfit.common.security.RequireRole;
+import com.smarterfit.modules.billing.dto.response.plan.PlanResponseDTO;
 import com.smarterfit.modules.classgroup.dto.request.classgroupplan.CreateClassGroupPlanDTO;
 import com.smarterfit.modules.classgroup.service.ClassGroupPlanService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/turma")
 public class ClassGroupPlanController {
@@ -25,6 +28,11 @@ public class ClassGroupPlanController {
     public ResponseEntity<Void> addPlanToClassGroup(@RequestBody @Valid CreateClassGroupPlanDTO  requestDTO) {
         classGroupPlanService.addPlanToClassGroup(requestDTO);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/planos/{classGroupId}")
+    public ResponseEntity<List<PlanResponseDTO>> getPlansToClassGroup(@PathVariable UUID classGroupId) {
+        return ResponseEntity.ok(classGroupPlanService.getPlansToClassGroup(classGroupId));
     }
 
     @RequireRole(RoleType.ADMIN)

@@ -3,6 +3,7 @@ package com.smarterfit.modules.classgroup.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.smarterfit.modules.classgroup.entity.ClassEvent;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -16,5 +17,22 @@ public interface ClassEventRepository extends JpaRepository<ClassEvent, UUID> {
     boolean existsByClassGroupIdAndStartDateLessThanEqualAndEndDateGreaterThanEqual(
             UUID classGroupId, LocalDateTime endDate, LocalDateTime startDate);
 
+
+
+    @Query("""
+    SELECT CASE WHEN COUNT(e) > 0 THEN true ELSE false END
+    FROM ClassEvent e
+    WHERE e.classGroup.id = :classGroupId
+      AND e.id <> :currentEventId
+      AND (
+          (e.startDate < :endDate AND e.endDate > :startDate)
+      )
+""")
+    boolean existsByDateRangeAndClassGroupExceptCurrent(
+            LocalDateTime startDate,
+            LocalDateTime endDate,
+            UUID classGroupId,
+            UUID currentEventId
+    );
 
 }

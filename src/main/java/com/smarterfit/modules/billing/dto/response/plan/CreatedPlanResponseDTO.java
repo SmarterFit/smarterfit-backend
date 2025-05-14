@@ -1,4 +1,4 @@
-package com.smarterfit.modules.billing.dto.response;
+package com.smarterfit.modules.billing.dto.response.plan;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -14,7 +14,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(toBuilder = true)
-public class PlanResponseDTO {
+public class CreatedPlanResponseDTO {
     private UUID id;
     private String name;
     private String description;

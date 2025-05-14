@@ -18,7 +18,9 @@ public class ClassGroupEventListener {
 
     @EventListener
     public void handleClassGroupDeactivated(ClassGroupDeactivatedEvent event) {
-
+        if (event == null || event.getClassGroup() == null) {
+            return;
+        }
         classGroupUserService.removeSubscriptionByClassGroup(event.getClassGroup());
     }
 }

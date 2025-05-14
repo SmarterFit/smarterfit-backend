@@ -1,8 +1,11 @@
-package com.smarterfit.modules.ai.tools;
+package com.smarterfit.modules.ai.tools.classes;
 
+import com.smarterfit.modules.billing.dto.response.plan.PlanResponseDTO;
 import com.smarterfit.modules.classgroup.dto.request.classgroup.SearchClassGroupRequestDTO;
 import com.smarterfit.modules.classgroup.dto.response.ClassGroupResponseDTO;
+import com.smarterfit.modules.classgroup.service.ClassGroupPlanService;
 import com.smarterfit.modules.classgroup.service.ClassGroupService;
+import com.smarterfit.modules.classgroup.service.ClassGroupUserService;
 import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.ai.tool.annotation.ToolParam;
 import org.springframework.data.domain.Pageable;
@@ -11,6 +14,7 @@ import org.springframework.stereotype.Component;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 @Component
 public class ClassTools {
@@ -19,6 +23,7 @@ public class ClassTools {
 
     public ClassTools(ClassGroupService classGroupService) {
         this.classGroupService = classGroupService;
+
     }
 
     @Tool(description = "Buscar turmas. Só preencha os parâmetros que forem explicitamente informados pelo usuário.")
@@ -38,8 +43,23 @@ public class ClassTools {
     ) {
 
         SearchClassGroupRequestDTO request = new SearchClassGroupRequestDTO();
+
+        request.setTitleTerm(titleTerm);
+        request.setMinCapacity(minCapacity);
+        request.setMaxCapacity(maxCapacity);
+        request.setModality(modality);
+        request.setMinTotalMembers(minMembers);
+        request.setMaxTotalMembers(maxMembers);
+        request.setDaysOfWeek(daysOfWeek);
+        request.setStartDateFrom(startFrom);
+        request.setStartDateTo(startTo);
+        request.setEndDateFrom(endFrom);
+        request.setEndDateTo(endTo);
+        request.setIsEvent(isEvent);
+
         return classGroupService.searchClass(request, Pageable.unpaged()).getContent();
     }
+
 
 
 }

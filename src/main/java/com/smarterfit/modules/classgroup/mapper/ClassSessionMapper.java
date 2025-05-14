@@ -1,8 +1,10 @@
 package com.smarterfit.modules.classgroup.mapper;
 
+import com.smarterfit.common.enums.SessionStatus;
 import com.smarterfit.common.exceptions.ResourceNotFoundException;
 import com.smarterfit.common.mapper.GenericMapper;
 import com.smarterfit.modules.classgroup.dto.request.classsession.CreateClassSessionRequestDTO;
+import com.smarterfit.modules.classgroup.dto.request.classsession.UpdateClassSessionRequestDTO;
 import com.smarterfit.modules.classgroup.dto.response.ClassSessionResponseDTO;
 import com.smarterfit.modules.classgroup.entity.ClassGroup;
 import com.smarterfit.modules.classgroup.entity.ClassSession;
@@ -18,7 +20,7 @@ public class ClassSessionMapper {
     }
 
     public static ClassSession toEntity(CreateClassSessionRequestDTO dto,
-            ClassGroup classGroup, ClassSession classSession) {
+                                        ClassGroup classGroup, ClassSession classSession) {
         if (classSession == null) {
             throw new ResourceNotFoundException("ClassSession not found.");
         }
@@ -28,9 +30,20 @@ public class ClassSessionMapper {
 
         classSession = GenericMapper.map(dto, classSession);
         classSession.setClassGroup(classGroup);
+        classSession.setStatus(SessionStatus.CONFIRMED);
 
         return classSession;
     }
+
+    public static ClassSession toEntity(UpdateClassSessionRequestDTO dto,
+                                        ClassSession classSession) {
+        if (classSession == null) {
+            throw new ResourceNotFoundException("ClassSession not found.");
+        }
+        classSession = GenericMapper.map(dto, classSession);
+        return classSession;
+    }
+
 
     public static ClassSessionResponseDTO toResponseDTO(ClassSession classSession) {
         if (classSession == null) {
@@ -38,7 +51,8 @@ public class ClassSessionMapper {
         }
 
         ClassSessionResponseDTO response = GenericMapper.map(classSession, ClassSessionResponseDTO.class);
-        response = response.toBuilder().classGroupId(classSession.getClassGroup().getId()).build();
+        response = response.toBuilder().classGroupId(classSession.getClassGroup().getId())
+                .build();
 
         return response;
     }
