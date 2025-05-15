@@ -28,7 +28,7 @@ public class ClassEventController {
     public ResponseEntity<ClassEventResponseDTO> createClassEvent(
             @RequestBody @Valid CreateClassEventRequestDTO requestDTO) {
         ClassEventResponseDTO response = classEventService.createClassEvent(requestDTO);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.status(201).body(response);
     }
 
     @GetMapping("/{id}")

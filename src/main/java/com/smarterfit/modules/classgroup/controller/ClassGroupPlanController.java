@@ -27,7 +27,7 @@ public class ClassGroupPlanController {
     @PostMapping("/planos/cadastrar")
     public ResponseEntity<Void> addPlanToClassGroup(@RequestBody @Valid CreateClassGroupPlanDTO  requestDTO) {
         classGroupPlanService.addPlanToClassGroup(requestDTO);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(201).build();
     }
 
     @GetMapping("/planos/{classGroupId}")

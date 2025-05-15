@@ -30,7 +30,7 @@ public class ClassGroupUserController {
     public ResponseEntity<Void> addEmployeeToClassGroup(@RequestBody @Valid EmployeeClassGroupUserDTO requestDTO,
                                                         @RequestHeader("X-User-Id") UUID requesterId) {
         classGroupUserService.addEmployeeToClassGroup(requestDTO, requesterId);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(201).build();
     }
 
     @PostMapping("/alunos/cadastrar")

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.smarterfit.common.enums.EventStatus;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -40,6 +41,9 @@ public class ClassEvent  {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "class_group_id", nullable = false)
     private ClassGroup classGroup;
+
+    @Column(nullable = false)
+    private boolean finished = false;
 
     @Column(name = "dt_created_at", nullable = false, updatable = false)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")

@@ -17,6 +17,10 @@ public interface ClassEventRepository extends JpaRepository<ClassEvent, UUID> {
     boolean existsByClassGroupIdAndStartDateLessThanEqualAndEndDateGreaterThanEqual(
             UUID classGroupId, LocalDateTime endDate, LocalDateTime startDate);
 
+    List<ClassEvent> findAllByFinishedFalse();
+
+    @Query("SELECT e FROM ClassEvent e WHERE e.finished = false")
+        List<ClassEvent> findAllUnfinishedEvents();
 
 
     @Query("""

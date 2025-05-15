@@ -36,7 +36,7 @@ public class ClassEventBookingController {
         return ResponseEntity.ok(classEventBookingService.getClassEventBookingById(userId, classEventId));
     }
 
-    @PutMapping
+    @PutMapping("/reservas")
     public ResponseEntity<ClassEventBookingResponseDTO> updateClassEventBookingById(
             @RequestBody @Valid UpdateClassEventBookingRequestDTO requestDTO) {
         return ResponseEntity.ok(classEventBookingService.updateClassEventBookingById(requestDTO));

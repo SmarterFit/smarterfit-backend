@@ -3,7 +3,10 @@ package com.smarterfit.modules.ai.config;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
-import com.smarterfit.modules.ai.tools.ClassTools;
+import com.smarterfit.modules.ai.tools.classes.ClassPlansTools;
+import com.smarterfit.modules.ai.tools.classes.ClassSessionTools;
+import com.smarterfit.modules.ai.tools.classes.ClassTools;
+import com.smarterfit.modules.ai.tools.classes.UserClassTools;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,11 +24,18 @@ public class ChatClientConfig {
 
    private final PlanTools planTools;
    private final ClassTools classTools;
+   private final UserClassTools userClassTools;
+   private final ClassSessionTools classSessionTools;
+   private final ClassPlansTools classPlansTools;
 
    @Autowired
-   public ChatClientConfig(PlanTools planTools, ClassTools classTools) {
+   public ChatClientConfig(PlanTools planTools, ClassTools classTools, UserClassTools userClassTools,
+                           ClassSessionTools classSessionTools, ClassPlansTools classPlansTools) {
       this.planTools = planTools;
       this.classTools = classTools;
+      this.userClassTools = userClassTools;
+      this.classPlansTools = classPlansTools;
+      this.classSessionTools = classSessionTools;
    }
 
    @Bean
@@ -42,7 +52,7 @@ public class ChatClientConfig {
       }
 
       return chatClient
-            .defaultTools(classTools)
+            .defaultTools(classTools, planTools, userClassTools, classPlansTools, classSessionTools)
             .build();
    }
 }

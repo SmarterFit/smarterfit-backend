@@ -9,9 +9,11 @@ import com.smarterfit.modules.classgroup.mapper.ClassEventMapper;
 import com.smarterfit.modules.classgroup.repository.ClassEventRepository;
 import com.smarterfit.modules.classgroup.validation.ValidationFaced;
 
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -48,7 +50,7 @@ public class ClassEventService {
     @Transactional(readOnly = true)
     // TODO: incluir filtros por: modalidade, tipo, data, disponibilidade (função separada (search))
     public List<ClassEventResponseDTO> getAllClassEvents() {
-        return classEventRepository.findAll().stream().map(ClassEventMapper::toResponse).toList();
+        return classEventRepository.findAllUnfinishedEvents().stream().map(ClassEventMapper::toResponse).toList();
     }
 
     @Transactional
@@ -81,6 +83,16 @@ public class ClassEventService {
 
     }
 
+    @Transactional()
+    public void updateFinishedEvents() {
+        List<ClassEvent> events = classEventRepository.findAllByFinishedFalse();
+        for (ClassEvent event : events) {
+            if(event.getEndDate().isBefore(LocalDateTime.now())){
+                event.setFinished(true);
+            }
+        }
+        classEventRepository.saveAll(events);
+    }
 
 
     public void incrementBooking(ClassEvent classEvent) {
