@@ -12,8 +12,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
+@CrossOrigin
 @RestController
-@RequestMapping("/aula-evento/registro")
+@RequestMapping("/eventos")
 public class ClassEventBookingController {
 
     private final ClassEventBookingService classEventBookingService;
@@ -22,26 +23,26 @@ public class ClassEventBookingController {
         this.classEventBookingService = classEventBookingService;
     }
 
-    @PostMapping("/cadastrar")
+    @PostMapping("/reservas/realizar")
     public ResponseEntity<ClassEventBookingResponseDTO> createClassEventBooking(
             @RequestBody @Valid CreateClassEventBookingRequestDTO requestDTO) {
         ClassEventBookingResponseDTO responseDTO = classEventBookingService.createClassEventBooking(requestDTO);
         return ResponseEntity.status(201).body(responseDTO);
     }
 
-    @GetMapping("/{userId}/{classEventId}")
+    @GetMapping("/{userId}/reservas/{classEventId}")
     public ResponseEntity<ClassEventBookingResponseDTO> getClassEventBookingById(@PathVariable UUID userId,
             @PathVariable UUID classEventId) {
         return ResponseEntity.ok(classEventBookingService.getClassEventBookingById(userId, classEventId));
     }
 
-    @PutMapping
+    @PutMapping("/reservas")
     public ResponseEntity<ClassEventBookingResponseDTO> updateClassEventBookingById(
             @RequestBody @Valid UpdateClassEventBookingRequestDTO requestDTO) {
         return ResponseEntity.ok(classEventBookingService.updateClassEventBookingById(requestDTO));
     }
 
-    @GetMapping("/{classEventId}/usuarios")
+    @GetMapping("/reservas/{classEventId}/usuarios")
     public ResponseEntity<List<ClassEventBookingResponseDTO>> getClassEventBookingsByClassEventId(
             @PathVariable UUID classEventId) {
         return ResponseEntity.ok(classEventBookingService.getAllBookingsToClassEvent(classEventId));

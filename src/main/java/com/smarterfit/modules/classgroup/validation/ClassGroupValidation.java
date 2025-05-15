@@ -30,12 +30,13 @@ public class ClassGroupValidation {
                 .orElseThrow(() -> new ResourceNotFoundException("Class group not found."));
     }
 
-    public void validateClassGroupExists(String title, UUID currentClassGroupId) {
-        classGroupRepository.findByTitle(title).ifPresent(existing -> {
-            if (!existing.getId().equals(currentClassGroupId)) {
-                throw new ResourceAlreadyExistsException("Class group name is already in use.");
-            }
-        });
+    public void existsClassGroupById(UUID id) {
+        if(!classGroupRepository.existsById(id)) throw new ResourceNotFoundException("Class group not found.");
+    }
+
+    public void validateClassGroupExists(UUID currentClassGroupId) {
+        if(classGroupRepository.existsById(currentClassGroupId))
+            throw new ResourceAlreadyExistsException("Class group name is already in use.");
 
     }
 

@@ -2,6 +2,7 @@ package com.smarterfit.modules.classgroup.validation;
 
 import com.smarterfit.common.exceptions.ResourceNotFoundException;
 import com.smarterfit.common.validation.DateValidation;
+import com.smarterfit.modules.classgroup.dto.request.classgroup.schedule.CreateClassGroupScheduleRequestDTO;
 import com.smarterfit.modules.classgroup.entity.ClassGroupSchedule;
 import com.smarterfit.modules.classgroup.repository.ClassGroupScheduleRepository;
 import org.springframework.stereotype.Component;
@@ -24,16 +25,27 @@ public class ClassGroupScheduleValidation {
                 .orElseThrow(() -> new ResourceNotFoundException("Class group  schedule not found."));
     }
 
-    public boolean validateNoScheduleConflict(UUID classGroupId, DayOfWeek dayOfWeek, LocalTime startTime,
-                                              LocalTime endTime) {
+    public boolean validateNoScheduleConflict(ClassGroupSchedule schedule) {
         boolean existsConflict = classGroupScheduleRepository.existsOverlappingSchedule(
-                classGroupId, dayOfWeek, startTime, endTime);
+                schedule.getClassGroup().getId(),
+                schedule.getDayOfWeek(), schedule.getStartTime(), schedule.getEndTime());
 
+        return existsScheduleConflict(existsConflict);
+    }
+
+    public boolean validateNoScheduleConflict(CreateClassGroupScheduleRequestDTO dto) {
+        boolean existsConflict = classGroupScheduleRepository.existsOverlappingSchedule(
+                dto.getClassGroupId(), dto.getDayOfWeek(), dto.getStartTime(), dto.getEndTime());
+
+        return existsScheduleConflict(existsConflict);
+
+    }
+
+    public boolean existsScheduleConflict(boolean existsConflict){
         if (existsConflict) {
             throw new IllegalArgumentException("A class is already scheduled for this group at the same time.");
         }
-
-        return false;
+        return existsConflict;
     }
 
     public void validateClassSchedulesDates(LocalTime startDate, LocalTime endDate) {

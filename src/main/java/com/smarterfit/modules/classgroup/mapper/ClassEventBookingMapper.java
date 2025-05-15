@@ -57,7 +57,11 @@ public class ClassEventBookingMapper {
 
         ClassEventBookingResponseDTO response = GenericMapper.map(classEventBooking,
                 ClassEventBookingResponseDTO.class);
-        response = response.toBuilder().classEventId(classEventBooking.getClassEvent().getId()).build();
+        response = response.toBuilder()
+                .classEventId(classEventBooking.getClassEvent().getId())
+                .userId(classEventBooking.getUser().getId())
+                .build();
+
 
         return response;
     }

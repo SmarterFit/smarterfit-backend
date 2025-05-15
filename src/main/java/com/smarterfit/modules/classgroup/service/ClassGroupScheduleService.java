@@ -33,7 +33,9 @@ public class ClassGroupScheduleService {
 
     @Transactional
     public ClassGroupScheduleResponseDTO createClassGroupSchedule(CreateClassGroupScheduleRequestDTO requestDTO) {
+        classGroupScheduleValidation.validateNoScheduleConflict(requestDTO);
         classGroupScheduleValidation.validateClassSchedulesDates(requestDTO.getStartTime(), requestDTO.getEndTime());
+
         ClassGroup classGroup = classGroupValidation.validateClassGroupById(requestDTO.getClassGroupId());
 
         ClassGroupSchedule classGroupSchedule = ClassGroupScheduleMapper.toEntity(requestDTO, classGroup);
@@ -52,7 +54,7 @@ public class ClassGroupScheduleService {
     @Transactional
     public ClassGroupScheduleResponseDTO updateClassGroupScheduleById(UUID id,
             CreateClassGroupScheduleRequestDTO requestDTO) {
-
+        classGroupScheduleValidation.validateNoScheduleConflict(requestDTO);
         ClassGroup classGroup = classGroupValidation.validateClassGroupById(requestDTO.getClassGroupId());
         ClassGroupSchedule classGroupSchedule = classGroupScheduleValidation.validateClassGroupScheduleById(id);
 

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/turma/horarios")
 public class ClassGroupScheduleController {
@@ -39,7 +40,7 @@ public class ClassGroupScheduleController {
     }
 
     @RequireRole(RoleType.EMPLOYEE)
-    @PutMapping("/{id}")
+    @PutMapping("alterar/{id}")
     public ResponseEntity<ClassGroupScheduleResponseDTO> updateClassGroupScheduleById(
             @PathVariable UUID id,
             @RequestBody @Valid CreateClassGroupScheduleRequestDTO requestDTO) {

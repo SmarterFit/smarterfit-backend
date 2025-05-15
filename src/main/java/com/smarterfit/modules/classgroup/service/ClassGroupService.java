@@ -45,7 +45,7 @@ public class ClassGroupService {
         User creatorUser = validationFaced.userValidation.validateUserById(requesterId);
         validationFaced.classGroupValidation.validateClassGroupDates(requestDTO.getStartDate(), requestDTO.getEndDate());
 
-        validationFaced.classGroupValidation.validateClassGroupExists(requestDTO.getTitle(), null);
+        validationFaced.classGroupValidation.validateClassGroupExists(requesterId);
         Modality modality = validationFaced.modalityValidation.validateModalityById(requestDTO.getModalityId());
 
         ClassGroup classGroup = ClassGroupMapper.toEntity(requestDTO, modality, creatorUser);

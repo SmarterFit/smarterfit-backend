@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 @IdClass(ClassEventBookingId.class)
 @Entity
 @Table(name = "SF_CLASS_SESSION_BOOKING")
-public class ClassEventBooking {
+public class ClassEventBooking  {
     @Id
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
@@ -31,7 +31,7 @@ public class ClassEventBooking {
     private ClassEvent classEvent;
 
     @Column(nullable = false)
-    private BookingStatus bookingStatus;
+    private BookingStatus bookingStatus = BookingStatus.CONFIRMED;
 
     @Column(name = "attendance_status")
     private AttendanceStatus attendanceStatus;

@@ -9,9 +9,11 @@ import com.smarterfit.modules.classgroup.mapper.ClassEventMapper;
 import com.smarterfit.modules.classgroup.repository.ClassEventRepository;
 import com.smarterfit.modules.classgroup.validation.ValidationFaced;
 
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -30,7 +32,7 @@ public class ClassEventService {
     @Transactional
     public ClassEventResponseDTO createClassEvent(CreateClassEventRequestDTO requestDTO) {
         ClassGroup classGroup = validationFaced.classGroupValidation.validateClassGroupById(requestDTO.getClassGroupId());
-        validateDates(requestDTO, classGroup);
+        validationFaced.classEventValidation.validateDates(requestDTO, classGroup);
         // TODO: validar conflitos de horário com o instrutor
 
         ClassEvent classEvent = ClassEventMapper.toEntity(requestDTO, classGroup);
@@ -48,19 +50,20 @@ public class ClassEventService {
     @Transactional(readOnly = true)
     // TODO: incluir filtros por: modalidade, tipo, data, disponibilidade (função separada (search))
     public List<ClassEventResponseDTO> getAllClassEvents() {
-        return classEventRepository.findAll().stream().map(ClassEventMapper::toResponse).toList();
+        return classEventRepository.findAllUnfinishedEvents().stream().map(ClassEventMapper::toResponse).toList();
     }
 
     @Transactional
-    public ClassEventResponseDTO updateClassEventById(UUID classEventId, CreateClassEventRequestDTO requestDTO) {
+    public void updateClassEventById(UUID classEventId, CreateClassEventRequestDTO requestDTO) {
         ClassGroup classGroup = validationFaced.classGroupValidation.validateClassGroupById(requestDTO.getClassGroupId());
-        validateDates(requestDTO, classGroup);
         ClassEvent classEvent = validationFaced.classEventValidation.validateClassEventById(classEventId);
 
-        classEvent = ClassEventMapper.toEntity(requestDTO,  classGroup, classEvent);
-        classEventRepository.save(classEvent);
+        validationFaced.classEventValidation.validateDates(requestDTO, classGroup, classEventId);
+        ClassEvent updatedClassEvent = ClassEventMapper.toEntity(requestDTO,  classGroup, classEvent);
 
-        return ClassEventMapper.toResponse(classEvent);
+        classEventRepository.save(updatedClassEvent);
+
+        ClassEventMapper.toResponse(updatedClassEvent);
     }
 
     /// TODO: softdelete
@@ -80,12 +83,17 @@ public class ClassEventService {
 
     }
 
-    /// TODO: Essa tarefa deve estar no validation
-    private void validateDates(CreateClassEventRequestDTO requestDTO, ClassGroup classGroup) {
-        validationFaced.classEventValidation.validateClassEventDates(requestDTO.getStartDate(), requestDTO.getEndDate());
-        validationFaced.classEventValidation.validateEventTimeConflict(classGroup.getId(), requestDTO.getStartDate(),
-                requestDTO.getEndDate());
+    @Transactional()
+    public void updateFinishedEvents() {
+        List<ClassEvent> events = classEventRepository.findAllByFinishedFalse();
+        for (ClassEvent event : events) {
+            if(event.getEndDate().isBefore(LocalDateTime.now())){
+                event.setFinished(true);
+            }
+        }
+        classEventRepository.saveAll(events);
     }
+
 
     public void incrementBooking(ClassEvent classEvent) {
         validationFaced.classEventValidation.validateBookingCount(classEvent.getBookingCount(),

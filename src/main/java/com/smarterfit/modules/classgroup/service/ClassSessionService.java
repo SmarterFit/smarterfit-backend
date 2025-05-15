@@ -1,8 +1,8 @@
 package com.smarterfit.modules.classgroup.service;
 
-import com.smarterfit.common.enums.RoleType;
 import com.smarterfit.common.enums.SessionStatus;
 import com.smarterfit.modules.classgroup.dto.request.classsession.CreateClassSessionRequestDTO;
+import com.smarterfit.modules.classgroup.dto.request.classsession.UpdateClassSessionRequestDTO;
 import com.smarterfit.modules.classgroup.dto.response.ClassSessionResponseDTO;
 import com.smarterfit.modules.classgroup.entity.ClassGroup;
 import com.smarterfit.modules.classgroup.entity.ClassGroupSchedule;
@@ -14,8 +14,6 @@ import com.smarterfit.modules.classgroup.validation.ClassGroupScheduleValidation
 import com.smarterfit.modules.classgroup.validation.ClassGroupValidation;
 import com.smarterfit.modules.classgroup.validation.ClassSessionValidation;
 
-import com.smarterfit.modules.useraccess.validation.RolesValidation;
-import com.smarterfit.modules.useraccess.validation.UserValidation;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,6 +46,8 @@ public class ClassSessionService {
     @Transactional
     public ClassSessionResponseDTO createClassSession(CreateClassSessionRequestDTO requestDTO) {
         ClassGroup classGroup = classGroupValidation.validateClassGroupById(requestDTO.getClassGroupId());
+        classSessionValidation.existsByDateRangeAndClassGroupId(requestDTO);
+
 
         ClassSession classSession = ClassSessionMapper.toEntity(requestDTO, classGroup);
         classSessionRepository.save(classSession);
@@ -62,19 +62,18 @@ public class ClassSessionService {
     }
 
     @Transactional(readOnly = true)
-    public List<ClassSessionResponseDTO> getAllClassSession() {
-        return classSessionRepository.findAll().stream()
+    public List<ClassSessionResponseDTO> getAllClassSessionByGroup(UUID classGroupId) {
+        return classSessionRepository.findAllSessionsByClassGroupId(classGroupId).stream()
                 .map(ClassSessionMapper::toResponseDTO)
                 .toList();
     }
 
     @Transactional
-    public ClassSessionResponseDTO updateClassSessionById(UUID id, CreateClassSessionRequestDTO requestDTO) {
-
+    public ClassSessionResponseDTO updateClassSessionById(UUID id, UpdateClassSessionRequestDTO requestDTO) {
         ClassSession classSession = classSessionValidation.validateClassSessionById(id);
-        ClassGroup classGroup = classGroupValidation.validateClassGroupById(requestDTO.getClassGroupId());
+        classSessionValidation.existsByDateRangeAndClassGroupId(requestDTO, id, classSession.getClassGroup().getId());
 
-        ClassSessionMapper.toEntity(requestDTO, classGroup, classSession);
+        classSession = ClassSessionMapper.toEntity(requestDTO, classSession);
         classSessionRepository.save(classSession);
 
         return ClassSessionMapper.toResponseDTO(classSession);
@@ -92,11 +91,7 @@ public class ClassSessionService {
 
         for (ClassGroupSchedule schedule : schedules) {
 
-            boolean sessionExists = classGroupScheduleValidation.validateNoScheduleConflict(
-                    schedule.getClassGroup().getId(),
-                    schedule.getDayOfWeek(),
-                    schedule.getStartTime(),
-                    schedule.getEndTime());
+            boolean sessionExists = classGroupScheduleValidation.validateNoScheduleConflict(schedule);
 
             if (!sessionExists) {
                 LocalDateTime startDateTime = today.atTime(schedule.getStartTime());

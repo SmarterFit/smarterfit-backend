@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import com.smarterfit.common.enums.BookingStatus;
 
+import com.smarterfit.common.enums.SessionStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,9 +18,9 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder(toBuilder = true)
 public class ClassSessionResponseDTO {
-        private UUID classSessionId;
+        private UUID id;
         private UUID classGroupId;
+        private SessionStatus status;
         private LocalDateTime startTime;
         private LocalDateTime endTime;
-        private BookingStatus bookingStatus;
 }

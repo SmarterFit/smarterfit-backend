@@ -2,13 +2,11 @@ package com.smarterfit.modules.classgroup.dto.request.classsession;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.smarterfit.common.enums.SessionStatus;
-
-import jakarta.validation.constraints.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -18,10 +16,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(toBuilder = true)
-public class CreateClassSessionRequestDTO {
-
-    @NotNull(message = "Class group ID is required.")
-    private UUID classGroupId;
+public class UpdateClassSessionRequestDTO {
 
     @NotNull(message = "Start time is required.")
     @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")

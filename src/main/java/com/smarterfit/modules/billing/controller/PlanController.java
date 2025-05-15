@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.smarterfit.modules.billing.dto.request.plan.CreatePlanRequestDTO;
 import com.smarterfit.modules.billing.dto.request.plan.SearchPlanRequestDTO;
-import com.smarterfit.modules.billing.dto.response.PlanResponseDTO;
+import com.smarterfit.modules.billing.dto.response.plan.CreatedPlanResponseDTO;
 import com.smarterfit.modules.billing.service.PlanService;
 
 import jakarta.validation.Valid;
@@ -31,31 +31,31 @@ public class PlanController {
 
    @RequireRole(RoleType.ADMIN)
    @PostMapping
-   public ResponseEntity<PlanResponseDTO> createPlan(@RequestBody @Valid CreatePlanRequestDTO requestDTO) {
-      PlanResponseDTO responseDTO = planService.createPlan(requestDTO);
+   public ResponseEntity<CreatedPlanResponseDTO> createPlan(@RequestBody @Valid CreatePlanRequestDTO requestDTO) {
+      CreatedPlanResponseDTO responseDTO = planService.createPlan(requestDTO);
       return ResponseEntity.status(201).body(responseDTO);
    }
 
    @GetMapping("/{id}")
-   public ResponseEntity<PlanResponseDTO> getPlanById(@PathVariable UUID id) {
+   public ResponseEntity<CreatedPlanResponseDTO> getPlanById(@PathVariable UUID id) {
       return ResponseEntity.ok(planService.getPlanById(id));
    }
 
    @GetMapping
-   public ResponseEntity<List<PlanResponseDTO>> getAllPlans() {
+   public ResponseEntity<List<CreatedPlanResponseDTO>> getAllPlans() {
       return ResponseEntity.ok(planService.getAllPlans());
    }
 
    @GetMapping("/buscar")
-   public ResponseEntity<Page<PlanResponseDTO>> searchPlans(@ModelAttribute SearchPlanRequestDTO requestDTO,
-         Pageable pageable) {
+   public ResponseEntity<Page<CreatedPlanResponseDTO>> searchPlans(@ModelAttribute SearchPlanRequestDTO requestDTO,
+                                                                   Pageable pageable) {
       return ResponseEntity.ok(planService.searchPlans(requestDTO, pageable));
    }
 
    @RequireRole(RoleType.ADMIN)
    @PutMapping("/{id}")
-   public ResponseEntity<PlanResponseDTO> updatePlan(@PathVariable UUID id,
-                                                     @RequestBody @Valid CreatePlanRequestDTO requestDTO) {
+   public ResponseEntity<CreatedPlanResponseDTO> updatePlan(@PathVariable UUID id,
+                                                            @RequestBody @Valid CreatePlanRequestDTO requestDTO) {
       return ResponseEntity.ok(planService.updatePlan(id, requestDTO));
    }
 

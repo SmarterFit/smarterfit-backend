@@ -6,6 +6,7 @@ import com.smarterfit.modules.useraccess.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -19,7 +20,7 @@ import java.util.UUID;
 @EqualsAndHashCode(of = "id")
 @Entity
 @Table(name = "SF_CLASS_GROUP")
-public class ClassGroup {
+public class ClassGroup implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
