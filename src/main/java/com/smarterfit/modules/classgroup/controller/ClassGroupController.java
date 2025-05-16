@@ -6,7 +6,6 @@ import com.smarterfit.modules.classgroup.dto.request.classgroup.ClassGroupReques
 import com.smarterfit.modules.classgroup.dto.response.ClassGroupResponseDTO;
 import com.smarterfit.modules.classgroup.service.ClassGroupService;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
-@CrossOrigin
 @RestController
 @RequestMapping("/turma")
 @CrossOrigin
@@ -59,7 +57,4 @@ public class ClassGroupController {
         classGroupService.deleteClassGroupById(id);
         return ResponseEntity.noContent().build();
     }
-
-
-
 }

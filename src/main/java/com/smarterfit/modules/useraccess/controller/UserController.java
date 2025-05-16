@@ -1,6 +1,9 @@
 package com.smarterfit.modules.useraccess.controller;
 
 import com.smarterfit.modules.useraccess.dto.request.user.CreateUserRequestDTO;
+import com.smarterfit.modules.useraccess.dto.request.user.UpdateUserEmailRequestDTO;
+import com.smarterfit.modules.useraccess.dto.request.user.UpdateUserPasswordRequestDTO;
+import com.smarterfit.modules.useraccess.dto.request.user.UpdateUserRolesRequestDTO;
 import com.smarterfit.modules.useraccess.dto.response.UserResponseDTO;
 import com.smarterfit.modules.useraccess.service.UserService;
 
@@ -9,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 /// TODO: Para criar, editar e deletar usuários é necessário verificar algumas permissões
@@ -36,21 +38,30 @@ public class UserController {
         return ResponseEntity.ok(userService.getUserById(id));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<UserResponseDTO> updateUserById(
+    @PatchMapping("/{id}/email")
+    public ResponseEntity<UserResponseDTO> updateUserEmailById(
             @PathVariable UUID id,
-            @RequestBody CreateUserRequestDTO requestDTO) {
-        return ResponseEntity.ok(userService.updateUserById(id, requestDTO));
+            @RequestBody @Valid UpdateUserEmailRequestDTO requestDTO) {
+        return ResponseEntity.ok(userService.updateUserEmailById(id, requestDTO));
+    }
+
+    @PatchMapping("/{id}/senha")
+    public ResponseEntity<UserResponseDTO> updateUserPasswordById(
+            @PathVariable UUID id,
+            @RequestBody @Valid UpdateUserPasswordRequestDTO requestDTO) {
+        return ResponseEntity.ok(userService.updateUserPasswordById(id, requestDTO));
+    }
+
+    @PatchMapping("/{id}/cargos")
+    public ResponseEntity<UserResponseDTO> updateUserRolesById(
+            @PathVariable UUID id,
+            @RequestBody @Valid UpdateUserRolesRequestDTO requestDTO) {
+        return ResponseEntity.ok(userService.updateUserRolesById(id, requestDTO));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUserById(@PathVariable UUID id) {
         userService.deleteUserById(id);
         return ResponseEntity.noContent().build();
-    }
-
-    @GetMapping
-    public ResponseEntity<List<UserResponseDTO>> getAllUsers() {
-        return ResponseEntity.ok(userService.getAllUsers());
     }
 }

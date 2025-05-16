@@ -8,6 +8,8 @@ import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Getter
@@ -18,7 +20,6 @@ import java.util.UUID;
 @Entity(name = "profile")
 @Table(name = "SF_PROFILE")
 public class Profile {
-
     @Id
     UUID id;
 
@@ -46,6 +47,9 @@ public class Profile {
     @OneToOne(mappedBy = "profile", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Address address;
 
+    @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Set<ProfileMetric> profileMetrics = new HashSet<ProfileMetric>();
+
     @Column(name = "dt_created_at", nullable = false, updatable = false)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdAt;
@@ -53,7 +57,6 @@ public class Profile {
     @Column(name = "dt_updated_at", nullable = false)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime updatedAt;
-
 
     @PrePersist
     public void onPrePersist() {
@@ -65,6 +68,5 @@ public class Profile {
     public void onPreUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
-
 
 }

@@ -41,8 +41,13 @@ public class GlobalExceptionHandler {
         return createResponseApiError(HttpStatus.CONFLICT, List.of(ex.getMessage()));
     }
 
-    @ExceptionHandler({MethodArgumentNotValidException.class,
-            HttpMessageNotReadableException.class, MethodArgumentTypeMismatchException.class})
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ApiError> illegalArgumentException(IllegalArgumentException ex) {
+        return createResponseApiError(HttpStatus.BAD_REQUEST, List.of(ex.getMessage()));
+    }
+
+    @ExceptionHandler({ MethodArgumentNotValidException.class,
+            HttpMessageNotReadableException.class, MethodArgumentTypeMismatchException.class })
     public ResponseEntity<ApiError> handleValidationExceptions(Exception ex) {
         List<String> errorList;
 
@@ -70,12 +75,12 @@ public class GlobalExceptionHandler {
 
     private ResponseEntity<ApiError> createResponseApiError(HttpStatus status, List<String> errors) {
         ApiError apiError = ApiError
-        .builder()
-        .timestamp(LocalDateTime.now())
-        .code(status.value())
-        .status(status.name())
-        .errors(errors)
-        .build();
+                .builder()
+                .timestamp(LocalDateTime.now())
+                .code(status.value())
+                .status(status.name())
+                .errors(errors)
+                .build();
         return new ResponseEntity<>(apiError, status);
     }
 }

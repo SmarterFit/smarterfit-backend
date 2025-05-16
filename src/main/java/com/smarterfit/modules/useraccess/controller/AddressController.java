@@ -15,7 +15,6 @@ import java.util.UUID;
 @RequestMapping("/enderecos")
 @CrossOrigin
 public class AddressController {
-
     private final AddressService addressService;
 
     @Autowired
@@ -23,14 +22,20 @@ public class AddressController {
         this.addressService = addressService;
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<AddressResponseDTO> getAddress(@PathVariable UUID id) {
-        return ResponseEntity.ok(addressService.getAddressByUserId(id));
+    @PostMapping("/{profileId}")
+    public ResponseEntity<AddressResponseDTO> createAddress(@PathVariable UUID profileId,
+            @RequestBody @Valid CreateAddressRequestDTO requestDTO) {
+        return ResponseEntity.ok(addressService.createAddressByProfileId(profileId, requestDTO));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<AddressResponseDTO> updateAddress(@PathVariable UUID id,
+    @GetMapping("/{profileId}")
+    public ResponseEntity<AddressResponseDTO> getAddress(@PathVariable UUID profileId) {
+        return ResponseEntity.ok(addressService.getAddressByProfileId(profileId));
+    }
+
+    @PutMapping("/{profileId}")
+    public ResponseEntity<AddressResponseDTO> updateAddress(@PathVariable UUID profileId,
             @RequestBody @Valid CreateAddressRequestDTO requestDTO) {
-        return ResponseEntity.ok(addressService.updateAddressByUserId(id, requestDTO));
+        return ResponseEntity.ok(addressService.updateAddressByProfileId(profileId, requestDTO));
     }
 }

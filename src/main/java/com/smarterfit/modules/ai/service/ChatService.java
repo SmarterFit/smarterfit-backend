@@ -18,17 +18,9 @@ public class ChatService {
    }
 
    public Flux<String> askGroq(String userInput, UUID requesterId) {
-      String userContext = String.format("""
-        O usuário que está interagindo tem o ID: %s.
-        Use este ID apenas se a pergunta estiver relacionada a dados pessoais dele.
-        Caso contrário, ignore essa informação.
-        """, requesterId);
-
       return chatClient.prompt()
-              .system(userContext.concat(userContext))
-              .user(userInput)
-              .stream()
-              .content();
+            .user(userInput)
+            .stream()
+            .content();
    }
-
 }

@@ -7,6 +7,10 @@ import com.smarterfit.modules.ai.tools.classes.ClassPlansTools;
 import com.smarterfit.modules.ai.tools.classes.ClassSessionTools;
 import com.smarterfit.modules.ai.tools.classes.ClassTools;
 import com.smarterfit.modules.ai.tools.classes.UserClassTools;
+import com.smarterfit.modules.ai.tools.user.ProfileMetricTools;
+import com.smarterfit.modules.ai.tools.user.ProfileTools;
+import com.smarterfit.modules.ai.tools.user.UserTools;
+
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,15 +31,22 @@ public class ChatClientConfig {
    private final UserClassTools userClassTools;
    private final ClassSessionTools classSessionTools;
    private final ClassPlansTools classPlansTools;
+   private final UserTools userTools;
+   private final ProfileTools profileTools;
+   private final ProfileMetricTools profileMetricTools;
 
    @Autowired
    public ChatClientConfig(PlanTools planTools, ClassTools classTools, UserClassTools userClassTools,
-                           ClassSessionTools classSessionTools, ClassPlansTools classPlansTools) {
+         ClassSessionTools classSessionTools, ClassPlansTools classPlansTools, UserTools userTools,
+         ProfileTools profileTools, ProfileMetricTools profileMetricTools) {
       this.planTools = planTools;
       this.classTools = classTools;
       this.userClassTools = userClassTools;
       this.classPlansTools = classPlansTools;
       this.classSessionTools = classSessionTools;
+      this.userTools = userTools;
+      this.profileTools = profileTools;
+      this.profileMetricTools = profileMetricTools;
    }
 
    @Bean
@@ -52,7 +63,8 @@ public class ChatClientConfig {
       }
 
       return chatClient
-            .defaultTools(classTools, planTools, userClassTools, classPlansTools, classSessionTools)
+            .defaultTools(classTools, planTools, userClassTools, classPlansTools, classSessionTools, userTools,
+                  profileTools, profileMetricTools)
             .build();
    }
 }

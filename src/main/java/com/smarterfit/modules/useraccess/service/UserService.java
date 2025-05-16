@@ -2,9 +2,13 @@ package com.smarterfit.modules.useraccess.service;
 
 import com.smarterfit.common.util.CryptoUtil;
 import com.smarterfit.modules.useraccess.dto.request.user.CreateUserRequestDTO;
+import com.smarterfit.modules.useraccess.dto.request.user.UpdateUserEmailRequestDTO;
+import com.smarterfit.modules.useraccess.dto.request.user.UpdateUserPasswordRequestDTO;
+import com.smarterfit.modules.useraccess.dto.request.user.UpdateUserRolesRequestDTO;
 import com.smarterfit.modules.useraccess.dto.response.UserResponseDTO;
 import com.smarterfit.modules.useraccess.entity.Profile;
 import com.smarterfit.modules.useraccess.entity.User;
+import com.smarterfit.modules.useraccess.entity.UserRole;
 import com.smarterfit.modules.useraccess.mapper.UserMapper;
 import com.smarterfit.modules.useraccess.repository.UserRepository;
 import com.smarterfit.modules.useraccess.validation.ProfileValidation;
@@ -15,7 +19,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -32,7 +35,7 @@ public class UserService {
             UserValidation userValidation,
             ProfileValidation profileValidation,
             PasswordEncoder passwordEncoder,
-                       CryptoUtil cryptoUtil) {
+            CryptoUtil cryptoUtil) {
         this.userRepository = userRepository;
         this.userValidation = userValidation;
         this.profileValidation = profileValidation;
@@ -65,30 +68,55 @@ public class UserService {
     }
 
     @Transactional
-    public UserResponseDTO updateUserById(UUID id, CreateUserRequestDTO requestDTO) {
-        User existingUser = userValidation.validateUserById(id);
+    public UserResponseDTO updateUserEmailById(UUID id, UpdateUserEmailRequestDTO requestDTO) {
+        User user = userValidation.validateUserById(id);
 
-        if (!existingUser.getEmail().equals(requestDTO.getEmail())) {
+        if (!user.getEmail().equals(requestDTO.getEmail())) {
             userValidation.validateEmailAvailability(requestDTO.getEmail());
+
+            user.setEmail(requestDTO.getEmail());
+            userRepository.save(user);
         }
 
-        existingUser = UserMapper.toEntity(requestDTO, existingUser.getProfile(), existingUser);
-        userRepository.save(existingUser);
+        return UserMapper.toResponse(user);
+    }
 
-        return UserMapper.toResponse(existingUser);
+    @Transactional
+    public UserResponseDTO updateUserPasswordById(UUID id, UpdateUserPasswordRequestDTO requestDTO) {
+        User user = userValidation.validateUserById(id);
+
+        userValidation.validatePasswords(requestDTO.getPassword(), requestDTO.getConfirmPassword());
+
+        String encryptedPassword = passwordEncoder.encode(requestDTO.getPassword());
+        user.setPassword(encryptedPassword);
+
+        userRepository.save(user);
+
+        return UserMapper.toResponse(user);
+    }
+
+    @Transactional
+    public UserResponseDTO updateUserRolesById(UUID id, UpdateUserRolesRequestDTO requestDTO) {
+        User user = userValidation.validateUserById(id);
+
+        user.getRoles().clear();
+        user.getRoles().addAll(requestDTO.getRoles().stream()
+                .map(roleType -> {
+                    UserRole userRole = new UserRole();
+                    userRole.setUser(user);
+                    userRole.setRoleType(roleType);
+                    return userRole;
+                })
+                .collect(Collectors.toList()));
+
+        userRepository.save(user);
+
+        return UserMapper.toResponse(user);
     }
 
     @Transactional
     public void deleteUserById(UUID id) {
         User user = userValidation.validateUserById(id);
         userRepository.delete(user);
-    }
-
-    @Transactional(readOnly = true)
-    public List<UserResponseDTO> getAllUsers() {
-        return userRepository.findAll()
-                .stream()
-                .map(UserMapper::toResponse)
-                .collect(Collectors.toList());
     }
 }

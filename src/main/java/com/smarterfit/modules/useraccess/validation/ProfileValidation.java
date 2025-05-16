@@ -1,6 +1,5 @@
 package com.smarterfit.modules.useraccess.validation;
 
-import com.smarterfit.common.exceptions.BusinessException;
 import com.smarterfit.common.exceptions.ResourceAlreadyExistsException;
 import com.smarterfit.common.exceptions.ResourceNotFoundException;
 import com.smarterfit.modules.useraccess.entity.Profile;
@@ -18,6 +17,12 @@ public class ProfileValidation {
 
     public ProfileValidation(ProfileRepository profileRepository) {
         this.profileRepository = profileRepository;
+    }
+
+    public Profile validateProfileById(UUID id) {
+        return profileRepository.findById(id).orElseThrow(() -> {
+            throw new ResourceNotFoundException("Profile not found.");
+        });
     }
 
     public void validateCpfAvailability(String cpf) {

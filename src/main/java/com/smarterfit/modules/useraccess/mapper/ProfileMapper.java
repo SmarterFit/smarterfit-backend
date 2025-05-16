@@ -2,11 +2,9 @@ package com.smarterfit.modules.useraccess.mapper;
 
 import com.smarterfit.common.exceptions.ResourceNotFoundException;
 import com.smarterfit.common.mapper.GenericMapper;
-import com.smarterfit.common.util.CryptoUtil;
-import com.smarterfit.modules.useraccess.dto.request.profile.CreateProfileRequestDTO;
+import com.smarterfit.modules.useraccess.dto.request.profile.UpdateProfileRequestDTO;
 import com.smarterfit.modules.useraccess.dto.response.AddressResponseDTO;
 import com.smarterfit.modules.useraccess.dto.response.ProfileResponseDTO;
-import com.smarterfit.modules.useraccess.entity.Address;
 import com.smarterfit.modules.useraccess.entity.Profile;
 
 public class ProfileMapper {
@@ -15,26 +13,12 @@ public class ProfileMapper {
         // Private constructor to prevent instantiation
     }
 
-    public static Profile toEntity(CreateProfileRequestDTO dto) {
-        return toEntity(dto, new Profile());
-    }
-
-    public static Profile toEntity(CreateProfileRequestDTO dto, Profile profile) {
+    public static Profile toEntity(UpdateProfileRequestDTO dto, Profile profile) {
         if (profile == null) {
             throw new ResourceNotFoundException("Profile not found.");
         }
 
         profile = GenericMapper.map(dto, profile);
-
-        if (profile.getAddress() == null) {
-            profile.setAddress(new Address());
-        }
-
-        if (dto.getAddresses() != null) {
-            Address address = AddressMapper.toEntity(dto.getAddresses(), profile.getAddress());
-            address.setProfile(profile);
-            profile.setAddress(address);
-        }
 
         return profile;
     }
@@ -50,8 +34,6 @@ public class ProfileMapper {
             AddressResponseDTO responseAddress = AddressMapper.toResponse(profile.getAddress());
             response = response.toBuilder().address(responseAddress).build();
         }
-
-        response = response.toBuilder().cpf(profile.getCpf()).build();
 
         return response;
     }

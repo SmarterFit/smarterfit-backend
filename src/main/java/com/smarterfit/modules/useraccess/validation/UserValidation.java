@@ -12,7 +12,6 @@ import java.util.UUID;
 
 @Component
 public class UserValidation {
-
     private final UserRepository userRepository;
 
     public UserValidation(UserRepository userRepository) {

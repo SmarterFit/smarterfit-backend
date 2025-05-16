@@ -54,7 +54,6 @@ public class UserMapper {
     }
 
     public static UserResponseDTO toResponse(User user) {
-
         if (user == null) {
             throw new ResourceNotFoundException("User not found.");
         }
