@@ -6,6 +6,7 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,7 +21,7 @@ import com.smarterfit.modules.useraccess.service.ProfileMetricService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/perfis/metricas")
+@RequestMapping("/perfis/{profileId}/metricas")
 @CrossOrigin
 public class ProfileMetricController {
    private final ProfileMetricService profileMetricService;
@@ -30,24 +31,24 @@ public class ProfileMetricController {
       this.profileMetricService = profileMetricService;
    }
 
-   @PostMapping("/{profileId}")
+   @PostMapping
    public ResponseEntity<ProfileMetricResponseDTO> createProfileMetric(@PathVariable UUID profileId,
          @RequestBody @Valid CreateProfileMetricRequestDTO requestDTO) {
       return ResponseEntity.ok(profileMetricService.createProfileMetric(profileId, requestDTO));
    }
 
-   @PostMapping("/{profileId}/ultimas")
+   @GetMapping("/ultimas")
    public ResponseEntity<List<ProfileMetricResponseDTO>> getLastsProfileMetricByProfileId(
          @PathVariable UUID profileId) {
       return ResponseEntity.ok(profileMetricService.getLastsProfileMetricByProfileId(profileId));
    }
 
-   @PostMapping("/{profileId}/todas")
+   @GetMapping
    public ResponseEntity<List<ProfileMetricResponseDTO>> getProfileMetricsByProfileId(@PathVariable UUID profileId) {
       return ResponseEntity.ok(profileMetricService.getProfileMetricsByProfileId(profileId));
    }
 
-   @PostMapping("/{profileId}/tipo/{profileMetricType}")
+   @GetMapping("/tipo/{type}")
    public ResponseEntity<List<ProfileMetricResponseDTO>> getProfileMetricsByProfileIdAndType(
          @PathVariable UUID profileId,
          @PathVariable ProfileMetricType type) {

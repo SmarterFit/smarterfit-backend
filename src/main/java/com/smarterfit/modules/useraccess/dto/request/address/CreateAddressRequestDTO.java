@@ -1,6 +1,7 @@
 package com.smarterfit.modules.useraccess.dto.request.address;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,6 +32,7 @@ public class CreateAddressRequestDTO {
       private String city;
 
       @NotBlank(message = "Postal code must not be blank")
+      @Pattern(regexp = "^\\d{5}-\\d{3}$", message = "Postal code must be in the format XXXXX-XXX")
       private String cep;
 
       @NotBlank(message = "State must not be blank")

@@ -34,7 +34,7 @@ public class ProfileController {
 
     @GetMapping("/buscar")
     public ResponseEntity<Page<ProfileResponseDTO>> searchProfile(
-            @RequestBody @Valid SearchProfileRequestDTO requestDTO,
+            @ModelAttribute SearchProfileRequestDTO requestDTO,
             Pageable pageable) {
         return ResponseEntity.ok(profileService.searchProfiles(requestDTO, pageable));
     }

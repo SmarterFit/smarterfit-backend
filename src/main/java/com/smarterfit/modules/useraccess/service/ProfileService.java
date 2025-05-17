@@ -65,6 +65,9 @@ public class ProfileService {
         profile.setCpf(encryptedCpf);
         profileRepository.save(profile);
 
+        // Decrypt CPF for response
+        profile.setCpf(cryptoUtil.decrypt(profile.getCpf()));
+
         return ProfileMapper.toResponse(profile);
     }
 }

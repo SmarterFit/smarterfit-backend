@@ -24,5 +24,5 @@ public class SearchProfileRequestDTO {
    private String phoneTerm;
    private LocalDate birthDateFrom;
    private LocalDate birthDateTo;
-   List<Gender> gender;
+   private List<Gender> gender;
 }
