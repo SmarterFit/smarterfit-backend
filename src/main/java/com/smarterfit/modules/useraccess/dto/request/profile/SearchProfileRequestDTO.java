@@ -3,8 +3,6 @@ package com.smarterfit.modules.useraccess.dto.request.profile;
 import java.time.LocalDate;
 import java.util.List;
 
-import org.springframework.ai.tool.annotation.ToolParam;
-
 import com.smarterfit.common.enums.Gender;
 
 import lombok.AllArgsConstructor;

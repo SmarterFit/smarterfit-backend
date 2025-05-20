@@ -25,7 +25,7 @@ public class AuthService {
    public AuthResponseDTO login(LoginRequestDTO requestDTO) {
       User user = authValidation.validateUser(requestDTO.getEmail(), requestDTO.getPassword());
 
-      JwtToken accessToken = JwtUtil.generateToken(requestDTO.getEmail());
+      JwtToken accessToken = JwtUtil.generateToken(user.getId().toString());
 
       return AuthMapper.toResponse(accessToken, user);
    }
