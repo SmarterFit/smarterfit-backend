@@ -27,6 +27,6 @@ public class AuthService {
 
       JwtToken accessToken = JwtUtil.generateToken(user.getId().toString());
 
-      return AuthMapper.toResponse(accessToken, user);
+      return AuthMapper.toResponse(accessToken, user.getProfile());
    }
 }

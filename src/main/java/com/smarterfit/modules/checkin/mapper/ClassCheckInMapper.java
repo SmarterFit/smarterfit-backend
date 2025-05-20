@@ -6,7 +6,9 @@ import com.smarterfit.modules.checkin.dto.request.ClassCheckInRequestDTO;
 import com.smarterfit.modules.checkin.dto.response.ClassCheckInResponseDTO;
 import com.smarterfit.modules.checkin.entity.ClassCheckIn;
 import com.smarterfit.modules.classgroup.entity.ClassSession;
+import com.smarterfit.modules.classgroup.mapper.ClassSessionMapper;
 import com.smarterfit.modules.useraccess.entity.User;
+import com.smarterfit.modules.useraccess.mapper.UserMapper;
 
 public class ClassCheckInMapper {
    private ClassCheckInMapper() {
@@ -41,7 +43,16 @@ public class ClassCheckInMapper {
       if (classCheckIn == null) {
          throw new ResourceNotFoundException("ClassCheckIn cannot be null");
       }
+      ClassCheckInResponseDTO response = GenericMapper.map(classCheckIn, ClassCheckInResponseDTO.class);
 
-      return GenericMapper.map(classCheckIn, ClassCheckInResponseDTO.class);
+      User user = classCheckIn.getUser();
+      ClassSession classSession = classCheckIn.getClassSession();
+
+      response = response.toBuilder()
+            .user(UserMapper.toResponse(user))
+            .classSession(ClassSessionMapper.toResponse(classSession))
+            .build();
+
+      return response;
    }
 }

@@ -6,6 +6,7 @@ import com.smarterfit.modules.checkin.dto.request.GymCheckInAndCheckOutRequestDT
 import com.smarterfit.modules.checkin.dto.response.GymCheckInResponseDTO;
 import com.smarterfit.modules.checkin.entity.GymCheckIn;
 import com.smarterfit.modules.useraccess.entity.User;
+import com.smarterfit.modules.useraccess.mapper.UserMapper;
 
 public class GymCheckInMapper {
    private GymCheckInMapper() {
@@ -35,6 +36,14 @@ public class GymCheckInMapper {
          throw new ResourceNotFoundException("GymCheckIn cannot be null");
       }
 
-      return GenericMapper.map(gymCheckIn, GymCheckInResponseDTO.class);
+      GymCheckInResponseDTO response = GenericMapper.map(gymCheckIn, GymCheckInResponseDTO.class);
+
+      User user = gymCheckIn.getUser();
+
+      response = response.toBuilder()
+            .user(UserMapper.toResponse(user))
+            .build();
+
+      return response;
    }
 }

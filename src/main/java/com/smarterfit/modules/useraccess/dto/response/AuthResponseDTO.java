@@ -15,5 +15,5 @@ import lombok.Setter;
 @Builder(toBuilder = true)
 public class AuthResponseDTO {
       private JwtToken accessToken;
-      private UserResponseDTO user;
+      private ProfileResponseDTO profile;
 }

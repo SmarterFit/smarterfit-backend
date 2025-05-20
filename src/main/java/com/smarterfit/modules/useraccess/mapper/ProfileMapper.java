@@ -30,9 +30,15 @@ public class ProfileMapper {
 
         ProfileResponseDTO response = GenericMapper.map(profile, ProfileResponseDTO.class);
 
+        response = response.toBuilder()
+                .user(UserMapper.toResponse(profile.getUser()))
+                .build();
+
         if (profile.getAddress() != null) {
             AddressResponseDTO responseAddress = AddressMapper.toResponse(profile.getAddress());
-            response = response.toBuilder().address(responseAddress).build();
+            response = response.toBuilder()
+                    .address(responseAddress)
+                    .build();
         }
 
         return response;

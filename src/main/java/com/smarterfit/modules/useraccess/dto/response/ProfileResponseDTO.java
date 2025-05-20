@@ -24,4 +24,5 @@ public class ProfileResponseDTO {
     private LocalDate birthDate;
     private Gender gender;
     private AddressResponseDTO address;
+    private UserResponseDTO user;
 }
