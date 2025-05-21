@@ -18,20 +18,19 @@ import java.util.UUID;
 
 @Repository
 public interface GymCheckInRepository extends JpaRepository<GymCheckIn, UUID> {
-   Optional<GymCheckIn> findFirstByUserIdAndCheckOutTimeIsNullOrderByCheckInTimeDesc(UUID userId);
+        Optional<GymCheckIn> findFirstByUserIdAndCheckOutTimeIsNullOrderByCheckInTimeDesc(UUID userId);
 
-   List<GymCheckIn> findByUserId(UUID userId);
+        List<GymCheckIn> findByUserId(UUID userId);
 
-   @Modifying
-   @Query("UPDATE GymCheckIn g SET g.checkOutTime = :checkOutTime WHERE g.checkOutTime IS NULL")
-   int updateAllCheckOutTime(@Param("checkOutTime") LocalDateTime checkOutTime);
+        @Modifying
+        @Query("UPDATE GymCheckIn g SET g.checkOutTime = :checkOutTime WHERE g.checkOutTime IS NULL")
+        int updateAllCheckOutTime(@Param("checkOutTime") LocalDateTime checkOutTime);
 
-   @Query("SELECT g FROM GymCheckIn g WHERE g.userId = :userId AND g.checkInTime BETWEEN :startDate AND :endDate")
-   List<GymCheckIn> findByUserIdAndDateBetween(
-           @Param("userId") UUID userId,
-           @Param("startDate") LocalDateTime startDate,
-           @Param("endDate") LocalDateTime endDate
-   );
-   
-   Integer countByCheckOutTimeIsNull();
+        @Query("SELECT g FROM GymCheckIn g WHERE g.user.id = :userId AND g.checkInTime BETWEEN :startDate AND :endDate")
+        List<GymCheckIn> findByUserIdAndDateBetween(
+                        @Param("userId") UUID userId,
+                        @Param("startDate") LocalDateTime startDate,
+                        @Param("endDate") LocalDateTime endDate);
+
+        Integer countByCheckOutTimeIsNull();
 }
