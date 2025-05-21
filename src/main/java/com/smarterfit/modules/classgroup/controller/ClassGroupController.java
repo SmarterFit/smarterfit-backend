@@ -52,6 +52,11 @@ public class ClassGroupController {
         return ResponseEntity.ok(classGroupService.getAllClassGroups());
     }
 
+    @GetMapping("/available-by-user/{userId}")
+    public ResponseEntity<List<ClassGroupResponseDTO>> getAvailableClassGroupsByUserId(@PathVariable UUID userId) {
+        return ResponseEntity.ok(classGroupService.getAvailableClassGroupsByUserId(userId));
+    }
+
     @RequireRole(RoleType.TRAINER)
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteClassGroupById(@PathVariable UUID id) {
