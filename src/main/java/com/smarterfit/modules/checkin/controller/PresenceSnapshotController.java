@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -26,6 +27,12 @@ public class PresenceSnapshotController {
     @Autowired
     public PresenceSnapshotController(PresenceSnapshotService presenceSnapshotService) {
         this.presenceSnapshotService = presenceSnapshotService;
+    }
+
+    @PostMapping("/reset")
+    public ResponseEntity<Void> resetPresence() {
+        presenceSnapshotService.resetPresence();
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping

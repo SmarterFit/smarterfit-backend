@@ -7,6 +7,7 @@ package com.smarterfit.modules.checkin.service;
 import java.util.List;
 
 import com.smarterfit.modules.checkin.event.AllCheckOutEvent;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -15,24 +16,31 @@ import org.springframework.transaction.annotation.Transactional;
 import com.smarterfit.modules.checkin.dto.response.PresenceSnapshotResponseDTO;
 import com.smarterfit.modules.checkin.entity.PresenceSnapshot;
 import com.smarterfit.modules.checkin.mapper.PresenceSnapshotMapper;
+import com.smarterfit.modules.checkin.repository.GymCheckInRepository;
 import com.smarterfit.modules.checkin.repository.PresenceSnapshotRepository;
 
 @Service
 public class PresenceSnapshotService {
 
    private final PresenceSnapshotRepository presenceSnapshotRepository;
+   private final GymCheckInRepository gymCheckInRepository;
    private final ApplicationEventPublisher publisher;
 
+   @Autowired
    public PresenceSnapshotService(PresenceSnapshotRepository presenceSnapshotRepository,
-                                   ApplicationEventPublisher publisher) {
+         GymCheckInRepository gymCheckInRepository,
+         ApplicationEventPublisher publisher) {
       this.presenceSnapshotRepository = presenceSnapshotRepository;
-        this.publisher = publisher;
+      this.gymCheckInRepository = gymCheckInRepository;
+      this.publisher = publisher;
    }
 
    @Transactional
-   public PresenceSnapshotResponseDTO registerPresence(Integer quantify) {
+   public PresenceSnapshotResponseDTO registerPresence() {
+      Integer presenceCount = gymCheckInRepository.countByCheckOutTimeIsNull();
+
       PresenceSnapshot presenceSnapshot = new PresenceSnapshot();
-      presenceSnapshot.setPresenceCount(quantify);
+      presenceSnapshot.setPresenceCount(presenceCount);
       presenceSnapshot = presenceSnapshotRepository.save(presenceSnapshot);
 
       return PresenceSnapshotMapper.toResponse(presenceSnapshot);
