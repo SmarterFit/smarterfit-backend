@@ -3,7 +3,9 @@ package com.smarterfit.modules.checkin.service;
 import java.util.List;
 import java.util.UUID;
 
+import com.smarterfit.modules.checkin.event.CalculatePointsUserEvent;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,15 +27,20 @@ public class ClassCheckInService {
    private final ClassCheckInValidation classCheckInValidation;
    private final UserValidation userValidation;
    private final ClassSessionValidation classSessionValidation;
+   private final ApplicationEventPublisher publisher;
+
+   private static final int POINT = 1;
 
    @Autowired
    public ClassCheckInService(ClassCheckInRepository classCheckInRepository,
          ClassCheckInValidation classCheckInValidation, UserValidation userValidation,
-         ClassSessionValidation classSessionValidation) {
+         ClassSessionValidation classSessionValidation,
+                              ApplicationEventPublisher publisher) {
       this.classCheckInRepository = classCheckInRepository;
       this.classCheckInValidation = classCheckInValidation;
       this.userValidation = userValidation;
       this.classSessionValidation = classSessionValidation;
+      this.publisher = publisher;
    }
 
    @Transactional
@@ -47,7 +54,7 @@ public class ClassCheckInService {
       ClassCheckIn classCheckIn = ClassCheckInMapper.toEntity(requestDTO, user, classSession);
       classCheckIn = classCheckInRepository.save(classCheckIn);
 
-      /// TODO: Lançar evento de check-in realizado com sucesso
+      publisher.publishEvent(new CalculatePointsUserEvent(user.getId(), POINT));
 
       return ClassCheckInMapper.toResponse(classCheckIn);
    }
@@ -61,7 +68,7 @@ public class ClassCheckInService {
             classCheckIn);
       classCheckIn = classCheckInRepository.save(classCheckIn);
 
-      /// TODO: Lançar evento de check-in realizado com sucesso
+      publisher.publishEvent(new CalculatePointsUserEvent(classCheckIn.getUser().getId(), POINT));
 
       return ClassCheckInMapper.toResponse(classCheckIn);
    }

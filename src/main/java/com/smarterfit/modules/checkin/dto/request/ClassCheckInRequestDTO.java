@@ -3,7 +3,6 @@ package com.smarterfit.modules.checkin.dto.request;
 import java.util.UUID;
 
 import com.smarterfit.common.enums.CheckInStatus;
-
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

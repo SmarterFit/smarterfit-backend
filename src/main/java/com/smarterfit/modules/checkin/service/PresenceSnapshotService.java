@@ -6,7 +6,9 @@ package com.smarterfit.modules.checkin.service;
 
 import java.util.List;
 
+import com.smarterfit.modules.checkin.event.AllCheckOutEvent;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,10 +21,12 @@ import com.smarterfit.modules.checkin.repository.PresenceSnapshotRepository;
 public class PresenceSnapshotService {
 
    private final PresenceSnapshotRepository presenceSnapshotRepository;
+   private final ApplicationEventPublisher publisher;
 
-   @Autowired
-   public PresenceSnapshotService(PresenceSnapshotRepository presenceSnapshotRepository) {
+   public PresenceSnapshotService(PresenceSnapshotRepository presenceSnapshotRepository,
+                                   ApplicationEventPublisher publisher) {
       this.presenceSnapshotRepository = presenceSnapshotRepository;
+        this.publisher = publisher;
    }
 
    @Transactional
@@ -40,7 +44,7 @@ public class PresenceSnapshotService {
       presenceSnapshot.setPresenceCount(0);
       presenceSnapshotRepository.save(presenceSnapshot);
 
-      /// TODO: Lançar evento de dar check-out em todos os gym-check-in abertos
+      publisher.publishEvent(new AllCheckOutEvent(this));
    }
 
    /// TODO: Fazer filtragem por data

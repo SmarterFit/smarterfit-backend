@@ -1,8 +1,11 @@
 package com.smarterfit.modules.traininggroup.service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+import com.smarterfit.modules.checkin.entity.GymCheckIn;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -137,13 +140,20 @@ public class TrainingGroupUserService {
    }
 
    @Transactional
-   public TrainingGroupUserResponseDTO updatePoints(UUID groupId, UUID userId, Integer addPoints) {
-      TrainingGroupUser trainingGroupUser = trainingGroupUserValidation
-            .validateTrainingGroupUserById(new TrainingGroupUserId(groupId, userId));
+   public void updatePoints(UUID userId, Integer addPoints) {
+      List<TrainingGroupUser> trainingGroupUsers = trainingGroupUserRepository
+              .findByUserId(userId);
 
-      trainingGroupUser.setPoints(trainingGroupUser.getPoints() + addPoints);
-      trainingGroupUserRepository.save(trainingGroupUser);
+      trainingGroupUsers.stream().map(trainingGroupUser1 -> {
+         trainingGroupUser1.setPoints(trainingGroupUser1.getPoints() + addPoints);
+         return trainingGroupUser1;
+      }).toList();
 
-      return TrainingGroupUserMapper.toResponse(trainingGroupUser);
+      trainingGroupUserRepository.saveAll(trainingGroupUsers);
    }
+
+
+
+
+
 }

@@ -5,10 +5,11 @@
 package com.smarterfit.modules.checkin.service;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.smarterfit.modules.checkin.domain.GymPoints;
+import com.smarterfit.modules.checkin.event.CalculatePointsUserEvent;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,16 +24,19 @@ import com.smarterfit.modules.useraccess.validation.UserValidation;
 
 @Service
 public class GymCheckInService {
-    private GymCheckInRepository gymCheckInRepository;
-    private GymCheckInValidation gymCheckInValidation;
-    private UserValidation userValidation;
+    private final GymCheckInRepository gymCheckInRepository;
+    private final GymCheckInValidation gymCheckInValidation;
+    private final UserValidation userValidation;
+    private final ApplicationEventPublisher publisher;
+    private final GymPoints gymPoints;
 
-    @Autowired
     public GymCheckInService(GymCheckInRepository gymCheckInRepository, GymCheckInValidation gymCheckInValidation,
-            UserValidation userValidation) {
+            UserValidation userValidation, GymPoints gymPoints, ApplicationEventPublisher publisher) {
         this.gymCheckInRepository = gymCheckInRepository;
         this.gymCheckInValidation = gymCheckInValidation;
         this.userValidation = userValidation;
+        this.gymPoints = gymPoints;
+        this.publisher = publisher;
     }
 
     @Transactional
@@ -43,7 +47,8 @@ public class GymCheckInService {
         GymCheckIn gymCheckIn = GymCheckInMapper.toEntity(requestDTO, user);
         gymCheckIn = gymCheckInRepository.save(gymCheckIn);
 
-        /// TODO: Lançar evento de check-in realizado com sucesso
+        Integer points = gymPoints.calculateDailyConsecutivePoints(user.getId());
+        publisher.publishEvent(new CalculatePointsUserEvent(user.getId(), points));
 
         return GymCheckInMapper.toResponse(gymCheckIn);
     }
@@ -72,4 +77,6 @@ public class GymCheckInService {
                 .map(GymCheckInMapper::toResponse)
                 .toList();
     }
+
+
 }
