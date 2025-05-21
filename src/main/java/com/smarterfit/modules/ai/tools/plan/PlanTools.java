@@ -1,4 +1,4 @@
-package com.smarterfit.modules.ai.tools;
+package com.smarterfit.modules.ai.tools.plan;
 
 import java.util.List;
 
