@@ -1,10 +1,8 @@
 package com.smarterfit.modules.checkin.domain;
 
-import com.smarterfit.modules.checkin.entity.GymCheckIn;
 import com.smarterfit.modules.checkin.repository.GymCheckInRepository;
 import org.springframework.stereotype.Component;
 
-import java.time.Clock;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;

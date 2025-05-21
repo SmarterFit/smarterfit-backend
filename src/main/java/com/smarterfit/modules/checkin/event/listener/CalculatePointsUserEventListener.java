@@ -5,8 +5,6 @@ import com.smarterfit.modules.traininggroup.service.TrainingGroupUserService;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
-import java.util.UUID;
-
 @Component
 public class CalculatePointsUserEventListener {
     private final TrainingGroupUserService trainingGroupUserService;

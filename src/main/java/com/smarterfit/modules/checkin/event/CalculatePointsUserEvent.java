@@ -1,6 +1,5 @@
 package com.smarterfit.modules.checkin.event;
 
-import com.smarterfit.modules.checkin.entity.GymCheckIn;
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
 
