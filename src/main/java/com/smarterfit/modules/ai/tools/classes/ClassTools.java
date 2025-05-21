@@ -1,11 +1,8 @@
 package com.smarterfit.modules.ai.tools.classes;
 
-import com.smarterfit.modules.billing.dto.response.plan.PlanResponseDTO;
 import com.smarterfit.modules.classgroup.dto.request.classgroup.SearchClassGroupRequestDTO;
 import com.smarterfit.modules.classgroup.dto.response.ClassGroupResponseDTO;
-import com.smarterfit.modules.classgroup.service.ClassGroupPlanService;
 import com.smarterfit.modules.classgroup.service.ClassGroupService;
-import com.smarterfit.modules.classgroup.service.ClassGroupUserService;
 import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.ai.tool.annotation.ToolParam;
 import org.springframework.data.domain.Pageable;
@@ -23,7 +20,6 @@ public class ClassTools {
 
     public ClassTools(ClassGroupService classGroupService) {
         this.classGroupService = classGroupService;
-
     }
 
     @Tool(description = "Buscar turmas. Só preencha os parâmetros que forem explicitamente informados pelo usuário.")
@@ -39,8 +35,7 @@ public class ClassTools {
             @ToolParam(required = false, description = "Data de início máxima") LocalDate startTo,
             @ToolParam(required = false, description = "Data de término mínima") LocalDate endFrom,
             @ToolParam(required = false, description = "Data de término máxima") LocalDate endTo,
-            @ToolParam(required = false, description = "Buscar apenas turmas que são eventos") Boolean isEvent
-    ) {
+            @ToolParam(required = false, description = "Buscar apenas turmas que são eventos") Boolean isEvent) {
 
         SearchClassGroupRequestDTO request = new SearchClassGroupRequestDTO();
 
@@ -60,6 +55,10 @@ public class ClassTools {
         return classGroupService.searchClass(request, Pageable.unpaged()).getContent();
     }
 
-
+    @Tool(description = "Buscar turmas em que o usuário pode se inscrever")
+    public List<ClassGroupResponseDTO> getAvailableClassGroupsByUserId(
+            @ToolParam(description = "ID do usuário") UUID userId) {
+        return classGroupService.getAvailableClassGroupsByUserId(userId);
+    }
 
 }
