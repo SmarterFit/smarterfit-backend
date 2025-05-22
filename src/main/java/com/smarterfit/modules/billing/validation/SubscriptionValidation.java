@@ -28,4 +28,10 @@ public class SubscriptionValidation {
          throw new BusinessException("Subscription is canceled.");
       }
    }
+
+   public void validateHasCurrentSubscription(UUID participantId) {
+      if (!subscriptionRepository.existsCurrentSubscriptionByParticipantId(participantId)) {
+         throw new BusinessException("User does not have an active subscription.");
+      }
+   }
 }

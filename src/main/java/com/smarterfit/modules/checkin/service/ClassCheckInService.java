@@ -16,7 +16,9 @@ import com.smarterfit.modules.checkin.entity.id.ClassCheckInId;
 import com.smarterfit.modules.checkin.mapper.ClassCheckInMapper;
 import com.smarterfit.modules.checkin.repository.ClassCheckInRepository;
 import com.smarterfit.modules.checkin.validation.ClassCheckInValidation;
+import com.smarterfit.modules.classgroup.entity.ClassGroupUser;
 import com.smarterfit.modules.classgroup.entity.ClassSession;
+import com.smarterfit.modules.classgroup.validation.ClassGroupUserValidation;
 import com.smarterfit.modules.classgroup.validation.ClassSessionValidation;
 import com.smarterfit.modules.useraccess.entity.User;
 import com.smarterfit.modules.useraccess.validation.UserValidation;
@@ -27,6 +29,7 @@ public class ClassCheckInService {
    private final ClassCheckInValidation classCheckInValidation;
    private final UserValidation userValidation;
    private final ClassSessionValidation classSessionValidation;
+   private final ClassGroupUserValidation classGroupUserValidation;
    private final ApplicationEventPublisher publisher;
 
    private static final int POINT = 1;
@@ -34,12 +37,13 @@ public class ClassCheckInService {
    @Autowired
    public ClassCheckInService(ClassCheckInRepository classCheckInRepository,
          ClassCheckInValidation classCheckInValidation, UserValidation userValidation,
-         ClassSessionValidation classSessionValidation,
-                              ApplicationEventPublisher publisher) {
+         ClassSessionValidation classSessionValidation, ClassGroupUserValidation classGroupUserValidation,
+         ApplicationEventPublisher publisher) {
       this.classCheckInRepository = classCheckInRepository;
       this.classCheckInValidation = classCheckInValidation;
       this.userValidation = userValidation;
       this.classSessionValidation = classSessionValidation;
+      this.classGroupUserValidation = classGroupUserValidation;
       this.publisher = publisher;
    }
 
@@ -47,6 +51,8 @@ public class ClassCheckInService {
    public ClassCheckInResponseDTO createClassCheckIn(ClassCheckInRequestDTO requestDTO) {
       User user = userValidation.validateUserById(requestDTO.getUserId());
       ClassSession classSession = classSessionValidation.validateClassSessionById(requestDTO.getClassSessionId());
+
+      classGroupUserValidation.validateClassGroupUserId(user.getId(), classSession.getClassGroup().getId());
 
       ClassCheckInId classCheckInId = new ClassCheckInId(user.getId(), classSession.getId());
       classCheckInValidation.validateClassCheckInNotExists(classCheckInId);

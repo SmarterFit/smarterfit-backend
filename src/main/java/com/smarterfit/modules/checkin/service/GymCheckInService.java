@@ -7,6 +7,7 @@ package com.smarterfit.modules.checkin.service;
 import java.time.LocalDateTime;
 import java.util.*;
 
+import com.smarterfit.modules.billing.validation.SubscriptionValidation;
 import com.smarterfit.modules.checkin.domain.GymPoints;
 import com.smarterfit.modules.checkin.event.CalculatePointsUserEvent;
 import org.springframework.context.ApplicationEventPublisher;
@@ -27,14 +28,17 @@ public class GymCheckInService {
     private final GymCheckInRepository gymCheckInRepository;
     private final GymCheckInValidation gymCheckInValidation;
     private final UserValidation userValidation;
+    private final SubscriptionValidation subscriptionValidation;
     private final ApplicationEventPublisher publisher;
     private final GymPoints gymPoints;
 
     public GymCheckInService(GymCheckInRepository gymCheckInRepository, GymCheckInValidation gymCheckInValidation,
-            UserValidation userValidation, GymPoints gymPoints, ApplicationEventPublisher publisher) {
+            UserValidation userValidation, SubscriptionValidation subscriptionValidation, GymPoints gymPoints,
+            ApplicationEventPublisher publisher) {
         this.gymCheckInRepository = gymCheckInRepository;
         this.gymCheckInValidation = gymCheckInValidation;
         this.userValidation = userValidation;
+        this.subscriptionValidation = subscriptionValidation;
         this.gymPoints = gymPoints;
         this.publisher = publisher;
     }
@@ -42,6 +46,8 @@ public class GymCheckInService {
     @Transactional
     public GymCheckInResponseDTO doCheckIn(GymCheckInAndCheckOutRequestDTO requestDTO) {
         User user = userValidation.validateUserById(requestDTO.getUserId());
+
+        subscriptionValidation.validateHasCurrentSubscription(user.getId());
         gymCheckInValidation.validateOpenCheckInNotExists(requestDTO.getUserId());
 
         GymCheckIn gymCheckIn = GymCheckInMapper.toEntity(requestDTO, user);
@@ -77,6 +83,5 @@ public class GymCheckInService {
                 .map(GymCheckInMapper::toResponse)
                 .toList();
     }
-
 
 }

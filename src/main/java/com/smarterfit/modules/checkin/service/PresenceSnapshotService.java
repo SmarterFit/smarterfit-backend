@@ -13,6 +13,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.smarterfit.modules.checkin.dto.request.FilterPresenceSnapshotRequestDTO;
 import com.smarterfit.modules.checkin.dto.response.PresenceSnapshotResponseDTO;
 import com.smarterfit.modules.checkin.entity.PresenceSnapshot;
 import com.smarterfit.modules.checkin.mapper.PresenceSnapshotMapper;
@@ -55,10 +56,22 @@ public class PresenceSnapshotService {
       publisher.publishEvent(new AllCheckOutEvent(this));
    }
 
-   /// TODO: Fazer filtragem por data
    @Transactional(readOnly = true)
    public List<PresenceSnapshotResponseDTO> getAll() {
       List<PresenceSnapshot> presenceSnapshots = presenceSnapshotRepository.findAll();
+      return presenceSnapshots.stream().map(PresenceSnapshotMapper::toResponse).toList();
+   }
+
+   @Transactional(readOnly = true)
+   public PresenceSnapshotResponseDTO getLast() {
+      PresenceSnapshot presenceSnapshot = presenceSnapshotRepository.findTopByOrderByCreatedAtDesc();
+      return PresenceSnapshotMapper.toResponse(presenceSnapshot);
+   }
+
+   @Transactional(readOnly = true)
+   public List<PresenceSnapshotResponseDTO> filterByDate(FilterPresenceSnapshotRequestDTO requestDTO) {
+      List<PresenceSnapshot> presenceSnapshots = presenceSnapshotRepository
+            .findByCreatedAtBetween(requestDTO.getStartDate(), requestDTO.getEndDate());
       return presenceSnapshots.stream().map(PresenceSnapshotMapper::toResponse).toList();
    }
 }

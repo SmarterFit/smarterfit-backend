@@ -13,7 +13,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-
 @Component
 public class GymPoints {
     private static final int LOOKBACK_DAYS = 5;
@@ -33,7 +32,13 @@ public class GymPoints {
         Set<LocalDate> checkInDates = repository
                 .findByUserIdAndDateBetween(userId, startDateTime, endDateTime)
                 .stream()
-                .map(g -> g.getCheckOutTime().toLocalDate())
+                .map(g -> {
+                    if (g.getCheckOutTime() != null) {
+                        return g.getCheckOutTime().toLocalDate();
+                    } else {
+                        return g.getCheckInTime().toLocalDate();
+                    }
+                })
                 .filter(d -> !WEEKEND.contains(d.getDayOfWeek()))
                 .collect(Collectors.toSet());
 
@@ -46,11 +51,9 @@ public class GymPoints {
                 .sum();
     }
 
-
     private int dayIndex(LocalDate day, LocalDate today) {
         return (int) today.datesUntil(day.plusDays(1))
                 .filter(d -> !WEEKEND.contains(d.getDayOfWeek()))
                 .count();
     }
 }
-

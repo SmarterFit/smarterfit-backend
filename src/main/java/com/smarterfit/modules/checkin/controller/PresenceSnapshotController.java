@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.smarterfit.modules.checkin.dto.request.FilterPresenceSnapshotRequestDTO;
 import com.smarterfit.modules.checkin.dto.response.PresenceSnapshotResponseDTO;
 import com.smarterfit.modules.checkin.service.PresenceSnapshotService;
 
@@ -38,5 +39,15 @@ public class PresenceSnapshotController {
     @GetMapping
     public ResponseEntity<List<PresenceSnapshotResponseDTO>> getAll() {
         return ResponseEntity.ok(presenceSnapshotService.getAll());
+    }
+
+    @GetMapping("/latest")
+    public ResponseEntity<PresenceSnapshotResponseDTO> getLast() {
+        return ResponseEntity.ok(presenceSnapshotService.getLast());
+    }
+
+    @GetMapping("/date-range")
+    public ResponseEntity<List<PresenceSnapshotResponseDTO>> filterByDate(FilterPresenceSnapshotRequestDTO request) {
+        return ResponseEntity.ok(presenceSnapshotService.filterByDate(request));
     }
 }
