@@ -2,9 +2,7 @@ package com.smarterfit.modules.training.validation;
 
 import com.smarterfit.common.exceptions.ResourceAlreadyExistsException;
 import com.smarterfit.common.exceptions.ResourceNotFoundException;
-import com.smarterfit.modules.training.entity.Equipment;
 import com.smarterfit.modules.training.entity.WorkoutPlan;
-import com.smarterfit.modules.training.repository.EquipmentRepository;
 import com.smarterfit.modules.training.repository.WorkoutPlanRepository;
 import org.springframework.stereotype.Component;
 
@@ -29,4 +27,6 @@ public class WorkoutPlanValidation {
             throw new ResourceAlreadyExistsException("WorkoutPlan already exists");
         }
     }
+
+
 }

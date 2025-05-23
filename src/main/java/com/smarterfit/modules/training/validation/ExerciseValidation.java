@@ -22,9 +22,17 @@ public class ExerciseValidation {
                 .orElseThrow(() -> new ResourceNotFoundException("Exercise not found"));
     }
 
-    public void existsExerciseByName(UUID id) {
-        if (exerciseRepository.existsById(id)) {
+    public Exercise validateExerciseByName(String name) {
+        return exerciseRepository.findByName(name)
+                .orElseThrow(() -> new ResourceNotFoundException("Exercise not found"));
+    }
+
+
+    public void existsExerciseByName(String name) {
+        if (exerciseRepository.existsByName(name)) {
             throw new ResourceAlreadyExistsException("Exercise already exists");
         }
     }
+
+
 }

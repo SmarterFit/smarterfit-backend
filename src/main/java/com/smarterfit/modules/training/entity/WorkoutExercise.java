@@ -2,7 +2,8 @@ package com.smarterfit.modules.training.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.validator.constraints.UUID;
+
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -11,7 +12,7 @@ import org.hibernate.validator.constraints.UUID;
 @EqualsAndHashCode(of = "id")
 @Entity
 @Table(name = "SF_WORKOUT_EXERCISE")
-public class WorkoutExercises {
+public class WorkoutExercise {
 
     @Id
     @GeneratedValue

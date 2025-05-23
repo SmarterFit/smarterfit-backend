@@ -24,16 +24,16 @@ public class TrainingGoalController {
     public ResponseEntity<TrainingGoalResponseDTO> create(@Valid @RequestBody TrainingGoalRequestDTO requestDTO,
                                                           @RequestHeader("X-User-Id") UUID requesterId) {
         TrainingGoalResponseDTO response = trainingGoalService.createTrainingGoal(requestDTO, requesterId);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.status(201).body(response);
     }
 
-    @GetMapping("/{userId}")
+    @GetMapping
     public ResponseEntity<TrainingGoalResponseDTO> getByUserId(@RequestHeader("X-User-Id") UUID requesterId) {
         TrainingGoalResponseDTO response = trainingGoalService.getTrainingGoalByUserId(requesterId);
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping("/{userId}/atualizar")
+    @PutMapping("/atualizar")
     public ResponseEntity<TrainingGoalResponseDTO> update(@Valid @RequestBody TrainingGoalRequestDTO requestDTO,
                                                           @RequestHeader("X-User-Id") UUID requesterId) {
         TrainingGoalResponseDTO response = trainingGoalService.updateTrainingGoal(requesterId, requestDTO);

@@ -3,7 +3,7 @@ package com.smarterfit.modules.training.mapper;
 import com.smarterfit.common.exceptions.ResourceNotFoundException;
 import com.smarterfit.common.mapper.GenericMapper;
 import com.smarterfit.modules.training.dto.request.WorkoutDayRequestDTO;
-import com.smarterfit.modules.training.dto.response.WorkoutDayResponseDTO;
+import com.smarterfit.modules.training.dto.response.workoutday.WorkoutDayResponseDTO;
 import com.smarterfit.modules.training.entity.WorkoutDay;
 
 

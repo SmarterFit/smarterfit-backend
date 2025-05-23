@@ -1,8 +1,7 @@
-package com.smarterfit.modules.training.dto.response;
+package com.smarterfit.modules.training.dto.response.workoutday;
 
 import lombok.*;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Getter

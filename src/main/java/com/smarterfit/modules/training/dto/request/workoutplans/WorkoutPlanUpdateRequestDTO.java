@@ -1,4 +1,4 @@
-package com.smarterfit.modules.training.dto.request;
+package com.smarterfit.modules.training.dto.request.workoutplans;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -11,10 +11,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(toBuilder = true)
-public class WorkoutPlanRequestDTO {
-
-    @NotNull(message = "User ID is required")
-    private UUID userId;
+public class WorkoutPlanUpdateRequestDTO {
 
     @NotBlank(message = "Title is required")
     private String title;

@@ -27,4 +27,10 @@ public class WorkoutDayValidation {
             throw new ResourceAlreadyExistsException("WorkoutDay already exists");
         }
     }
+
+    public void existsWorkoutByDayOfWeek(String day) {
+        if (workoutDayRepository.existsByDayOfWeek(day)) {
+            throw new ResourceAlreadyExistsException("WorkoutDay already exists");
+        }
+    }
 }

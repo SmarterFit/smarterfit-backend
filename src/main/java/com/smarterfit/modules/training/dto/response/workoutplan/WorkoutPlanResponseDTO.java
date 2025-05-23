@@ -1,4 +1,4 @@
-package com.smarterfit.modules.training.dto.response;
+package com.smarterfit.modules.training.dto.response.workoutplan;
 
 import lombok.*;
 

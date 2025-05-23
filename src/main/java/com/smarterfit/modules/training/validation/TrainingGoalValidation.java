@@ -4,9 +4,11 @@ import com.smarterfit.common.exceptions.ResourceAlreadyExistsException;
 import com.smarterfit.common.exceptions.ResourceNotFoundException;
 import com.smarterfit.modules.training.entity.TrainingGoal;
 import com.smarterfit.modules.training.repository.TrainingGoalRepository;
+import org.springframework.stereotype.Component;
 
 import java.util.UUID;
 
+@Component
 public class TrainingGoalValidation {
 
     private final TrainingGoalRepository trainingGoalRepository;

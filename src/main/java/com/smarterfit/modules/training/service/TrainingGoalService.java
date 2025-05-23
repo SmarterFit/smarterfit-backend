@@ -16,7 +16,8 @@ public class TrainingGoalService {
     private final TrainingGoalRepository trainingGoalRepository;
     private final TrainingGoalValidation trainingGoalValidation;
 
-    public TrainingGoalService(TrainingGoalRepository trainingGoalRepository, TrainingGoalValidation trainingGoalValidation) {
+    public TrainingGoalService(TrainingGoalRepository trainingGoalRepository,
+                               TrainingGoalValidation trainingGoalValidation) {
         this.trainingGoalRepository = trainingGoalRepository;
         this.trainingGoalValidation = trainingGoalValidation;
     }

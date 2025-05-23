@@ -7,6 +7,8 @@ import com.smarterfit.modules.training.entity.Equipment;
 import com.smarterfit.modules.training.mapper.EquipmentMapper;
 import com.smarterfit.modules.training.repository.EquipmentRepository;
 import com.smarterfit.modules.training.validation.EquipmentValidation;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,11 +49,11 @@ public class EquipmentService {
     }
 
     @Transactional(readOnly = true)
-    public List<EquipmentResponseDTO> getAllEquipment() {
-        return equipmentRepository.findAll().stream()
-                .map(EquipmentMapper::toResponse)
-                .toList();
+    public Page<EquipmentResponseDTO> getAllEquipment(Pageable pageable) {
+        return equipmentRepository.findAll(pageable)
+                .map(EquipmentMapper::toResponse);
     }
+
 
     @Transactional
     public EquipmentResponseDTO updateEquipmentById(UUID id, EquipmentRequestDTO requestDTO) {

@@ -3,9 +3,9 @@ package com.smarterfit.modules.training.entity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.validator.constraints.UUID;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -17,11 +17,11 @@ import java.time.LocalDateTime;
 public class WorkoutPlan {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @MapsId
+    @JoinColumn(name = "training_goal_id", nullable = false)
     private TrainingGoal trainingGoal;
 
     @Column(nullable = false)

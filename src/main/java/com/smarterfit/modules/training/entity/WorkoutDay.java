@@ -4,10 +4,11 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.smarterfit.common.enums.MuscleGroup;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.validator.constraints.UUID;
+
 
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 
 @Getter

@@ -8,5 +8,5 @@ import java.util.UUID;
 
 public interface WorkoutDayRepository extends JpaRepository<WorkoutDay, UUID> {
 
-
+    boolean existsByDayOfWeek(String dayOfWeek);
 }
