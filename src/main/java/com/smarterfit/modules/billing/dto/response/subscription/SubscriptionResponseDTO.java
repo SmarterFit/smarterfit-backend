@@ -1,4 +1,4 @@
-package com.smarterfit.modules.billing.dto.response;
+package com.smarterfit.modules.billing.dto.response.subscription;
 
 import java.time.LocalDateTime;
 import java.util.UUID;

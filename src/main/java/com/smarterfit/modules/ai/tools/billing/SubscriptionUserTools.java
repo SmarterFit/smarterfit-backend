@@ -7,7 +7,7 @@ import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.ai.tool.annotation.ToolParam;
 import org.springframework.stereotype.Component;
 
-import com.smarterfit.modules.billing.dto.response.SubscriptionResponseDTO;
+import com.smarterfit.modules.billing.dto.response.subscription.SubscriptionResponseDTO;
 import com.smarterfit.modules.billing.service.SubscriptionUserService;
 import com.smarterfit.modules.useraccess.dto.response.UserResponseDTO;
 

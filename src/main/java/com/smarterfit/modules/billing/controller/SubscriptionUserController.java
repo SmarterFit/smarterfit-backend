@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.smarterfit.modules.billing.dto.response.SubscriptionResponseDTO;
+import com.smarterfit.modules.billing.dto.response.subscription.SubscriptionResponseDTO;
 import com.smarterfit.modules.billing.dto.response.subscriptionuser.SubscriptionUserResponseDTO;
 import com.smarterfit.modules.billing.service.SubscriptionUserService;
 import com.smarterfit.modules.useraccess.dto.response.UserResponseDTO;

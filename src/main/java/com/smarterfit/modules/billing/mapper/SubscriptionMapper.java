@@ -3,7 +3,7 @@ package com.smarterfit.modules.billing.mapper;
 import com.smarterfit.common.exceptions.ResourceNotFoundException;
 import com.smarterfit.common.mapper.GenericMapper;
 import com.smarterfit.modules.billing.dto.request.subscription.CreateSubscriptionRequestDTO;
-import com.smarterfit.modules.billing.dto.response.SubscriptionResponseDTO;
+import com.smarterfit.modules.billing.dto.response.subscription.SubscriptionResponseDTO;
 import com.smarterfit.modules.billing.entity.Plan;
 import com.smarterfit.modules.billing.entity.Subscription;
 import com.smarterfit.modules.billing.entity.SubscriptionUser;

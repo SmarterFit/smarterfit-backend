@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.smarterfit.common.config.BusinessRules;
-import com.smarterfit.modules.billing.dto.response.SubscriptionResponseDTO;
+import com.smarterfit.modules.billing.dto.response.subscription.SubscriptionResponseDTO;
 import com.smarterfit.modules.billing.dto.response.subscriptionuser.SubscriptionUserResponseDTO;
 import com.smarterfit.modules.billing.entity.Subscription;
 import com.smarterfit.modules.billing.entity.SubscriptionUser;

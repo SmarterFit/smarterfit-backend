@@ -18,8 +18,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.smarterfit.modules.billing.dto.request.subscription.SearchSubscriptionRequestDTO;
+import com.smarterfit.modules.billing.dto.request.subscription.SubscriptionStatusCountRequestDTO;
+import com.smarterfit.modules.billing.dto.response.subscription.SubscriptionResponseDTO;
+import com.smarterfit.modules.billing.dto.response.subscription.SubscriptionStatusCountResponseDTO;
 import com.smarterfit.modules.billing.dto.request.subscription.CreateSubscriptionRequestDTO;
-import com.smarterfit.modules.billing.dto.response.SubscriptionResponseDTO;
 import com.smarterfit.modules.billing.service.SubscriptionService;
 
 import jakarta.validation.Valid;
@@ -70,6 +72,13 @@ public class SubscriptionController {
       return ResponseEntity.ok(subscriptionService.searchSubscriptions(requestDTO, pageable));
    }
 
+   @GetMapping("/possui-assinatura/{participantId}")
+   public ResponseEntity<Boolean> existsCurrentSubscriptionByParticipantId(
+         @PathVariable("participantId") UUID participantId) {
+      Boolean exists = subscriptionService.existsCurrentSubscriptionByParticipantId(participantId);
+      return ResponseEntity.ok(exists);
+   }
+
    /// Acesso: Usuário dono e Funcionários
    @PatchMapping("/{id}/cancelar")
    public ResponseEntity<Void> cancelSubscription(@PathVariable("id") UUID id) {
@@ -85,5 +94,11 @@ public class SubscriptionController {
       List<SubscriptionResponseDTO> subscriptions = subscriptionService
             .getAvailableSubscriptionsByClassGroupAndUser(classGroupId, userId);
       return ResponseEntity.ok(subscriptions);
+   }
+
+   @PostMapping("/contagem-por-status")
+   public ResponseEntity<SubscriptionStatusCountResponseDTO> getStatusCounts(
+         @Valid @RequestBody SubscriptionStatusCountRequestDTO request) {
+      return ResponseEntity.ok(subscriptionService.getStatusCounts(request));
    }
 }

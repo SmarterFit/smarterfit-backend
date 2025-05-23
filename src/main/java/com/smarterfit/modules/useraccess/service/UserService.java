@@ -85,9 +85,10 @@ public class UserService {
     public UserResponseDTO updateUserPasswordById(UUID id, UpdateUserPasswordRequestDTO requestDTO) {
         User user = userValidation.validateUserById(id);
 
-        userValidation.validatePasswords(requestDTO.getPassword(), requestDTO.getConfirmPassword());
+        userValidation.validateCurrentPassword(user, requestDTO.getCurrentPassword());
+        userValidation.validatePasswords(requestDTO.getNewPassword(), requestDTO.getConfirmNewPassword());
 
-        String encryptedPassword = passwordEncoder.encode(requestDTO.getPassword());
+        String encryptedPassword = passwordEncoder.encode(requestDTO.getNewPassword());
         user.setPassword(encryptedPassword);
 
         userRepository.save(user);

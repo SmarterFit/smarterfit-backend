@@ -15,8 +15,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.smarterfit.common.enums.SubscriptionStatus;
 import com.smarterfit.modules.billing.dto.request.subscription.SearchSubscriptionRequestDTO;
+import com.smarterfit.modules.billing.dto.request.subscription.SubscriptionStatusCountRequestDTO;
+import com.smarterfit.modules.billing.dto.response.subscription.SubscriptionResponseDTO;
+import com.smarterfit.modules.billing.dto.response.subscription.SubscriptionStatusCountResponseDTO;
 import com.smarterfit.modules.billing.dto.request.subscription.CreateSubscriptionRequestDTO;
-import com.smarterfit.modules.billing.dto.response.SubscriptionResponseDTO;
 import com.smarterfit.modules.billing.entity.Plan;
 import com.smarterfit.modules.billing.entity.Subscription;
 import com.smarterfit.modules.billing.event.SubscriptionCanceledEvent;
@@ -94,6 +96,11 @@ public class SubscriptionService {
       return subscriptions.map(SubscriptionMapper::toResponse);
    }
 
+   @Transactional(readOnly = true)
+   public Boolean existsCurrentSubscriptionByParticipantId(UUID participantId) {
+      return subscriptionRepository.existsCurrentSubscriptionByParticipantId(participantId);
+   }
+
    @Transactional
    public void cancelSubscription(UUID id) {
       Subscription subscription = subscriptionValidation.validateSubscriptionById(id);
@@ -164,5 +171,32 @@ public class SubscriptionService {
       subscription.setEndedIn(newEndDate);
 
       subscriptionRepository.save(subscription);
+   }
+
+   @Transactional(readOnly = true)
+   public SubscriptionStatusCountResponseDTO getStatusCounts(SubscriptionStatusCountRequestDTO requestDTO) {
+      Long renewed = subscriptionRepository.countByRenewedInBetween(requestDTO.getRenewedFrom(),
+            requestDTO.getRenewedTo());
+      Long created = subscriptionRepository.countByCreatedAtBetween(requestDTO.getCreatedFrom(),
+            requestDTO.getCreatedTo());
+      Long canceled = subscriptionRepository.countByStatusAndEndedInBetween(SubscriptionStatus.CANCELED,
+            requestDTO.getCanceledFrom(),
+            requestDTO.getCanceledTo());
+      Long pending = subscriptionRepository.countByStatusAndCreatedAtBetween(SubscriptionStatus.PENDING,
+            requestDTO.getPendingFrom(),
+            requestDTO.getPendingTo());
+      Long expired = subscriptionRepository.countByStatusAndEndedInBetween(SubscriptionStatus.EXPIRED,
+            requestDTO.getExpiredFrom(),
+            requestDTO.getExpiredTo());
+      Long active = subscriptionRepository.countByStatus(SubscriptionStatus.ACTIVE);
+
+      return SubscriptionStatusCountResponseDTO.builder()
+            .renewedCount(renewed)
+            .createdCount(created)
+            .canceledCount(canceled)
+            .pendingCount(pending)
+            .expiredCount(expired)
+            .activeCount(active)
+            .build();
    }
 }

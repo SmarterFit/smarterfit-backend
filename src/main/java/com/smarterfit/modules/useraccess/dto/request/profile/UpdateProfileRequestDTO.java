@@ -30,7 +30,7 @@ public class UpdateProfileRequestDTO {
    @CPF(message = "Invalid CPF")
    private String cpf;
 
-   @Pattern(regexp = "\\d{10,11}", message = "Phone number must contain 10 or 11 digits")
+   @Pattern(regexp = "\\(\\d{2}\\) \\d{4,5}-\\d{4}", message = "Phone number must be in the format (99) 99999-9999 or (99) 9999-9999")
    private String phone;
 
    @Past(message = "Birth date must be in the past")

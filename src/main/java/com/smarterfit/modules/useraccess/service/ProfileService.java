@@ -63,11 +63,11 @@ public class ProfileService {
 
         profile = ProfileMapper.toEntity(requestDTO, profile);
         profile.setCpf(encryptedCpf);
-        profileRepository.save(profile);
+        profile = profileRepository.save(profile);
 
-        // Decrypt CPF for response
-        profile.setCpf(cryptoUtil.decrypt(profile.getCpf()));
+        ProfileResponseDTO response = ProfileMapper.toResponse(profile);
+        response.setCpf(requestDTO.getCpf());
 
-        return ProfileMapper.toResponse(profile);
+        return response;
     }
 }
