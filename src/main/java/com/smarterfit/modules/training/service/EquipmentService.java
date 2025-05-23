@@ -1,7 +1,6 @@
 package com.smarterfit.modules.training.service;
 
 
-import com.smarterfit.modules.classgroup.validation.ClassGroupValidation;
 import com.smarterfit.modules.training.dto.request.EquipmentRequestDTO;
 import com.smarterfit.modules.training.dto.response.EquipmentResponseDTO;
 import com.smarterfit.modules.training.entity.Equipment;

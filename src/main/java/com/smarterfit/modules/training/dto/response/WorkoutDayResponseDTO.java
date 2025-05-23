@@ -2,6 +2,7 @@ package com.smarterfit.modules.training.dto.response;
 
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Getter
@@ -9,7 +10,9 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(toBuilder = true)
-public class EquipmentResponseDTO {
+public class WorkoutDayResponseDTO {
     private UUID id;
-    private String name;
+    private UUID workoutPlanId;
+    private String dayOfWeek;
+    private String muscleGroup;
 }
