@@ -17,6 +17,7 @@ import com.smarterfit.modules.traininggroup.event.LastParticipantRemovedEvent;
 import com.smarterfit.modules.traininggroup.mapper.TrainingGroupMapper;
 import com.smarterfit.modules.traininggroup.mapper.TrainingGroupUserMapper;
 import com.smarterfit.modules.traininggroup.repository.TrainingGroupUserRepository;
+import com.smarterfit.modules.traininggroup.util.SensitiveTrainingGroupDataDecryptor;
 import com.smarterfit.modules.traininggroup.validation.TrainingGroupUserValidation;
 import com.smarterfit.modules.traininggroup.validation.TrainingGroupValidation;
 import com.smarterfit.modules.useraccess.entity.User;
@@ -28,17 +29,20 @@ public class TrainingGroupUserService {
    private final TrainingGroupValidation trainingGroupValidation;
    private final UserValidation userValidation;
    private final TrainingGroupUserValidation trainingGroupUserValidation;
+   private final SensitiveTrainingGroupDataDecryptor sensitiveTrainingGroupDataDecryptor;
    private final ApplicationEventPublisher publisher;
 
    @Autowired
    public TrainingGroupUserService(TrainingGroupUserRepository trainingGroupUserRepository,
          TrainingGroupValidation trainingGroupValidation, UserValidation userValidation,
          TrainingGroupUserValidation trainingGroupUserValidation,
+         SensitiveTrainingGroupDataDecryptor sensitiveTrainingGroupDataDecryptor,
          ApplicationEventPublisher publisher) {
       this.trainingGroupUserRepository = trainingGroupUserRepository;
       this.trainingGroupValidation = trainingGroupValidation;
       this.userValidation = userValidation;
       this.trainingGroupUserValidation = trainingGroupUserValidation;
+      this.sensitiveTrainingGroupDataDecryptor = sensitiveTrainingGroupDataDecryptor;
       this.publisher = publisher;
    }
 
@@ -55,7 +59,7 @@ public class TrainingGroupUserService {
 
       trainingGroupUser = trainingGroupUserRepository.save(trainingGroupUser);
 
-      return TrainingGroupUserMapper.toResponse(trainingGroupUser);
+      return sensitiveTrainingGroupDataDecryptor.decrypt(TrainingGroupUserMapper.toResponse(trainingGroupUser));
    }
 
    @Transactional
@@ -84,7 +88,9 @@ public class TrainingGroupUserService {
    @Transactional(readOnly = true)
    public List<TrainingGroupUserResponseDTO> getAllTrainingGroupUser() {
       return trainingGroupUserRepository.findAll().stream()
-            .map(TrainingGroupUserMapper::toResponse).toList();
+            .map(trainingGroupUser -> sensitiveTrainingGroupDataDecryptor
+                  .decrypt(TrainingGroupUserMapper.toResponse(trainingGroupUser)))
+            .toList();
    }
 
    @Transactional(readOnly = true)
@@ -92,7 +98,8 @@ public class TrainingGroupUserService {
       List<TrainingGroupUser> trainingGroupUsers = trainingGroupUserRepository
             .findByTrainingGroupId(groupId);
 
-      return trainingGroupUsers.stream().map(TrainingGroupUserMapper::toResponse).toList();
+      return trainingGroupUsers.stream().map(trainingGroupUser -> sensitiveTrainingGroupDataDecryptor
+            .decrypt(TrainingGroupUserMapper.toResponse(trainingGroupUser))).toList();
    }
 
    @Transactional(readOnly = true)
@@ -115,7 +122,8 @@ public class TrainingGroupUserService {
       trainingGroupUser.setIsAdmin(true);
       trainingGroupUserRepository.save(trainingGroupUser);
 
-      return TrainingGroupUserMapper.toResponse(trainingGroupUser);
+      return sensitiveTrainingGroupDataDecryptor
+            .decrypt(TrainingGroupUserMapper.toResponse(trainingGroupUser));
    }
 
    @Transactional
@@ -128,7 +136,8 @@ public class TrainingGroupUserService {
       trainingGroupUser.setIsAdmin(false);
       trainingGroupUserRepository.save(trainingGroupUser);
 
-      return TrainingGroupUserMapper.toResponse(trainingGroupUser);
+      return sensitiveTrainingGroupDataDecryptor
+            .decrypt(TrainingGroupUserMapper.toResponse(trainingGroupUser));
    }
 
    @Transactional
@@ -154,6 +163,9 @@ public class TrainingGroupUserService {
       List<TrainingGroupUser> trainingGroupUsers = trainingGroupUserRepository
             .findByTrainingGroupIdOrderByPointsDesc(trainingGroupId);
 
-      return trainingGroupUsers.stream().map(TrainingGroupUserMapper::toResponse).toList();
+      return trainingGroupUsers.stream()
+            .map(trainingGroupUser -> sensitiveTrainingGroupDataDecryptor
+                  .decrypt(TrainingGroupUserMapper.toResponse(trainingGroupUser)))
+            .toList();
    }
 }

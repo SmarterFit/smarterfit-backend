@@ -1,6 +1,7 @@
 package com.smarterfit.modules.classgroup.service;
 
 import com.smarterfit.common.enums.SubscriptionTypeEvent;
+import com.smarterfit.common.util.SensitiveDataDecryptor;
 import com.smarterfit.modules.billing.entity.Subscription;
 import com.smarterfit.modules.billing.event.SubscriptionEvent;
 import com.smarterfit.modules.billing.validation.SubscriptionValidation;
@@ -27,23 +28,27 @@ public class ClassGroupUserService {
     private final ClassGroupUserRepository classGroupUserRepository;
     private final ApplicationEventPublisher publisher;
     private final SubscriptionValidation subscriptionValidation;
+    private final SensitiveDataDecryptor sensitiveDataDecryptor;
     private final ValidationFaced validationFaced;
 
     public ClassGroupUserService(ClassGroupUserRepository classGroupUserRepository,
-                             ValidationFaced validationFaced,
-                             SubscriptionValidation subscriptionValidation,
-                                 ApplicationEventPublisher publisher) {
+            ValidationFaced validationFaced,
+            SubscriptionValidation subscriptionValidation, SensitiveDataDecryptor sensitiveDataDecryptor,
+            ApplicationEventPublisher publisher) {
         this.classGroupUserRepository = classGroupUserRepository;
         this.validationFaced = validationFaced;
         this.subscriptionValidation = subscriptionValidation;
+        this.sensitiveDataDecryptor = sensitiveDataDecryptor;
         this.publisher = publisher;
     }
 
     @Transactional
     public void addMemberToClassGroup(MemberClassGroupUserDTO requestDTO) {
-        validationFaced.classGroupUserValidation.validateClassGroupUserExists(requestDTO.getClassGroupId(), requestDTO.getUserId());
+        validationFaced.classGroupUserValidation.validateClassGroupUserExists(requestDTO.getClassGroupId(),
+                requestDTO.getUserId());
 
-        ClassGroup classGroup = validationFaced.classGroupValidation.validateClassGroupById(requestDTO.getClassGroupId());
+        ClassGroup classGroup = validationFaced.classGroupValidation
+                .validateClassGroupById(requestDTO.getClassGroupId());
         validationFaced.classGroupValidation.validateClassGroupsIsActive(classGroup);
 
         User user = validationFaced.userValidation.validateUserById(requestDTO.getUserId());
@@ -54,18 +59,15 @@ public class ClassGroupUserService {
         validationFaced.classGroupValidation.validateUserAccessToClassGroupBySubscription(
                 requestDTO.getClassGroupId(),
                 requestDTO.getUserId(),
-                requestDTO.getSubscriptionId()
-        );
+                requestDTO.getSubscriptionId());
 
         validationFaced.classGroupPlanValidation.validateClassGroupPlanAndSubscription(
                 classGroup.getId(),
-                subscription.getPlan().getId()
-        );
+                subscription.getPlan().getId());
 
         publisher.publishEvent(new SubscriptionEvent(
                 SubscriptionTypeEvent.DECREMENT_AVAILABLE_CLASSES,
-                subscription
-        ));
+                subscription));
 
         incrementGroupMembers(classGroup);
         saveUserToGroup(classGroup, user);
@@ -75,7 +77,8 @@ public class ClassGroupUserService {
     public void addEmployeeToClassGroup(EmployeeClassGroupUserDTO requestDTO, UUID userId) {
         validationFaced.classGroupUserValidation.validateClassGroupUserExists(requestDTO.getClassGroupId(), userId);
 
-        ClassGroup classGroup = validationFaced.classGroupValidation.validateClassGroupById(requestDTO.getClassGroupId());
+        ClassGroup classGroup = validationFaced.classGroupValidation
+                .validateClassGroupById(requestDTO.getClassGroupId());
         validationFaced.classGroupValidation.validateClassGroupsIsActive(classGroup);
 
         User user = validationFaced.userValidation.validateUserById(userId);
@@ -83,11 +86,10 @@ public class ClassGroupUserService {
         saveUserToGroup(classGroup, user);
     }
 
-
-
     @Transactional(readOnly = true)
     public List<UserResponseDTO> getUsersByClassGroupId(UUID classGroupId) {
-        return classGroupUserRepository.findAllUsersByClassGroupId(classGroupId).stream().map(UserMapper::toResponse)
+        return classGroupUserRepository.findAllUsersByClassGroupId(classGroupId).stream()
+                .map(user -> sensitiveDataDecryptor.decrypt(UserMapper.toResponse(user)))
                 .toList();
     }
 
@@ -109,11 +111,10 @@ public class ClassGroupUserService {
         classGroupUserRepository.delete(classGroupUser);
     }
 
-
     public void removeSubscriptionByClassGroup(ClassGroup classGroup) {
         List<ClassGroupUser> classGroupUsers = classGroupUserRepository.findAllByClassGroupId(classGroup.getId());
 
-        for(ClassGroupUser classGroupUser : classGroupUsers) {
+        for (ClassGroupUser classGroupUser : classGroupUsers) {
             publisher.publishEvent(new SubscriptionEvent(SubscriptionTypeEvent.DECREMENT_AVAILABLE_CLASSES,
                     classGroupUser.getSubscription()));
         }

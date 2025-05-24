@@ -5,8 +5,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.smarterfit.common.dto.response.JwtToken;
-import com.smarterfit.common.util.CryptoUtil;
 import com.smarterfit.common.util.JwtUtil;
+import com.smarterfit.common.util.SensitiveDataDecryptor;
 import com.smarterfit.modules.useraccess.dto.request.user.LoginRequestDTO;
 import com.smarterfit.modules.useraccess.dto.response.AuthResponseDTO;
 import com.smarterfit.modules.useraccess.entity.User;
@@ -16,12 +16,12 @@ import com.smarterfit.modules.useraccess.validation.AuthValidation;
 @Service
 public class AuthService {
    private final AuthValidation authValidation;
-   private final CryptoUtil cryptoUtil;
+   private final SensitiveDataDecryptor sensitiveDataDecryptor;
 
    @Autowired
-   public AuthService(AuthValidation authValidation, CryptoUtil cryptoUtil) {
+   public AuthService(AuthValidation authValidation, SensitiveDataDecryptor sensitiveDataDecryptor) {
       this.authValidation = authValidation;
-      this.cryptoUtil = cryptoUtil;
+      this.sensitiveDataDecryptor = sensitiveDataDecryptor;
    }
 
    @Transactional(readOnly = true)
@@ -31,7 +31,7 @@ public class AuthService {
       JwtToken accessToken = JwtUtil.generateToken(user.getId().toString());
 
       AuthResponseDTO response = AuthMapper.toResponse(accessToken, user);
-      response.getUser().getProfile().setCpf(cryptoUtil.decrypt(user.getProfile().getCpf()));
+      response.setUser(sensitiveDataDecryptor.decrypt(response.getUser()));
 
       return response;
    }

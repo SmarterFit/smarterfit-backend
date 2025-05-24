@@ -15,8 +15,8 @@ import com.smarterfit.modules.checkin.entity.ClassCheckIn;
 import com.smarterfit.modules.checkin.entity.id.ClassCheckInId;
 import com.smarterfit.modules.checkin.mapper.ClassCheckInMapper;
 import com.smarterfit.modules.checkin.repository.ClassCheckInRepository;
+import com.smarterfit.modules.checkin.util.SensitiveCheckInDataDecryptor;
 import com.smarterfit.modules.checkin.validation.ClassCheckInValidation;
-import com.smarterfit.modules.classgroup.entity.ClassGroupUser;
 import com.smarterfit.modules.classgroup.entity.ClassSession;
 import com.smarterfit.modules.classgroup.validation.ClassGroupUserValidation;
 import com.smarterfit.modules.classgroup.validation.ClassSessionValidation;
@@ -30,6 +30,7 @@ public class ClassCheckInService {
    private final UserValidation userValidation;
    private final ClassSessionValidation classSessionValidation;
    private final ClassGroupUserValidation classGroupUserValidation;
+   private final SensitiveCheckInDataDecryptor sensitiveCheckInDataDecryptor;
    private final ApplicationEventPublisher publisher;
 
    private static final int POINT = 1;
@@ -38,12 +39,14 @@ public class ClassCheckInService {
    public ClassCheckInService(ClassCheckInRepository classCheckInRepository,
          ClassCheckInValidation classCheckInValidation, UserValidation userValidation,
          ClassSessionValidation classSessionValidation, ClassGroupUserValidation classGroupUserValidation,
+         SensitiveCheckInDataDecryptor sensitiveCheckInDataDecryptor,
          ApplicationEventPublisher publisher) {
       this.classCheckInRepository = classCheckInRepository;
       this.classCheckInValidation = classCheckInValidation;
       this.userValidation = userValidation;
       this.classSessionValidation = classSessionValidation;
       this.classGroupUserValidation = classGroupUserValidation;
+      this.sensitiveCheckInDataDecryptor = sensitiveCheckInDataDecryptor;
       this.publisher = publisher;
    }
 
@@ -62,7 +65,7 @@ public class ClassCheckInService {
 
       publisher.publishEvent(new CalculatePointsUserEvent(user.getId(), POINT));
 
-      return ClassCheckInMapper.toResponse(classCheckIn);
+      return sensitiveCheckInDataDecryptor.decrypt(ClassCheckInMapper.toResponse(classCheckIn));
    }
 
    @Transactional
@@ -76,14 +79,14 @@ public class ClassCheckInService {
 
       publisher.publishEvent(new CalculatePointsUserEvent(classCheckIn.getUser().getId(), POINT));
 
-      return ClassCheckInMapper.toResponse(classCheckIn);
+      return sensitiveCheckInDataDecryptor.decrypt(ClassCheckInMapper.toResponse(classCheckIn));
    }
 
    @Transactional(readOnly = true)
    public List<ClassCheckInResponseDTO> getAllByUserId(UUID userId) {
       List<ClassCheckIn> classCheckIns = classCheckInRepository.findByUserId(userId);
       return classCheckIns.stream()
-            .map(ClassCheckInMapper::toResponse)
+            .map(classCheckIn -> sensitiveCheckInDataDecryptor.decrypt(ClassCheckInMapper.toResponse(classCheckIn)))
             .toList();
    }
 
@@ -91,7 +94,7 @@ public class ClassCheckInService {
    public List<ClassCheckInResponseDTO> getAllByClassSessionId(UUID classSessionId) {
       List<ClassCheckIn> classCheckIns = classCheckInRepository.findByClassSessionId(classSessionId);
       return classCheckIns.stream()
-            .map(ClassCheckInMapper::toResponse)
+            .map(classCheckIn -> sensitiveCheckInDataDecryptor.decrypt(ClassCheckInMapper.toResponse(classCheckIn)))
             .toList();
    }
 }

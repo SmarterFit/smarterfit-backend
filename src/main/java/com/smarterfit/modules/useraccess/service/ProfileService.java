@@ -1,6 +1,7 @@
 package com.smarterfit.modules.useraccess.service;
 
 import com.smarterfit.common.util.CryptoUtil;
+import com.smarterfit.common.util.SensitiveDataDecryptor;
 import com.smarterfit.modules.useraccess.dto.request.profile.SearchProfileRequestDTO;
 import com.smarterfit.modules.useraccess.dto.request.profile.UpdateProfileRequestDTO;
 import com.smarterfit.modules.useraccess.dto.response.ProfileResponseDTO;
@@ -24,21 +25,22 @@ public class ProfileService {
     private final ProfileRepository profileRepository;
     private final ProfileValidation profileValidation;
     private final CryptoUtil cryptoUtil;
+    private final SensitiveDataDecryptor sensitiveDataDecryptor;
 
     @Autowired
     public ProfileService(ProfileRepository profileRepository, ProfileValidation profileValidation,
-            CryptoUtil cryptoUtil) {
+            CryptoUtil cryptoUtil, SensitiveDataDecryptor sensitiveDataDecryptor) {
         this.profileRepository = profileRepository;
         this.profileValidation = profileValidation;
         this.cryptoUtil = cryptoUtil;
+        this.sensitiveDataDecryptor = sensitiveDataDecryptor;
     }
 
     @Transactional(readOnly = true)
     public ProfileResponseDTO getProfileById(UUID id) {
         Profile profile = profileValidation.validateProfileById(id);
-        profile.setCpf(cryptoUtil.decrypt(profile.getCpf()));
 
-        return ProfileMapper.toResponse(profile);
+        return sensitiveDataDecryptor.decrypt(ProfileMapper.toResponse(profile));
     }
 
     @Transactional(readOnly = true)
@@ -47,10 +49,7 @@ public class ProfileService {
         Page<Profile> profiles = profileRepository.findAll(
                 specification, pageable);
 
-        return profiles.map(profile -> {
-            profile.setCpf(cryptoUtil.decrypt(profile.getCpf()));
-            return ProfileMapper.toResponse(profile);
-        });
+        return profiles.map(profile -> sensitiveDataDecryptor.decrypt(ProfileMapper.toResponse(profile)));
 
     }
 
@@ -65,9 +64,6 @@ public class ProfileService {
         profile.setCpf(encryptedCpf);
         profile = profileRepository.save(profile);
 
-        ProfileResponseDTO response = ProfileMapper.toResponse(profile);
-        response.setCpf(requestDTO.getCpf());
-
-        return response;
+        return sensitiveDataDecryptor.decrypt(ProfileMapper.toResponse(profile));
     }
 }

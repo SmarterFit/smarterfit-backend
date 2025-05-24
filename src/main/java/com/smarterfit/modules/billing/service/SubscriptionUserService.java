@@ -17,6 +17,7 @@ import com.smarterfit.modules.billing.mapper.SubscriptionMapper;
 import com.smarterfit.modules.billing.mapper.SubscriptionUserMapper;
 import com.smarterfit.modules.billing.repository.SubscriptionRepository;
 import com.smarterfit.modules.billing.repository.SubscriptionUserRepository;
+import com.smarterfit.modules.billing.util.SensitiveBillingDataDecryptor;
 import com.smarterfit.modules.billing.validation.SubscriptionUserValidation;
 import com.smarterfit.modules.billing.validation.SubscriptionValidation;
 import com.smarterfit.modules.useraccess.dto.response.UserResponseDTO;
@@ -31,17 +32,20 @@ public class SubscriptionUserService {
    private final SubscriptionUserValidation subscriptionUserValidation;
    private final SubscriptionValidation subscriptionValidation;
    private final UserValidation userValidation;
+   private final SensitiveBillingDataDecryptor sensitiveBillingDataDecryptor;
 
    @Autowired
    public SubscriptionUserService(SubscriptionRepository subscriptionRepository,
          SubscriptionUserRepository subscriptionUserRepository,
          SubscriptionUserValidation subscriptionUserValidation,
-         SubscriptionValidation subscriptionValidation, UserValidation userValidation) {
+         SubscriptionValidation subscriptionValidation, UserValidation userValidation,
+         SensitiveBillingDataDecryptor sensitiveBillingDataDecryptor) {
       this.subscriptionRepository = subscriptionRepository;
       this.subscriptionUserRepository = subscriptionUserRepository;
       this.subscriptionUserValidation = subscriptionUserValidation;
       this.subscriptionValidation = subscriptionValidation;
       this.userValidation = userValidation;
+      this.sensitiveBillingDataDecryptor = sensitiveBillingDataDecryptor;
    }
 
    @Transactional
@@ -59,7 +63,8 @@ public class SubscriptionUserService {
 
       subscription = subscriptionRepository.save(subscription);
 
-      return SubscriptionUserMapper.toResponse(subscriptionUser);
+      return sensitiveBillingDataDecryptor
+            .decrypt(SubscriptionUserMapper.toResponse(subscriptionUser));
    }
 
    @Transactional
@@ -82,13 +87,15 @@ public class SubscriptionUserService {
    public SubscriptionUserResponseDTO getSubscriptionUser(UUID subscriptionId, UUID userId) {
       SubscriptionUser subscriptionUser = subscriptionUserValidation
             .validateSubscriptionUserById(new SubscriptionUserId(subscriptionId, userId));
-      return SubscriptionUserMapper.toResponse(subscriptionUser);
+      return sensitiveBillingDataDecryptor
+            .decrypt(SubscriptionUserMapper.toResponse(subscriptionUser));
    }
 
    @Transactional(readOnly = true)
    public List<SubscriptionUserResponseDTO> getAllSubscriptionUsers() {
       List<SubscriptionUser> subscriptionUsers = subscriptionUserRepository.findAll();
-      return subscriptionUsers.stream().map(SubscriptionUserMapper::toResponse).toList();
+      return subscriptionUsers.stream().map(subscriptionUser -> sensitiveBillingDataDecryptor
+            .decrypt(SubscriptionUserMapper.toResponse(subscriptionUser))).toList();
    }
 
    @Transactional(readOnly = true)
@@ -97,7 +104,8 @@ public class SubscriptionUserService {
             .findBySubscriptionId(subscriptionId);
 
       return subscriptionUsers.stream()
-            .map(subscriptionUser -> UserMapper.toResponse(subscriptionUser.getUser()))
+            .map(subscriptionUser -> sensitiveBillingDataDecryptor
+                  .decrypt(UserMapper.toResponse(subscriptionUser.getUser())))
             .toList();
    }
 
@@ -105,7 +113,8 @@ public class SubscriptionUserService {
    public List<SubscriptionResponseDTO> getAllSubscriptionsByUserId(UUID userId) {
       List<SubscriptionUser> subscriptionUsers = subscriptionUserRepository.findByUserId(userId);
       return subscriptionUsers.stream()
-            .map(subscriptionUser -> SubscriptionMapper.toResponse(subscriptionUser.getSubscription()))
+            .map(subscriptionUser -> sensitiveBillingDataDecryptor
+                  .decrypt(SubscriptionMapper.toResponse(subscriptionUser.getSubscription())))
             .toList();
    }
 }

@@ -25,6 +25,7 @@ import com.smarterfit.modules.billing.event.SubscriptionCanceledEvent;
 import com.smarterfit.modules.billing.mapper.SubscriptionMapper;
 import com.smarterfit.modules.billing.repository.SubscriptionRepository;
 import com.smarterfit.modules.billing.specification.SubscriptionSpecifications;
+import com.smarterfit.modules.billing.util.SensitiveBillingDataDecryptor;
 import com.smarterfit.modules.billing.validation.PlanValidation;
 import com.smarterfit.modules.billing.validation.SubscriptionValidation;
 import com.smarterfit.modules.useraccess.entity.User;
@@ -36,17 +37,20 @@ public class SubscriptionService {
    private final PlanValidation planValidation;
    private final UserValidation userValidation;
    private final SubscriptionValidation subscriptionValidation;
+   private final SensitiveBillingDataDecryptor sensitiveBillingDataDecryptor;
    private final ApplicationEventPublisher publisher;
 
    @Autowired
    public SubscriptionService(SubscriptionRepository subscriptionRepository,
          PlanValidation planValidation,
          UserValidation userValidation, SubscriptionValidation subscriptionValidation,
+         SensitiveBillingDataDecryptor sensitiveBillingDataDecryptor,
          ApplicationEventPublisher publisher) {
       this.subscriptionRepository = subscriptionRepository;
       this.planValidation = planValidation;
       this.userValidation = userValidation;
       this.subscriptionValidation = subscriptionValidation;
+      this.sensitiveBillingDataDecryptor = sensitiveBillingDataDecryptor;
       this.publisher = publisher;
    }
 
@@ -59,20 +63,20 @@ public class SubscriptionService {
 
       subscriptionRepository.save(subscription);
 
-      return SubscriptionMapper.toResponse(subscription);
+      return sensitiveBillingDataDecryptor.decrypt(SubscriptionMapper.toResponse(subscription));
    }
 
    @Transactional(readOnly = true)
    public SubscriptionResponseDTO getSubscriptionById(UUID id) {
       Subscription subscription = subscriptionValidation.validateSubscriptionById(id);
-      return SubscriptionMapper.toResponse(subscription);
+      return sensitiveBillingDataDecryptor.decrypt(SubscriptionMapper.toResponse(subscription));
    }
 
    @Transactional(readOnly = true)
    public List<SubscriptionResponseDTO> getAllSubscriptions() {
       List<Subscription> subscriptions = subscriptionRepository.findAll();
       return subscriptions.stream()
-            .map(SubscriptionMapper::toResponse)
+            .map(subscription -> sensitiveBillingDataDecryptor.decrypt(SubscriptionMapper.toResponse(subscription)))
             .collect(Collectors.toList());
    }
 
@@ -80,7 +84,7 @@ public class SubscriptionService {
    public List<SubscriptionResponseDTO> getAllSubscriptionsByOwnerId(UUID userId) {
       List<Subscription> subscriptions = subscriptionRepository.findByOwnerId(userId);
       return subscriptions.stream()
-            .map(SubscriptionMapper::toResponse)
+            .map(subscription -> sensitiveBillingDataDecryptor.decrypt(SubscriptionMapper.toResponse(subscription)))
             .collect(Collectors.toList());
    }
 
@@ -93,7 +97,8 @@ public class SubscriptionService {
       Page<Subscription> subscriptions = subscriptionRepository
             .findAll(specification, pageable);
 
-      return subscriptions.map(SubscriptionMapper::toResponse);
+      return subscriptions
+            .map(subscription -> sensitiveBillingDataDecryptor.decrypt(SubscriptionMapper.toResponse(subscription)));
    }
 
    @Transactional(readOnly = true)
@@ -148,7 +153,7 @@ public class SubscriptionService {
       List<Subscription> subscriptions = subscriptionRepository
             .findAvailableSubscriptionsByClassGroupAndParticipant(classGroupId, userId);
       return subscriptions.stream()
-            .map(SubscriptionMapper::toResponse)
+            .map(subscription -> sensitiveBillingDataDecryptor.decrypt(SubscriptionMapper.toResponse(subscription)))
             .collect(Collectors.toList());
    }
 

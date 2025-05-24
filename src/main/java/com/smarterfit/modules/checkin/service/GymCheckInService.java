@@ -19,6 +19,7 @@ import com.smarterfit.modules.checkin.dto.response.GymCheckInResponseDTO;
 import com.smarterfit.modules.checkin.entity.GymCheckIn;
 import com.smarterfit.modules.checkin.mapper.GymCheckInMapper;
 import com.smarterfit.modules.checkin.repository.GymCheckInRepository;
+import com.smarterfit.modules.checkin.util.SensitiveCheckInDataDecryptor;
 import com.smarterfit.modules.checkin.validation.GymCheckInValidation;
 import com.smarterfit.modules.useraccess.entity.User;
 import com.smarterfit.modules.useraccess.validation.UserValidation;
@@ -29,16 +30,19 @@ public class GymCheckInService {
     private final GymCheckInValidation gymCheckInValidation;
     private final UserValidation userValidation;
     private final SubscriptionValidation subscriptionValidation;
+    private final SensitiveCheckInDataDecryptor sensitiveCheckInDataDecryptor;
     private final ApplicationEventPublisher publisher;
     private final GymPoints gymPoints;
 
     public GymCheckInService(GymCheckInRepository gymCheckInRepository, GymCheckInValidation gymCheckInValidation,
-            UserValidation userValidation, SubscriptionValidation subscriptionValidation, GymPoints gymPoints,
+            UserValidation userValidation, SubscriptionValidation subscriptionValidation,
+            SensitiveCheckInDataDecryptor sensitiveCheckInDataDecryptor, GymPoints gymPoints,
             ApplicationEventPublisher publisher) {
         this.gymCheckInRepository = gymCheckInRepository;
         this.gymCheckInValidation = gymCheckInValidation;
         this.userValidation = userValidation;
         this.subscriptionValidation = subscriptionValidation;
+        this.sensitiveCheckInDataDecryptor = sensitiveCheckInDataDecryptor;
         this.gymPoints = gymPoints;
         this.publisher = publisher;
     }
@@ -56,7 +60,7 @@ public class GymCheckInService {
         Integer points = gymPoints.calculateDailyConsecutivePoints(user.getId());
         publisher.publishEvent(new CalculatePointsUserEvent(user.getId(), points));
 
-        return GymCheckInMapper.toResponse(gymCheckIn);
+        return sensitiveCheckInDataDecryptor.decrypt(GymCheckInMapper.toResponse(gymCheckIn));
     }
 
     @Transactional
@@ -66,7 +70,7 @@ public class GymCheckInService {
         gymCheckIn.setCheckOutTime(LocalDateTime.now());
         gymCheckIn = gymCheckInRepository.save(gymCheckIn);
 
-        return GymCheckInMapper.toResponse(gymCheckIn);
+        return sensitiveCheckInDataDecryptor.decrypt(GymCheckInMapper.toResponse(gymCheckIn));
     }
 
     @Transactional
@@ -80,7 +84,7 @@ public class GymCheckInService {
         List<GymCheckIn> gymCheckIns = gymCheckInRepository.findByUserId(userId);
 
         return gymCheckIns.stream()
-                .map(GymCheckInMapper::toResponse)
+                .map(gymCheckIn -> sensitiveCheckInDataDecryptor.decrypt(GymCheckInMapper.toResponse(gymCheckIn)))
                 .toList();
     }
 
