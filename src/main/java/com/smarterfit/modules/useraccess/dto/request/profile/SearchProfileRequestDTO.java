@@ -18,7 +18,6 @@ import lombok.Setter;
 @Builder(toBuilder = true)
 public class SearchProfileRequestDTO {
    private String fullNameTerm;
-   private String cpfTerm;
    private String phoneTerm;
    private LocalDate birthDateFrom;
    private LocalDate birthDateTo;

@@ -21,12 +21,6 @@ public class ProfileSpecifications {
                   "%" + dto.getFullNameTerm().toLowerCase() + "%"));
          }
 
-         // Filtro do CPF do perfil
-         if (dto.getCpfTerm() != null && !dto.getCpfTerm().isEmpty()) {
-            predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("cpf")),
-                  "%" + dto.getCpfTerm().toLowerCase() + "%"));
-         }
-
          // Filtro do telefone do perfil
          if (dto.getPhoneTerm() != null && !dto.getPhoneTerm().isEmpty()) {
             predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("phone")),
