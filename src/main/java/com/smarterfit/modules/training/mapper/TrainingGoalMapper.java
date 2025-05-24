@@ -5,6 +5,7 @@ import com.smarterfit.common.mapper.GenericMapper;
 import com.smarterfit.modules.training.dto.request.TrainingGoalRequestDTO;
 import com.smarterfit.modules.training.dto.response.TrainingGoalResponseDTO;
 import com.smarterfit.modules.training.entity.TrainingGoal;
+import com.smarterfit.modules.useraccess.entity.User;
 
 public class TrainingGoalMapper {
 
@@ -12,15 +13,25 @@ public class TrainingGoalMapper {
         // Private constructor to prevent instantiation
     }
 
-    public static TrainingGoal toEntity(TrainingGoalRequestDTO dto) {
-        return toEntity(dto, new TrainingGoal());
+    public static TrainingGoal toEntity(TrainingGoalRequestDTO dto, User user) {
+        return toEntity(dto, new TrainingGoal(), user);
+    }
+
+    public static TrainingGoal toEntity(TrainingGoalRequestDTO dto, TrainingGoal trainingGoal, User user) {
+        if (trainingGoal == null) {
+            throw new ResourceNotFoundException("TrainingGoal not found");
+        }
+
+        trainingGoal.setUser(user);
+        trainingGoal = GenericMapper.map(dto, trainingGoal);
+
+        return trainingGoal;
     }
 
     public static TrainingGoal toEntity(TrainingGoalRequestDTO dto, TrainingGoal trainingGoal) {
         if (trainingGoal == null) {
             throw new ResourceNotFoundException("TrainingGoal not found");
         }
-
         trainingGoal = GenericMapper.map(dto, trainingGoal);
 
         return trainingGoal;

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/equipamentos")
 public class EquipmentController {
@@ -22,6 +23,7 @@ public class EquipmentController {
     public EquipmentController(EquipmentService equipmentService) {
         this.equipmentService = equipmentService;
     }
+
 
 
     @RequireRole(RoleType.EMPLOYEE)

@@ -3,16 +3,15 @@ package com.smarterfit.modules.training.controller;
 
 import com.smarterfit.modules.training.dto.request.workoutplans.WorkoutPlanRequestDTO;
 import com.smarterfit.modules.training.dto.request.workoutplans.WorkoutPlanUpdateRequestDTO;
-import com.smarterfit.modules.training.dto.response.workoutplan.WorkoutPlanExerciseResponseDTO;
 import com.smarterfit.modules.training.dto.response.workoutplan.WorkoutPlanResponseDTO;
 import com.smarterfit.modules.training.service.WorkoutPlanService;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/treinos/plano")
 public class WorkoutPlanController {
@@ -23,9 +22,8 @@ public class WorkoutPlanController {
         this.workoutPlanService = workoutPlanService;
     }
 
-    @PostMapping
-    public ResponseEntity<WorkoutPlanResponseDTO> create(
-            @Valid @RequestBody WorkoutPlanRequestDTO dto){
+    @PostMapping("/cadastrar")
+    public ResponseEntity<WorkoutPlanResponseDTO> create(@RequestBody @Valid WorkoutPlanRequestDTO dto){
         WorkoutPlanResponseDTO created = workoutPlanService.createWorkoutPlan(dto);
         return ResponseEntity.status(201).body(created);
     }
@@ -36,13 +34,6 @@ public class WorkoutPlanController {
         return ResponseEntity.ok(dto);
     }
 
-    @GetMapping("/exercicios")
-    public ResponseEntity<WorkoutPlanExerciseResponseDTO> getFullTraining(
-            @RequestHeader("X-User-Id") UUID requesterId) {
-
-        WorkoutPlanExerciseResponseDTO dto = workoutPlanService.getFullTraining(requesterId);
-        return ResponseEntity.ok(dto);
-    }
 
     @PutMapping
     public ResponseEntity<WorkoutPlanResponseDTO> update(

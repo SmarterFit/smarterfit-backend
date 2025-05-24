@@ -5,6 +5,7 @@ import com.smarterfit.modules.ai.tools.classes.ClassSessionTools;
 import com.smarterfit.modules.ai.tools.classes.ClassTools;
 import com.smarterfit.modules.ai.tools.classes.UserClassTools;
 import com.smarterfit.modules.ai.tools.plan.PlanTools;
+import com.smarterfit.modules.ai.tools.training.WorkoutPlanTool;
 import com.smarterfit.modules.ai.tools.user.ProfileMetricTools;
 import com.smarterfit.modules.ai.tools.user.ProfileTools;
 import com.smarterfit.modules.ai.tools.user.UserTools;
@@ -21,10 +22,12 @@ public class ToolsFaced {
     private final UserTools userTools;
     private final ProfileTools profileTools;
     private final ProfileMetricTools profileMetricTools;
+    private final WorkoutPlanTool workoutPlanTool;
+
 
     public ToolsFaced(PlanTools planTools, ClassTools classTools, UserClassTools userClassTools,
                       ClassSessionTools classSessionTools, ClassPlansTools classPlansTools, UserTools userTools,
-                      ProfileTools profileTools, ProfileMetricTools profileMetricTools) {
+                      ProfileTools profileTools, ProfileMetricTools profileMetricTools, WorkoutPlanTool workoutPlanTool) {
         this.planTools = planTools;
         this.classTools = classTools;
         this.userClassTools = userClassTools;
@@ -33,5 +36,7 @@ public class ToolsFaced {
         this.userTools = userTools;
         this.profileTools = profileTools;
         this.profileMetricTools = profileMetricTools;
+        this.workoutPlanTool = workoutPlanTool;
+
     }
 }

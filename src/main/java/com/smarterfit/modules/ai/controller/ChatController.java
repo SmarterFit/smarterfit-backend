@@ -1,7 +1,7 @@
 package com.smarterfit.modules.ai.controller;
 
+import com.smarterfit.modules.ai.generator.WorkoutPlanAIGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.smarterfit.modules.ai.service.ChatService;
@@ -15,15 +15,23 @@ import java.util.UUID;
 @CrossOrigin
 public class ChatController {
    private final ChatService chatService;
+   private final WorkoutPlanAIGenerator workoutPlanAIGenerator;
 
    @Autowired
-   public ChatController(ChatService chatService) {
+   public ChatController(ChatService chatService, WorkoutPlanAIGenerator workoutPlanAIGenerator) {
       this.chatService = chatService;
+        this.workoutPlanAIGenerator = workoutPlanAIGenerator;
    }
 
    @PostMapping("/ask")
    public Flux<String> askGroq(@RequestBody String prompt,
                               @RequestHeader("X-User-Id") UUID requesterId) {
+      return chatService.askGroq(prompt , requesterId);
+   }
+
+   @PostMapping("/ask/training")
+   public Flux<String> askGroqTraining(@RequestBody String prompt,
+                               @RequestHeader("X-User-Id") UUID requesterId) {
       return chatService.askGroq(prompt , requesterId);
    }
 }

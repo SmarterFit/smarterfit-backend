@@ -21,11 +21,11 @@ import java.util.UUID;
 public class TrainingGoal {
 
     @Id
-    private UUID id;
+    @GeneratedValue
+    private UUID id; // Remova @MapsId e gere ID separadamente
 
-    @OneToOne
-    @MapsId
-    @JoinColumn(name = "id")
+    @ManyToOne(fetch = FetchType.LAZY) // Mude para ManyToOne + LAZY
+    @JoinColumn(name = "user_id", referencedColumnName = "id") // Especifique a coluna
     private User user;
 
     @Column(name = "goal", nullable = false, length = 100)

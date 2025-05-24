@@ -6,6 +6,8 @@ import com.smarterfit.modules.training.entity.TrainingGoal;
 import com.smarterfit.modules.training.mapper.TrainingGoalMapper;
 import com.smarterfit.modules.training.repository.TrainingGoalRepository;
 import com.smarterfit.modules.training.validation.TrainingGoalValidation;
+import com.smarterfit.modules.useraccess.entity.User;
+import com.smarterfit.modules.useraccess.validation.UserValidation;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,18 +17,23 @@ import java.util.UUID;
 public class TrainingGoalService {
     private final TrainingGoalRepository trainingGoalRepository;
     private final TrainingGoalValidation trainingGoalValidation;
+    private final UserValidation userValidation;
+
 
     public TrainingGoalService(TrainingGoalRepository trainingGoalRepository,
-                               TrainingGoalValidation trainingGoalValidation) {
+                               TrainingGoalValidation trainingGoalValidation,
+                               UserValidation userValidation) {
         this.trainingGoalRepository = trainingGoalRepository;
         this.trainingGoalValidation = trainingGoalValidation;
+        this.userValidation = userValidation;
     }
 
     @Transactional
     public TrainingGoalResponseDTO createTrainingGoal(TrainingGoalRequestDTO requestDTO, UUID userId) {
         trainingGoalValidation.existsTrainingGoalById(userId);
+        User user = userValidation.validateUserById(userId);
+        TrainingGoal trainingGoal = TrainingGoalMapper.toEntity(requestDTO, user);
 
-        TrainingGoal trainingGoal = TrainingGoalMapper.toEntity(requestDTO);
         trainingGoalRepository.save(trainingGoal);
         return TrainingGoalMapper.toResponse(trainingGoal);
     }

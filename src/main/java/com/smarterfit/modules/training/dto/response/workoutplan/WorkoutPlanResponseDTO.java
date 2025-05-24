@@ -12,7 +12,7 @@ import java.util.UUID;
 @Builder(toBuilder = true)
 public class WorkoutPlanResponseDTO {
     private UUID id;
-    private UUID userId;
     private String title;
+    private String description;
     private LocalDateTime createdAt;
 }

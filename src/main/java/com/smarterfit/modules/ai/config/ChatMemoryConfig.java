@@ -8,17 +8,18 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class ChatMemoryConfig {
-    @Bean
-    public ChatMemory chatMemory() {
-        return MessageWindowChatMemory
-                .builder()
-                .maxMessages(5)
-                .build();
+//    @Bean
+//    public ChatMemory chatMemory() {
+//        return MessageWindowChatMemory
+//                .builder()
+//                .maxMessages(5)
+//                .build();
+//
+//    }
+//
+//    @Bean
+//    public MessageChatMemoryAdvisor memoryAdvisor(ChatMemory chatMemory) {
+//        return new MessageChatMemoryAdvisor(chatMemory);
+//    }
 
-    }
-
-    @Bean
-    public MessageChatMemoryAdvisor memoryAdvisor(ChatMemory chatMemory) {
-        return new MessageChatMemoryAdvisor(chatMemory);
-    }
 }

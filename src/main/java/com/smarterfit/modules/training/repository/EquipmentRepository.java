@@ -10,8 +10,7 @@ import java.util.UUID;
 
 public interface EquipmentRepository extends JpaRepository<Equipment, UUID> {
 
-    @Query("SELECT e FROM Equipment e WHERE e.name = :name")
-    public boolean existsByName(@Param("name") String name);
+    public boolean existsByName(String name);
 
     @Query("select m from Modality m where m.name like %:name%")
     public List<Equipment> findAllByNameContaining(@Param("name") String name);

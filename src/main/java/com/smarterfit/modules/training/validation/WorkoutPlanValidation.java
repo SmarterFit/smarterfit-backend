@@ -27,6 +27,9 @@ public class WorkoutPlanValidation {
             throw new ResourceAlreadyExistsException("WorkoutPlan already exists");
         }
     }
+    public boolean noExistsWorkoutPlanById(UUID id) {
+        return !workoutPlanRepository.existsById(id);
+    }
 
 
 }

@@ -1,11 +1,8 @@
 package com.smarterfit.modules.ai.tools.classes;
 
-import com.smarterfit.modules.billing.dto.response.plan.PlanResponseDTO;
 import com.smarterfit.modules.classgroup.dto.request.classgroup.SearchClassGroupRequestDTO;
 import com.smarterfit.modules.classgroup.dto.response.ClassGroupResponseDTO;
-import com.smarterfit.modules.classgroup.service.ClassGroupPlanService;
 import com.smarterfit.modules.classgroup.service.ClassGroupService;
-import com.smarterfit.modules.classgroup.service.ClassGroupUserService;
 import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.ai.tool.annotation.ToolParam;
 import org.springframework.data.domain.Pageable;
@@ -14,7 +11,6 @@ import org.springframework.stereotype.Component;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.UUID;
 
 @Component
 public class ClassTools {

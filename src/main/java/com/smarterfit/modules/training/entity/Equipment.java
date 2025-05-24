@@ -3,8 +3,6 @@ package com.smarterfit.modules.training.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -21,9 +19,6 @@ public class Equipment {
 
     @Column(nullable = false)
     String name;
-
-    @ManyToMany(mappedBy = "equipmentList")
-    private List<Exercise> exercises = new ArrayList<>();
 
 
 }
