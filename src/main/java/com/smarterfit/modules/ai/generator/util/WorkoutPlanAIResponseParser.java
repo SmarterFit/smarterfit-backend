@@ -14,32 +14,51 @@ public class WorkoutPlanAIResponseParser {
 
     public WorkoutPlanRequestDTO parse(String aiResponse, UUID trainingGoalId) {
         try {
-            JsonNode root = objectMapper.readTree(aiResponse);
-            String title       = root.get("title").asText();
-            String description = root.get("description").asText();
+            String cleanJson = sanitizeJson(aiResponse);
 
+            JsonNode root = objectMapper.readTree(cleanJson);
             WorkoutPlanRequestDTO dto = new WorkoutPlanRequestDTO();
             dto.setTrainingGoalId(trainingGoalId);
-            dto.setTitle(title);
-            dto.setDescription(description);
+
+            if (root.has("title")) {
+                dto.setTitle(root.get("title").asText());
+            }
+
+            if (root.has("description")) {
+                dto.setDescription(root.get("description").asText());
+            }
+
             return dto;
         } catch (Exception e) {
-            throw new GenerateAIException("Failed to parse AI response JSON");
+            throw new GenerateAIException("AI response processing failed: " + e.getMessage());
         }
     }
 
     public WorkoutPlanUpdateRequestDTO parse(String aiResponse) {
         try {
-            JsonNode root = objectMapper.readTree(aiResponse);
-            String title       = root.get("title").asText();
-            String description = root.get("description").asText();
+            String cleanJson = sanitizeJson(aiResponse);
 
+            JsonNode root = objectMapper.readTree(cleanJson);
             WorkoutPlanUpdateRequestDTO dto = new WorkoutPlanUpdateRequestDTO();
-            dto.setTitle(title);
-            dto.setDescription(description);
+
+            if (root.has("title")) {
+                dto.setTitle(root.get("title").asText());
+            }
+
+            if (root.has("description")) {
+                dto.setDescription(root.get("description").asText());
+            }
+
             return dto;
         } catch (Exception e) {
-            throw new GenerateAIException("Failed to parse AI response JSON");
+            throw new GenerateAIException("AI response processing failed: " + e.getMessage());
         }
+    }
+
+    private String sanitizeJson(String raw) {
+        // Remove blocos de código Markdown (```json ... ```)
+        return raw.replaceAll("^```(json)?", "")
+                .replaceAll("```$", "")
+                .trim();
     }
 }

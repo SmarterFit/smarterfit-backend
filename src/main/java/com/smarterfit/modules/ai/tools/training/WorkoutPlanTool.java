@@ -18,11 +18,11 @@ public class WorkoutPlanTool {
         this.aiGenerator = aiGenerator;
     }
 
-    @Tool(description = "Gerar um plano de treino personalizado para o usuário.")
-    public String generateWorkoutPlan(
-            @ToolParam(description = "User ID (UUID)") UUID userId) {
-
-        var plan = aiGenerator.generatePlan(userId);
-        return String.format("🏋️  Plano de exercícios gerado:\n\n*%s*\n\n%s", plan.getTitle(), plan.getDescription());
-    }
+//    @Tool(description = "Gerar um plano de treino personalizado para o usuário.")
+//    public String generateWorkoutPlan(
+//            @ToolParam(description = "User ID (UUID)") UUID userId) {
+//
+//        var plan = aiGenerator.generatePlan(userId);
+//        return String.format("🏋️  Plano de exercícios gerado:\n\n*%s*\n\n%s", plan.getTitle(), plan.getDescription());
+//    }
 }

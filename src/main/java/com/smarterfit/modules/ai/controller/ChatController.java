@@ -30,8 +30,9 @@ public class ChatController {
    }
 
    @PostMapping("/ask/training")
-   public Flux<String> askGroqTraining(@RequestBody String prompt,
-                               @RequestHeader("X-User-Id") UUID requesterId) {
-      return chatService.askGroq(prompt , requesterId);
+   public String askGroqTraining(@RequestHeader("X-User-Id") UUID requesterId) {
+      var plan = workoutPlanAIGenerator.generatePlan(requesterId);
+
+      return String.format("🏋️  Plano de exercícios gerado:\n\n*%s*\n\n%s", plan.getTitle(), plan.getDescription());
    }
 }

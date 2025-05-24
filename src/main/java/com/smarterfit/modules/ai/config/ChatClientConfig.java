@@ -32,32 +32,32 @@ public class ChatClientConfig {
    private Resource gymPrompt;
 
 
-//   private final MessageChatMemoryAdvisor memoryAdvisor;
-//   private final PlanTools planTools;
-//   private final ClassTools classTools;
-//   private final UserClassTools userClassTools;
-//   private final ClassSessionTools classSessionTools;
-//   private final ClassPlansTools classPlansTools;
-//   private final UserTools userTools;
-//   private final ProfileTools profileTools;
-//   private final ProfileMetricTools profileMetricTools;
+   private final MessageChatMemoryAdvisor memoryAdvisor;
+   private final PlanTools planTools;
+   private final ClassTools classTools;
+   private final UserClassTools userClassTools;
+   private final ClassSessionTools classSessionTools;
+   private final ClassPlansTools classPlansTools;
+   private final UserTools userTools;
+   private final ProfileTools profileTools;
+   private final ProfileMetricTools profileMetricTools;
    private final WorkoutPlanTool workoutPlanTool;
 
    @Autowired
-   public ChatClientConfig( /*PlanTools planTools, ClassTools classTools, UserClassTools userClassTools,
+   public ChatClientConfig( PlanTools planTools, ClassTools classTools, UserClassTools userClassTools,
                             ClassSessionTools classSessionTools, ClassPlansTools classPlansTools, UserTools userTools,
                             ProfileTools profileTools, ProfileMetricTools profileMetricTools,
-                            MessageChatMemoryAdvisor memoryAdvisor*/ WorkoutPlanTool workoutPlanTool){
-//      this.planTools = planTools;
-//      this.classTools = classTools;
-//      this.userClassTools = userClassTools;
-//      this.classPlansTools = classPlansTools;
-//      this.classSessionTools = classSessionTools;
-//      this.userTools = userTools;
-//      this.profileTools = profileTools;
-//      this.profileMetricTools = profileMetricTools;
+                            MessageChatMemoryAdvisor memoryAdvisor, WorkoutPlanTool workoutPlanTool){
+      this.planTools = planTools;
+      this.classTools = classTools;
+      this.userClassTools = userClassTools;
+      this.classPlansTools = classPlansTools;
+      this.classSessionTools = classSessionTools;
+      this.userTools = userTools;
+      this.profileTools = profileTools;
+      this.profileMetricTools = profileMetricTools;
       this.workoutPlanTool = workoutPlanTool;
-//      this.memoryAdvisor = memoryAdvisor;
+      this.memoryAdvisor = memoryAdvisor;
    }
 
    private String loadPrompt(Resource resource) throws IOException {
@@ -72,11 +72,12 @@ public class ChatClientConfig {
 
       return builder
               .defaultSystem(loadPrompt(gymPrompt))
-//              .defaultAdvisors(advisor -> advisor
-//                      .param("conversationId", conversationId)
-//                      .param("memoryAdvisor", memoryAdvisor)
-//              )
-              .defaultTools(workoutPlanTool)
+              .defaultAdvisors(advisor -> advisor
+                      .param("conversationId", conversationId)
+                      .param("memoryAdvisor", memoryAdvisor)
+              )
+              .defaultTools(workoutPlanTool, planTools, classTools, userClassTools,
+                      classSessionTools, classPlansTools, userTools, profileTools, profileMetricTools)
               .build();
    }
 

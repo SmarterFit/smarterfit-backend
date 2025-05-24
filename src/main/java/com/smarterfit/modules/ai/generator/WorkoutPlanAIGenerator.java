@@ -48,6 +48,7 @@ public class WorkoutPlanAIGenerator {
                 .call()
                 .content();
 
+        System.out.println("AI Response: " + aiResponse);
         if(workoutPlanValidation.noExistsWorkoutPlanById(requesterId)) {
             var requestDto = responseParser.parse(aiResponse, requesterId);
             return workoutPlanService.createWorkoutPlan(requestDto);

@@ -16,12 +16,12 @@ Retorne apenas um JSON válido:
 
 Descrição deve usar este formato:
 
-    ✅ DIA 1 – [Grupo]
+    DIA 1 – [Grupo]
     - Exercício A: 3x12
     - Exercício B: 4x10
     Cardio: 20min esteira leve
 
-    ✅ DIA 2 – [Grupo]
+    DIA 2 – [Grupo]
     - Exercício C: 3x15
 
 5 Regras finais:
@@ -29,3 +29,4 @@ Descrição deve usar este formato:
     Não inclua nenhuma explicação fora do JSON de saída.
     Garanta que o JSON seja bem formado e válido para desserialização direta no backend.
     Ajuste a dificuldade e o volume conforme experienceLevel e weeklyFrequency.
+    Não mande em formato markdown, apenas JSON.
