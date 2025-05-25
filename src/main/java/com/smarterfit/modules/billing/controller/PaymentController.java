@@ -67,7 +67,14 @@ public class PaymentController {
       return ResponseEntity.ok(payments);
    }
 
-   ///TODO: Por assinatura
+   @GetMapping("/assinatura/{subscriptionId}")
+   public ResponseEntity<List<PaymentResponseDTO>> getAllBySubscriptionId(
+         @PathVariable("subscriptionId") UUID subscriptionId) {
+      List<PaymentResponseDTO> payments = paymentService.getAllBySubscriptionId(subscriptionId);
+      return ResponseEntity.ok(payments);
+   }
+
+   /// TODO: Por assinatura
 
    /// Dono da assinatura ou funcionários
    @GetMapping("/buscar")

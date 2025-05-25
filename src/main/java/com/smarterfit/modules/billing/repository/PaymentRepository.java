@@ -21,6 +21,8 @@ public interface PaymentRepository extends JpaRepository<Payment, UUID>, JpaSpec
 
       Optional<Payment> findBySubscriptionIdAndStatus(UUID subscriptionId, PaymentStatus status);
 
+      List<Payment> findBySubscriptionId(UUID subscriptionId);
+
       @Modifying
       @Query("UPDATE payment p SET p.status = :status WHERE p.subscription.id = :subscriptionId AND p.status = :originalStatus")
       void updateStatusBySubscriptionId(@Param("subscriptionId") UUID subscriptionId,

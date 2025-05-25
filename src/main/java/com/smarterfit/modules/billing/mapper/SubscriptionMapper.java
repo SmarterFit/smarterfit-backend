@@ -58,7 +58,10 @@ public class SubscriptionMapper {
             }
 
             SubscriptionResponseDTO response = GenericMapper.map(subscription, SubscriptionResponseDTO.class);
-            response = response.toBuilder().owner(UserMapper.toResponse(subscription.getOwner())).build();
+            response = response.toBuilder()
+                        .owner(UserMapper.toResponse(subscription.getOwner()))
+                        .plan(PlanMapper.toResponse(subscription.getPlan()))
+                        .build();
 
             return response;
       }

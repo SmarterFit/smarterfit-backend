@@ -91,6 +91,13 @@ public class PaymentService {
    }
 
    @Transactional(readOnly = true)
+   public List<PaymentResponseDTO> getAllBySubscriptionId(UUID subscriptionId) {
+      List<Payment> payments = paymentRepository.findBySubscriptionId(subscriptionId);
+
+      return payments.stream().map(PaymentMapper::toResponse).toList();
+   }
+
+   @Transactional(readOnly = true)
    public Page<PaymentResponseDTO> searchPayments(SearchPaymentRequestDTO requestDTO, Pageable pageable) {
       Specification<Payment> specification = PaymentSpecifications.searchByFilters(requestDTO);
 
