@@ -10,13 +10,17 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.smarterfit.modules.billing.dto.request.subscriptionuser.AddMemberByEmailRequestDTO;
 import com.smarterfit.modules.billing.dto.response.subscription.SubscriptionResponseDTO;
 import com.smarterfit.modules.billing.dto.response.subscriptionuser.SubscriptionUserResponseDTO;
 import com.smarterfit.modules.billing.service.SubscriptionUserService;
 import com.smarterfit.modules.useraccess.dto.response.UserResponseDTO;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/assinaturas/usuarios")
@@ -35,6 +39,13 @@ public class SubscriptionUserController {
          @PathVariable("subscriptionId") UUID subscriptionId,
          @PathVariable("userId") UUID userId) {
       SubscriptionUserResponseDTO responseDTO = subscriptionUserService.addMemberToSubscription(subscriptionId, userId);
+      return ResponseEntity.status(201).body(responseDTO);
+   }
+
+   @PostMapping("/adicionar")
+   public ResponseEntity<SubscriptionUserResponseDTO> addMemberByEmailToSubscription(
+         @RequestBody @Valid AddMemberByEmailRequestDTO requestDTO) {
+      SubscriptionUserResponseDTO responseDTO = subscriptionUserService.addMemberByEmailToSubscription(requestDTO);
       return ResponseEntity.status(201).body(responseDTO);
    }
 

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.smarterfit.common.config.BusinessRules;
+import com.smarterfit.modules.billing.dto.request.subscriptionuser.AddMemberByEmailRequestDTO;
 import com.smarterfit.modules.billing.dto.response.subscription.SubscriptionResponseDTO;
 import com.smarterfit.modules.billing.dto.response.subscriptionuser.SubscriptionUserResponseDTO;
 import com.smarterfit.modules.billing.entity.Subscription;
@@ -27,94 +28,114 @@ import com.smarterfit.modules.useraccess.validation.UserValidation;
 
 @Service
 public class SubscriptionUserService {
-   private final SubscriptionRepository subscriptionRepository;
-   private final SubscriptionUserRepository subscriptionUserRepository;
-   private final SubscriptionUserValidation subscriptionUserValidation;
-   private final SubscriptionValidation subscriptionValidation;
-   private final UserValidation userValidation;
-   private final SensitiveBillingDataDecryptor sensitiveBillingDataDecryptor;
+      private final SubscriptionRepository subscriptionRepository;
+      private final SubscriptionUserRepository subscriptionUserRepository;
+      private final SubscriptionUserValidation subscriptionUserValidation;
+      private final SubscriptionValidation subscriptionValidation;
+      private final UserValidation userValidation;
+      private final SensitiveBillingDataDecryptor sensitiveBillingDataDecryptor;
 
-   @Autowired
-   public SubscriptionUserService(SubscriptionRepository subscriptionRepository,
-         SubscriptionUserRepository subscriptionUserRepository,
-         SubscriptionUserValidation subscriptionUserValidation,
-         SubscriptionValidation subscriptionValidation, UserValidation userValidation,
-         SensitiveBillingDataDecryptor sensitiveBillingDataDecryptor) {
-      this.subscriptionRepository = subscriptionRepository;
-      this.subscriptionUserRepository = subscriptionUserRepository;
-      this.subscriptionUserValidation = subscriptionUserValidation;
-      this.subscriptionValidation = subscriptionValidation;
-      this.userValidation = userValidation;
-      this.sensitiveBillingDataDecryptor = sensitiveBillingDataDecryptor;
-   }
+      @Autowired
+      public SubscriptionUserService(SubscriptionRepository subscriptionRepository,
+                  SubscriptionUserRepository subscriptionUserRepository,
+                  SubscriptionUserValidation subscriptionUserValidation,
+                  SubscriptionValidation subscriptionValidation, UserValidation userValidation,
+                  SensitiveBillingDataDecryptor sensitiveBillingDataDecryptor) {
+            this.subscriptionRepository = subscriptionRepository;
+            this.subscriptionUserRepository = subscriptionUserRepository;
+            this.subscriptionUserValidation = subscriptionUserValidation;
+            this.subscriptionValidation = subscriptionValidation;
+            this.userValidation = userValidation;
+            this.sensitiveBillingDataDecryptor = sensitiveBillingDataDecryptor;
+      }
 
-   @Transactional
-   public SubscriptionUserResponseDTO addMemberToSubscription(UUID subscriptionId, UUID userId) {
-      Subscription subscription = subscriptionValidation.validateSubscriptionById(subscriptionId);
-      subscriptionUserValidation.validateAvailableMembers(subscription);
-      User user = userValidation.validateUserById(userId);
-      subscriptionUserValidation.validateUserNotInSubscription(subscription, user);
+      @Transactional
+      public SubscriptionUserResponseDTO addMemberToSubscription(UUID subscriptionId, UUID userId) {
+            Subscription subscription = subscriptionValidation.validateSubscriptionById(subscriptionId);
+            subscriptionUserValidation.validateAvailableMembers(subscription);
+            User user = userValidation.validateUserById(userId);
+            subscriptionUserValidation.validateUserNotInSubscription(subscription, user);
 
-      SubscriptionUser subscriptionUser = new SubscriptionUser();
-      subscriptionUser.setUser(user);
-      subscriptionUser.setSubscription(subscription);
-      subscription.getParticipants().add(subscriptionUser);
-      subscription.setAvailableMembers(subscription.getAvailableMembers() - 1);
+            SubscriptionUser subscriptionUser = new SubscriptionUser();
+            subscriptionUser.setUser(user);
+            subscriptionUser.setSubscription(subscription);
+            subscription.getParticipants().add(subscriptionUser);
+            subscription.setAvailableMembers(subscription.getAvailableMembers() - 1);
 
-      subscription = subscriptionRepository.save(subscription);
+            subscription = subscriptionRepository.save(subscription);
 
-      return sensitiveBillingDataDecryptor
-            .decrypt(SubscriptionUserMapper.toResponse(subscriptionUser));
-   }
+            return sensitiveBillingDataDecryptor
+                        .decrypt(SubscriptionUserMapper.toResponse(subscriptionUser));
+      }
 
-   @Transactional
-   public void removeMemberFromSubscription(UUID subscriptionId,
-         UUID userId) {
-      SubscriptionUser subscriptionUser = subscriptionUserValidation
-            .validateSubscriptionUserById(new SubscriptionUserId(userId, subscriptionId));
+      @Transactional
+      public SubscriptionUserResponseDTO addMemberByEmailToSubscription(AddMemberByEmailRequestDTO requestDTO) {
+            Subscription subscription = subscriptionValidation.validateSubscriptionById(requestDTO.getSubscriptionId());
+            subscriptionUserValidation.validateAvailableMembers(subscription);
 
-      subscriptionUserValidation.validateUserJoinedMoreThanDaysAgo(subscriptionUser,
-            BusinessRules.PARTICIPATION_MINIMUM_DAYS);
+            User user = userValidation.validateUserByEmail(requestDTO.getUserEmail());
+            subscriptionUserValidation.validateUserNotInSubscription(subscription, user);
 
-      Subscription subscription = subscriptionUser.getSubscription();
-      subscription.setAvailableMembers(subscription.getAvailableMembers() + 1);
-      subscription.getParticipants().remove(subscriptionUser);
+            SubscriptionUser subscriptionUser = new SubscriptionUser();
+            subscriptionUser.setUser(user);
+            subscriptionUser.setSubscription(subscription);
+            subscription.getParticipants().add(subscriptionUser);
+            subscription.setAvailableMembers(subscription.getAvailableMembers() - 1);
 
-      subscription = subscriptionRepository.save(subscription);
-   }
+            subscription = subscriptionRepository.save(subscription);
 
-   @Transactional(readOnly = true)
-   public SubscriptionUserResponseDTO getSubscriptionUser(UUID subscriptionId, UUID userId) {
-      SubscriptionUser subscriptionUser = subscriptionUserValidation
-            .validateSubscriptionUserById(new SubscriptionUserId(subscriptionId, userId));
-      return sensitiveBillingDataDecryptor
-            .decrypt(SubscriptionUserMapper.toResponse(subscriptionUser));
-   }
+            return sensitiveBillingDataDecryptor
+                        .decrypt(SubscriptionUserMapper.toResponse(subscriptionUser));
+      }
 
-   @Transactional(readOnly = true)
-   public List<SubscriptionUserResponseDTO> getAllSubscriptionUsers() {
-      List<SubscriptionUser> subscriptionUsers = subscriptionUserRepository.findAll();
-      return subscriptionUsers.stream().map(subscriptionUser -> sensitiveBillingDataDecryptor
-            .decrypt(SubscriptionUserMapper.toResponse(subscriptionUser))).toList();
-   }
+      @Transactional
+      public void removeMemberFromSubscription(UUID subscriptionId,
+                  UUID userId) {
+            SubscriptionUser subscriptionUser = subscriptionUserValidation
+                        .validateSubscriptionUserById(new SubscriptionUserId(userId, subscriptionId));
 
-   @Transactional(readOnly = true)
-   public List<UserResponseDTO> getAllUsersBySubscriptionId(UUID subscriptionId) {
-      List<SubscriptionUser> subscriptionUsers = subscriptionUserRepository
-            .findBySubscriptionId(subscriptionId);
+            subscriptionUserValidation.validateUserJoinedMoreThanDaysAgo(subscriptionUser,
+                        BusinessRules.PARTICIPATION_MINIMUM_DAYS);
 
-      return subscriptionUsers.stream()
-            .map(subscriptionUser -> sensitiveBillingDataDecryptor
-                  .decrypt(UserMapper.toResponse(subscriptionUser.getUser())))
-            .toList();
-   }
+            Subscription subscription = subscriptionUser.getSubscription();
+            subscription.setAvailableMembers(subscription.getAvailableMembers() + 1);
+            subscription.getParticipants().remove(subscriptionUser);
 
-   @Transactional(readOnly = true)
-   public List<SubscriptionResponseDTO> getAllSubscriptionsByUserId(UUID userId) {
-      List<SubscriptionUser> subscriptionUsers = subscriptionUserRepository.findByUserId(userId);
-      return subscriptionUsers.stream()
-            .map(subscriptionUser -> sensitiveBillingDataDecryptor
-                  .decrypt(SubscriptionMapper.toResponse(subscriptionUser.getSubscription())))
-            .toList();
-   }
+            subscription = subscriptionRepository.save(subscription);
+      }
+
+      @Transactional(readOnly = true)
+      public SubscriptionUserResponseDTO getSubscriptionUser(UUID subscriptionId, UUID userId) {
+            SubscriptionUser subscriptionUser = subscriptionUserValidation
+                        .validateSubscriptionUserById(new SubscriptionUserId(subscriptionId, userId));
+            return sensitiveBillingDataDecryptor
+                        .decrypt(SubscriptionUserMapper.toResponse(subscriptionUser));
+      }
+
+      @Transactional(readOnly = true)
+      public List<SubscriptionUserResponseDTO> getAllSubscriptionUsers() {
+            List<SubscriptionUser> subscriptionUsers = subscriptionUserRepository.findAll();
+            return subscriptionUsers.stream().map(subscriptionUser -> sensitiveBillingDataDecryptor
+                        .decrypt(SubscriptionUserMapper.toResponse(subscriptionUser))).toList();
+      }
+
+      @Transactional(readOnly = true)
+      public List<UserResponseDTO> getAllUsersBySubscriptionId(UUID subscriptionId) {
+            List<SubscriptionUser> subscriptionUsers = subscriptionUserRepository
+                        .findBySubscriptionId(subscriptionId);
+
+            return subscriptionUsers.stream()
+                        .map(subscriptionUser -> sensitiveBillingDataDecryptor
+                                    .decrypt(UserMapper.toResponse(subscriptionUser.getUser())))
+                        .toList();
+      }
+
+      @Transactional(readOnly = true)
+      public List<SubscriptionResponseDTO> getAllSubscriptionsByUserId(UUID userId) {
+            List<SubscriptionUser> subscriptionUsers = subscriptionUserRepository.findByUserId(userId);
+            return subscriptionUsers.stream()
+                        .map(subscriptionUser -> sensitiveBillingDataDecryptor
+                                    .decrypt(SubscriptionMapper.toResponse(subscriptionUser.getSubscription())))
+                        .toList();
+      }
 }
