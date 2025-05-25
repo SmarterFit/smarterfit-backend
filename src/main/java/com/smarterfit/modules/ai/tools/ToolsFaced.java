@@ -4,7 +4,7 @@ import com.smarterfit.modules.ai.tools.classes.ClassPlansTools;
 import com.smarterfit.modules.ai.tools.classes.ClassSessionTools;
 import com.smarterfit.modules.ai.tools.classes.ClassTools;
 import com.smarterfit.modules.ai.tools.classes.UserClassTools;
-import com.smarterfit.modules.ai.tools.plan.PlanTools;
+import com.smarterfit.modules.ai.tools.billing.PlanTools;
 import com.smarterfit.modules.ai.tools.user.ProfileMetricTools;
 import com.smarterfit.modules.ai.tools.user.ProfileTools;
 import com.smarterfit.modules.ai.tools.user.UserTools;

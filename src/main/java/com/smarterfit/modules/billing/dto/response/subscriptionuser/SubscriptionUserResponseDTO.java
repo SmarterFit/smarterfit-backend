@@ -1,6 +1,6 @@
 package com.smarterfit.modules.billing.dto.response.subscriptionuser;
 
-import com.smarterfit.modules.billing.dto.response.SubscriptionResponseDTO;
+import com.smarterfit.modules.billing.dto.response.subscription.SubscriptionResponseDTO;
 import com.smarterfit.modules.useraccess.dto.response.UserResponseDTO;
 
 import lombok.AllArgsConstructor;

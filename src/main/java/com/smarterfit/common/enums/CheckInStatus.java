@@ -1,6 +1,6 @@
 package com.smarterfit.common.enums;
 
-public enum CheckinStatus {
+public enum CheckInStatus {
     PRESENT,
     ABSENT,
     LATE

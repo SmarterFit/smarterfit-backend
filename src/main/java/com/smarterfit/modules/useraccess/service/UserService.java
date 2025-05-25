@@ -1,6 +1,7 @@
 package com.smarterfit.modules.useraccess.service;
 
 import com.smarterfit.common.util.CryptoUtil;
+import com.smarterfit.common.util.SensitiveDataDecryptor;
 import com.smarterfit.modules.useraccess.dto.request.user.CreateUserRequestDTO;
 import com.smarterfit.modules.useraccess.dto.request.user.UpdateUserEmailRequestDTO;
 import com.smarterfit.modules.useraccess.dto.request.user.UpdateUserPasswordRequestDTO;
@@ -29,18 +30,21 @@ public class UserService {
     private final ProfileValidation profileValidation;
     private final PasswordEncoder passwordEncoder;
     private final CryptoUtil cryptoUtil;
+    private final SensitiveDataDecryptor sensitiveDataDecryptor;
 
     @Autowired
     public UserService(UserRepository userRepository,
             UserValidation userValidation,
             ProfileValidation profileValidation,
             PasswordEncoder passwordEncoder,
-            CryptoUtil cryptoUtil) {
+            CryptoUtil cryptoUtil,
+            SensitiveDataDecryptor sensitiveDataDecryptor) {
         this.userRepository = userRepository;
         this.userValidation = userValidation;
         this.profileValidation = profileValidation;
         this.passwordEncoder = passwordEncoder;
         this.cryptoUtil = cryptoUtil;
+        this.sensitiveDataDecryptor = sensitiveDataDecryptor;
     }
 
     @Transactional
@@ -56,15 +60,15 @@ public class UserService {
         String encryptedPassword = passwordEncoder.encode(requestDTO.getPassword());
         user.setPassword(encryptedPassword);
         user.getProfile().setCpf(encryptedCpf);
-
         userRepository.save(user);
-        return UserMapper.toResponse(user);
+
+        return sensitiveDataDecryptor.decrypt(UserMapper.toResponse(user));
     }
 
     @Transactional(readOnly = true)
     public UserResponseDTO getUserById(UUID id) {
         User user = userValidation.validateUserById(id);
-        return UserMapper.toResponse(user);
+        return sensitiveDataDecryptor.decrypt(UserMapper.toResponse(user));
     }
 
     @Transactional
@@ -78,21 +82,22 @@ public class UserService {
             userRepository.save(user);
         }
 
-        return UserMapper.toResponse(user);
+        return sensitiveDataDecryptor.decrypt(UserMapper.toResponse(user));
     }
 
     @Transactional
     public UserResponseDTO updateUserPasswordById(UUID id, UpdateUserPasswordRequestDTO requestDTO) {
         User user = userValidation.validateUserById(id);
 
-        userValidation.validatePasswords(requestDTO.getPassword(), requestDTO.getConfirmPassword());
+        userValidation.validateCurrentPassword(user, requestDTO.getCurrentPassword());
+        userValidation.validatePasswords(requestDTO.getNewPassword(), requestDTO.getConfirmNewPassword());
 
-        String encryptedPassword = passwordEncoder.encode(requestDTO.getPassword());
+        String encryptedPassword = passwordEncoder.encode(requestDTO.getNewPassword());
         user.setPassword(encryptedPassword);
 
         userRepository.save(user);
 
-        return UserMapper.toResponse(user);
+        return sensitiveDataDecryptor.decrypt(UserMapper.toResponse(user));
     }
 
     @Transactional
@@ -111,7 +116,7 @@ public class UserService {
 
         userRepository.save(user);
 
-        return UserMapper.toResponse(user);
+        return sensitiveDataDecryptor.decrypt(UserMapper.toResponse(user));
     }
 
     @Transactional

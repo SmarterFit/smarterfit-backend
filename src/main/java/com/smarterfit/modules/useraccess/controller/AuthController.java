@@ -1,6 +1,7 @@
 package com.smarterfit.modules.useraccess.controller;
 
 import com.smarterfit.modules.useraccess.dto.request.user.LoginRequestDTO;
+import com.smarterfit.modules.useraccess.dto.response.AuthResponseDTO;
 import com.smarterfit.modules.useraccess.service.AuthService;
 
 import org.springframework.http.ResponseEntity;
@@ -22,7 +23,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequestDTO requestDTO) {
+    public ResponseEntity<AuthResponseDTO> login(@RequestBody LoginRequestDTO requestDTO) {
         return ResponseEntity.ok(authService.login(requestDTO));
     }
 }

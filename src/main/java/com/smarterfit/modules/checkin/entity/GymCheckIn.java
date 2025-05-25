@@ -13,14 +13,15 @@ import lombok.*;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+@Entity(name = "GymCheckIn")
+@Table(name = "SF_GYM_CHECKIN")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
-@Entity
-@Table(name = "SF_CHECKIN")
-public class CheckIn {
+@Builder
+public class GymCheckIn {
    @Id
    @GeneratedValue(strategy = GenerationType.UUID)
    private UUID id;
@@ -37,10 +38,18 @@ public class CheckIn {
    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
    private LocalDateTime checkOutTime;
 
-   /// TODO: add updatedAt
+   @Column(name = "dt_updated_at", nullable = false)
+   @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+   private LocalDateTime updatedAt;
 
    @PrePersist
    public void onPrePersist() {
       this.checkInTime = LocalDateTime.now();
+      this.updatedAt = LocalDateTime.now();
+   }
+
+   @PreUpdate
+   public void onPreUpdate() {
+      this.updatedAt = LocalDateTime.now();
    }
 }

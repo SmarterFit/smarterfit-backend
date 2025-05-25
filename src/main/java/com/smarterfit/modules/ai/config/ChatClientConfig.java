@@ -22,7 +22,7 @@ public class ChatClientConfig {
 
    @Autowired
    public ChatClientConfig(ToolsFaced toolFaced,
-                           MessageChatMemoryAdvisor memoryAdvisor) {
+         MessageChatMemoryAdvisor memoryAdvisor) {
       this.toolFaced = toolFaced;
       this.memoryAdvisor = memoryAdvisor;
 
@@ -42,10 +42,9 @@ public class ChatClientConfig {
       }
 
       return chatClient
-              .defaultTools(toolFaced)
-              .defaultAdvisors(memoryAdvisor)
-              .build();
+            .defaultTools(toolFaced)
+            .defaultAdvisors(memoryAdvisor)
+            .build();
    }
-
 
 }

@@ -21,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.UUID;
 
-
 @Service
 public class ClassGroupService {
 
@@ -29,10 +28,9 @@ public class ClassGroupService {
     private final ValidationFaced validationFaced;
     private final ApplicationEventPublisher publisher;
 
-
     public ClassGroupService(ClassGroupRepository classGroupRepository,
             ValidationFaced validationFaced,
-                             ApplicationEventPublisher publisher) {
+            ApplicationEventPublisher publisher) {
 
         this.classGroupRepository = classGroupRepository;
         this.validationFaced = validationFaced;
@@ -43,7 +41,8 @@ public class ClassGroupService {
     @Transactional
     public ClassGroupResponseDTO createClassGroup(ClassGroupRequestDTO requestDTO, UUID requesterId) {
         User creatorUser = validationFaced.userValidation.validateUserById(requesterId);
-        validationFaced.classGroupValidation.validateClassGroupDates(requestDTO.getStartDate(), requestDTO.getEndDate());
+        validationFaced.classGroupValidation.validateClassGroupDates(requestDTO.getStartDate(),
+                requestDTO.getEndDate());
 
         validationFaced.classGroupValidation.validateClassGroupExists(requesterId);
         Modality modality = validationFaced.modalityValidation.validateModalityById(requestDTO.getModalityId());
@@ -70,6 +69,13 @@ public class ClassGroupService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
+    public List<ClassGroupResponseDTO> getAvailableClassGroupsByUserId(UUID userId) {
+        List<ClassGroup> classes = classGroupRepository.findAvailableClassGroupsByUser(userId);
+
+        return classes.stream().map(ClassGroupMapper::toResponse).toList();
+    }
+
     @Transactional
     public ClassGroupResponseDTO updateClassGroupById(UUID classGroupId, ClassGroupRequestDTO requestDTO) {
         validationFaced.classGroupValidation.validateClassGroupDates(requestDTO.getStartDate(),
@@ -93,14 +99,12 @@ public class ClassGroupService {
     }
 
     @Transactional(readOnly = true)
-    public Page<ClassGroupResponseDTO> searchClass(SearchClassGroupRequestDTO searchDTO, Pageable pageable){
+    public Page<ClassGroupResponseDTO> searchClass(SearchClassGroupRequestDTO searchDTO, Pageable pageable) {
         Specification<ClassGroup> specification = ClassSpecifications.searchByFilters(searchDTO);
 
         Page<ClassGroup> classGroups = classGroupRepository.findAll(specification, pageable);
 
-        return  classGroups.map(ClassGroupMapper::toResponse);
+        return classGroups.map(ClassGroupMapper::toResponse);
     }
-
-
 
 }

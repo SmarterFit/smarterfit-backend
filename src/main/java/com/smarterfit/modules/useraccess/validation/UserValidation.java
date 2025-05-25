@@ -6,6 +6,7 @@ import com.smarterfit.common.exceptions.ResourceNotFoundException;
 import com.smarterfit.modules.useraccess.entity.User;
 import com.smarterfit.modules.useraccess.repository.UserRepository;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
@@ -13,9 +14,11 @@ import java.util.UUID;
 @Component
 public class UserValidation {
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserValidation(UserRepository userRepository) {
+    public UserValidation(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public User validateUserById(UUID id) {
@@ -36,6 +39,12 @@ public class UserValidation {
     public void validatePasswords(String password, String confirmPassword) {
         if (!password.equals(confirmPassword)) {
             throw new IllegalArgumentException("The passwords don't match.");
+        }
+    }
+
+    public void validateCurrentPassword(User user, String currentPassword) {
+        if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
+            throw new BusinessException("Current password is incorrect.");
         }
     }
 

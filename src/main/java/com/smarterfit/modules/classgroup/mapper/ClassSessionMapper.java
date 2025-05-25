@@ -20,7 +20,7 @@ public class ClassSessionMapper {
     }
 
     public static ClassSession toEntity(CreateClassSessionRequestDTO dto,
-                                        ClassGroup classGroup, ClassSession classSession) {
+            ClassGroup classGroup, ClassSession classSession) {
         if (classSession == null) {
             throw new ResourceNotFoundException("ClassSession not found.");
         }
@@ -36,7 +36,7 @@ public class ClassSessionMapper {
     }
 
     public static ClassSession toEntity(UpdateClassSessionRequestDTO dto,
-                                        ClassSession classSession) {
+            ClassSession classSession) {
         if (classSession == null) {
             throw new ResourceNotFoundException("ClassSession not found.");
         }
@@ -44,8 +44,8 @@ public class ClassSessionMapper {
         return classSession;
     }
 
-
-    public static ClassSessionResponseDTO toResponseDTO(ClassSession classSession) {
+    /// TODO: Mudar para toResponse (padrão)
+    public static ClassSessionResponseDTO toResponse(ClassSession classSession) {
         if (classSession == null) {
             throw new ResourceNotFoundException("ClassSession not found.");
         }

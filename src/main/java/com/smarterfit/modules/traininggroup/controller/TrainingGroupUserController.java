@@ -67,6 +67,12 @@ public class TrainingGroupUserController {
       return ResponseEntity.ok(trainingGroupUserService.getAllTrainingGroupsByUserId(userId));
    }
 
+   @GetMapping("/rank/{groupId}")
+   public ResponseEntity<List<TrainingGroupUserResponseDTO>> getRankByTrainingGroupId(
+         @PathVariable("groupId") UUID groupId) {
+      return ResponseEntity.ok(trainingGroupUserService.getRankByTrainingGroupId(groupId));
+   }
+
    @PatchMapping("/{groupId}/usuario/{userId}/admin")
    public ResponseEntity<TrainingGroupUserResponseDTO> setUserAsAdmin(@PathVariable("groupId") UUID groupId,
          @PathVariable("userId") UUID userId) {

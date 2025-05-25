@@ -59,8 +59,12 @@ public class UserMapper {
         }
         UserResponseDTO response = GenericMapper.map(user, UserResponseDTO.class);
 
-        response = response.toBuilder().roles(
-                user.getRoles().stream().map(role -> role.getRoleType()).collect(Collectors.toSet())).build();
+        response = response.toBuilder()
+                .roles(
+                        user.getRoles().stream().map(role -> role.getRoleType())
+                                .collect(Collectors.toSet()))
+                .profile(ProfileMapper.toResponse(user.getProfile()))
+                .build();
 
         return response;
     }

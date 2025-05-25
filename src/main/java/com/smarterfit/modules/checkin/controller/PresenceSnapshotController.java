@@ -4,29 +4,50 @@
  */
 package com.smarterfit.modules.checkin.controller;
 
-import java.util.UUID;
+import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.smarterfit.modules.checkin.entity.PresenceSnapshot;
+import com.smarterfit.modules.checkin.dto.request.FilterPresenceSnapshotRequestDTO;
+import com.smarterfit.modules.checkin.dto.response.PresenceSnapshotResponseDTO;
 import com.smarterfit.modules.checkin.service.PresenceSnapshotService;
-
-import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/presence-snapshots")
-@RequiredArgsConstructor
+@CrossOrigin
 public class PresenceSnapshotController {
 
     private final PresenceSnapshotService presenceSnapshotService;
 
-    @PostMapping("/register")
-    public ResponseEntity<PresenceSnapshot> registerPresence(@RequestParam UUID userId) {
-        PresenceSnapshot presenceSnapshot = presenceSnapshotService.registerPresence(userId);
-        return ResponseEntity.ok(presenceSnapshot);
+    @Autowired
+    public PresenceSnapshotController(PresenceSnapshotService presenceSnapshotService) {
+        this.presenceSnapshotService = presenceSnapshotService;
+    }
+
+    @PostMapping("/reset")
+    public ResponseEntity<Void> resetPresence() {
+        presenceSnapshotService.resetPresence();
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping
+    public ResponseEntity<List<PresenceSnapshotResponseDTO>> getAll() {
+        return ResponseEntity.ok(presenceSnapshotService.getAll());
+    }
+
+    @GetMapping("/latest")
+    public ResponseEntity<PresenceSnapshotResponseDTO> getLast() {
+        return ResponseEntity.ok(presenceSnapshotService.getLast());
+    }
+
+    @GetMapping("/date-range")
+    public ResponseEntity<List<PresenceSnapshotResponseDTO>> filterByDate(FilterPresenceSnapshotRequestDTO request) {
+        return ResponseEntity.ok(presenceSnapshotService.filterByDate(request));
     }
 }

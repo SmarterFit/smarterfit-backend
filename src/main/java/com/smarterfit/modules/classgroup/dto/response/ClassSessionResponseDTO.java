@@ -3,8 +3,6 @@ package com.smarterfit.modules.classgroup.dto.response;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import com.smarterfit.common.enums.BookingStatus;
-
 import com.smarterfit.common.enums.SessionStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

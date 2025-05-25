@@ -4,37 +4,74 @@
  */
 package com.smarterfit.modules.checkin.service;
 
-import java.time.LocalDateTime;
-import java.util.UUID;
+import java.util.List;
 
+import com.smarterfit.modules.checkin.event.AllCheckOutEvent;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.smarterfit.modules.checkin.dto.request.FilterPresenceSnapshotRequestDTO;
+import com.smarterfit.modules.checkin.dto.response.PresenceSnapshotResponseDTO;
 import com.smarterfit.modules.checkin.entity.PresenceSnapshot;
+import com.smarterfit.modules.checkin.mapper.PresenceSnapshotMapper;
+import com.smarterfit.modules.checkin.repository.GymCheckInRepository;
 import com.smarterfit.modules.checkin.repository.PresenceSnapshotRepository;
-import com.smarterfit.modules.useraccess.entity.User;
-import com.smarterfit.modules.useraccess.repository.UserRepository;
 
-import lombok.RequiredArgsConstructor;
-
-/// TODO: Visualizar quantidade de alunos presentes na hora
-/// TODO: Registro a cada 5 minutos (apenas em horário comercial) da quantidade presente
-/// TODO: Funções de retorno de todas as quantidades ou em um range de tempo (apenas para funcionários)
-/// TODO: Possibilidade de alteração de quantidade de alunos presentes na academia
 @Service
-@RequiredArgsConstructor
 public class PresenceSnapshotService {
 
    private final PresenceSnapshotRepository presenceSnapshotRepository;
-   private final UserRepository userRepository;
+   private final GymCheckInRepository gymCheckInRepository;
+   private final ApplicationEventPublisher publisher;
 
-   public PresenceSnapshot registerPresence(UUID userId) {
-      User user = userRepository.findById(userId)
-            .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado com o ID: " + userId));
+   @Autowired
+   public PresenceSnapshotService(PresenceSnapshotRepository presenceSnapshotRepository,
+         GymCheckInRepository gymCheckInRepository,
+         ApplicationEventPublisher publisher) {
+      this.presenceSnapshotRepository = presenceSnapshotRepository;
+      this.gymCheckInRepository = gymCheckInRepository;
+      this.publisher = publisher;
+   }
+
+   @Transactional
+   public PresenceSnapshotResponseDTO registerPresence() {
+      Integer presenceCount = gymCheckInRepository.countByCheckOutTimeIsNull();
 
       PresenceSnapshot presenceSnapshot = new PresenceSnapshot();
-      presenceSnapshot.setUser(user);
-      presenceSnapshot.setPresenceTime(LocalDateTime.now());
+      presenceSnapshot.setPresenceCount(presenceCount);
+      presenceSnapshot = presenceSnapshotRepository.save(presenceSnapshot);
 
-      return presenceSnapshotRepository.save(presenceSnapshot);
+      return PresenceSnapshotMapper.toResponse(presenceSnapshot);
+   }
+
+   @Transactional
+   public void resetPresence() {
+      PresenceSnapshot presenceSnapshot = new PresenceSnapshot();
+      presenceSnapshot.setPresenceCount(0);
+      presenceSnapshotRepository.save(presenceSnapshot);
+
+      publisher.publishEvent(new AllCheckOutEvent(this));
+   }
+
+   @Transactional(readOnly = true)
+   public List<PresenceSnapshotResponseDTO> getAll() {
+      List<PresenceSnapshot> presenceSnapshots = presenceSnapshotRepository.findAll();
+      return presenceSnapshots.stream().map(PresenceSnapshotMapper::toResponse).toList();
+   }
+
+   @Transactional(readOnly = true)
+   public PresenceSnapshotResponseDTO getLast() {
+      PresenceSnapshot presenceSnapshot = presenceSnapshotRepository.findTopByOrderByCreatedAtDesc();
+      return PresenceSnapshotMapper.toResponse(presenceSnapshot);
+   }
+
+   @Transactional(readOnly = true)
+   public List<PresenceSnapshotResponseDTO> filterByDate(FilterPresenceSnapshotRequestDTO requestDTO) {
+      List<PresenceSnapshot> presenceSnapshots = presenceSnapshotRepository
+            .findByCreatedAtBetween(requestDTO.getStartDate(), requestDTO.getEndDate());
+      return presenceSnapshots.stream().map(PresenceSnapshotMapper::toResponse).toList();
    }
 }

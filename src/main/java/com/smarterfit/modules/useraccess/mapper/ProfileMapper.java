@@ -32,7 +32,9 @@ public class ProfileMapper {
 
         if (profile.getAddress() != null) {
             AddressResponseDTO responseAddress = AddressMapper.toResponse(profile.getAddress());
-            response = response.toBuilder().address(responseAddress).build();
+            response = response.toBuilder()
+                    .address(responseAddress)
+                    .build();
         }
 
         return response;

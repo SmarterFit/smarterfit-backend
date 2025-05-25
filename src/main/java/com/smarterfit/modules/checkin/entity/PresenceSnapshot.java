@@ -5,7 +5,6 @@
 package com.smarterfit.modules.checkin.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.smarterfit.modules.useraccess.entity.User;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -13,28 +12,28 @@ import lombok.*;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-/// FIXME: PresenceSnapshot não representa a presença do aluno e sim a quantidade de pessoas presentes na academia (número inteiro).
-
+@Entity(name = "PresenceSnapshot")
+@Table(name = "SF_PRESENCE_SNAPSHOT")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
-@Entity
-@Table(name = "SF_PRESENCE_SNAPSHOT")
+@Builder
 public class PresenceSnapshot {
-
    @Id
    @GeneratedValue(strategy = GenerationType.UUID)
    private UUID id;
 
-   @ManyToOne(optional = false)
-   @JoinColumn(name = "user_id", nullable = false)
-   private User user;
+   @Column(name = "presence_count", nullable = false)
+   private Integer presenceCount;
 
-   @Column(name = "presence_time", nullable = false)
+   @Column(name = "created_at", nullable = false, updatable = false)
    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-   private LocalDateTime presenceTime;
+   private LocalDateTime createdAt;
 
-   /// TODO: add createdAt and updatedAt
+   @PrePersist
+   public void onPrePersist() {
+      this.createdAt = LocalDateTime.now();
+   }
 }

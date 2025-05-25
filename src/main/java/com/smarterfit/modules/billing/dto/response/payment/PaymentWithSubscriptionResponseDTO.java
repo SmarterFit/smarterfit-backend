@@ -5,7 +5,7 @@ import java.util.UUID;
 
 import com.smarterfit.common.enums.PaymentMethod;
 import com.smarterfit.common.enums.PaymentStatus;
-import com.smarterfit.modules.billing.dto.response.SubscriptionResponseDTO;
+import com.smarterfit.modules.billing.dto.response.subscription.SubscriptionResponseDTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

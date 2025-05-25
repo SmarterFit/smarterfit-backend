@@ -48,23 +48,22 @@ public class ClassSessionService {
         ClassGroup classGroup = classGroupValidation.validateClassGroupById(requestDTO.getClassGroupId());
         classSessionValidation.existsByDateRangeAndClassGroupId(requestDTO);
 
-
         ClassSession classSession = ClassSessionMapper.toEntity(requestDTO, classGroup);
         classSessionRepository.save(classSession);
 
-        return ClassSessionMapper.toResponseDTO(classSession);
+        return ClassSessionMapper.toResponse(classSession);
     }
 
     @Transactional(readOnly = true)
     public ClassSessionResponseDTO getClassSessionById(UUID id) {
         ClassSession classSession = classSessionValidation.validateClassSessionById(id);
-        return ClassSessionMapper.toResponseDTO(classSession);
+        return ClassSessionMapper.toResponse(classSession);
     }
 
     @Transactional(readOnly = true)
     public List<ClassSessionResponseDTO> getAllClassSessionByGroup(UUID classGroupId) {
         return classSessionRepository.findAllSessionsByClassGroupId(classGroupId).stream()
-                .map(ClassSessionMapper::toResponseDTO)
+                .map(ClassSessionMapper::toResponse)
                 .toList();
     }
 
@@ -76,7 +75,7 @@ public class ClassSessionService {
         classSession = ClassSessionMapper.toEntity(requestDTO, classSession);
         classSessionRepository.save(classSession);
 
-        return ClassSessionMapper.toResponseDTO(classSession);
+        return ClassSessionMapper.toResponse(classSession);
     }
 
     @Transactional

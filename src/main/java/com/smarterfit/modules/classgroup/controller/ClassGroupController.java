@@ -16,6 +16,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/turma")
 @CrossOrigin
+
 public class ClassGroupController {
     public final ClassGroupService classGroupService;
 
@@ -49,6 +50,11 @@ public class ClassGroupController {
     @GetMapping
     public ResponseEntity<List<ClassGroupResponseDTO>> getAllClassGroup() {
         return ResponseEntity.ok(classGroupService.getAllClassGroups());
+    }
+
+    @GetMapping("/available-by-user/{userId}")
+    public ResponseEntity<List<ClassGroupResponseDTO>> getAvailableClassGroupsByUserId(@PathVariable UUID userId) {
+        return ResponseEntity.ok(classGroupService.getAvailableClassGroupsByUserId(userId));
     }
 
     @RequireRole(RoleType.TRAINER)

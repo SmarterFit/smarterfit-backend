@@ -22,12 +22,10 @@ public class ClassGroupUserValidation {
         if (classGroupUserRepository.existsByUserIdAndClassGroupId(userId, classGroupId)) {
             throw new ResourceAlreadyExistsException("User ID and Class Group ID already exist.");
         }
-
     }
 
     public ClassGroupUser validateClassGroupUserId(UUID userId, UUID classGroupId) {
         return classGroupUserRepository.findByUserIdAndClassGroupId(userId, classGroupId)
                 .orElseThrow(() -> new ResourceNotFoundException("This user is not a member of this class."));
-
     }
 }

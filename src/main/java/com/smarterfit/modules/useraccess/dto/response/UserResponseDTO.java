@@ -20,4 +20,5 @@ public class UserResponseDTO {
       private UUID id;
       private String email;
       private Set<RoleType> roles;
+      private ProfileResponseDTO profile;
 }

@@ -14,11 +14,15 @@ import lombok.Setter;
 @NoArgsConstructor
 @Builder(toBuilder = true)
 public class UpdateUserPasswordRequestDTO {
-   @NotBlank(message = "Password must not be blank")
-   @Size(min = 8, max = 50, message = "Password must be between 8 and 50 characters long")
-   private String password;
+   @NotBlank(message = "Current password must not be blank")
+   @Size(min = 8, max = 50, message = "Current password must be between 8 and 50 characters long")
+   private String currentPassword;
 
-   @NotBlank(message = "Password must not be blank")
+   @NotBlank(message = "New password must not be blank")
    @Size(min = 8, max = 50, message = "Password must be between 8 and 50 characters long")
-   private String confirmPassword;
+   private String newPassword;
+
+   @NotBlank(message = "Confirm new password must not be blank")
+   @Size(min = 8, max = 50, message = "Password must be between 8 and 50 characters long")
+   private String confirmNewPassword;
 }
