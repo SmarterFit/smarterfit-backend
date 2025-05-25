@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.smarterfit.modules.billing.dto.request.plan.CreatePlanRequestDTO;
 import com.smarterfit.modules.billing.dto.request.plan.SearchPlanRequestDTO;
+import com.smarterfit.modules.billing.dto.request.plan.UpdatePlanRequestDTO;
 import com.smarterfit.modules.billing.dto.response.plan.CreatedPlanResponseDTO;
 import com.smarterfit.modules.billing.service.PlanService;
 
@@ -48,14 +49,14 @@ public class PlanController {
 
    @GetMapping("/buscar")
    public ResponseEntity<Page<CreatedPlanResponseDTO>> searchPlans(@ModelAttribute SearchPlanRequestDTO requestDTO,
-                                                                   Pageable pageable) {
+         Pageable pageable) {
       return ResponseEntity.ok(planService.searchPlans(requestDTO, pageable));
    }
 
    @RequireRole(RoleType.ADMIN)
    @PutMapping("/{id}")
    public ResponseEntity<CreatedPlanResponseDTO> updatePlan(@PathVariable UUID id,
-                                                            @RequestBody @Valid CreatePlanRequestDTO requestDTO) {
+         @RequestBody @Valid UpdatePlanRequestDTO requestDTO) {
       return ResponseEntity.ok(planService.updatePlan(id, requestDTO));
    }
 

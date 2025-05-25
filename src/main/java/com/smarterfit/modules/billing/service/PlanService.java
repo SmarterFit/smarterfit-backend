@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.smarterfit.modules.billing.dto.request.plan.CreatePlanRequestDTO;
 import com.smarterfit.modules.billing.dto.request.plan.SearchPlanRequestDTO;
+import com.smarterfit.modules.billing.dto.request.plan.UpdatePlanRequestDTO;
 import com.smarterfit.modules.billing.dto.response.plan.CreatedPlanResponseDTO;
 import com.smarterfit.modules.billing.entity.Plan;
 import com.smarterfit.modules.billing.event.PlanDeletedEvent;
@@ -70,7 +71,7 @@ public class PlanService {
    }
 
    @Transactional
-   public CreatedPlanResponseDTO updatePlan(UUID id, CreatePlanRequestDTO requestDTO) {
+   public CreatedPlanResponseDTO updatePlan(UUID id, UpdatePlanRequestDTO requestDTO) {
       Plan plan = planValidation.validatePlanById(id);
       plan = PlanMapper.toEntity(requestDTO, plan);
 
@@ -83,7 +84,7 @@ public class PlanService {
       Plan plan = planValidation.validatePlanById(id);
 
       planValidation.validatePlanNotDeleted(plan);
-      planValidation.validateNoActiveSubscriptions(plan);
+      ///planValidation.validateNoActiveSubscriptions(plan); Todas as assinaturas serão canceladas
 
       publisher.publishEvent(new PlanDeletedEvent(plan));
 
