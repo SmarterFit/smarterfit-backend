@@ -25,6 +25,10 @@ public class ProfileValidation {
         });
     }
 
+    public boolean existsById (UUID id) {
+        return profileRepository.existsById(id);
+    }
+
     public void validateCpfAvailability(String cpf) {
         profileRepository.findByCpf(cpf).ifPresent(p -> {
             throw new ResourceAlreadyExistsException("CPF is already in use.");

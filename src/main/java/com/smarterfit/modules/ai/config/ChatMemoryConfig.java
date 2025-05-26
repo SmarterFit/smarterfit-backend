@@ -21,4 +21,5 @@ public class ChatMemoryConfig {
     public MessageChatMemoryAdvisor memoryAdvisor(ChatMemory chatMemory) {
         return new MessageChatMemoryAdvisor(chatMemory);
     }
+
 }

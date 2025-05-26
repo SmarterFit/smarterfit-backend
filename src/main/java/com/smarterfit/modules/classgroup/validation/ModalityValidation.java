@@ -12,19 +12,19 @@ import java.util.UUID;
 @Component
 public class ModalityValidation {
 
-    private final ModalityRepository classGroupRepository;
+    private final ModalityRepository modalityRepository;
 
     public ModalityValidation(ModalityRepository classGroupRepository) {
-        this.classGroupRepository = classGroupRepository;
+        this.modalityRepository = classGroupRepository;
     }
 
     public Modality validateModalityById(UUID id) {
-        return classGroupRepository.findById(id)
+        return modalityRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Modality not found."));
     }
 
     public void existsModalityByName(String name) {
-        if (classGroupRepository.existsByName(name)) {
+        if (modalityRepository.existsByName(name)) {
             throw new ResourceAlreadyExistsException("Modality already exists");
         }
     }
