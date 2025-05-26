@@ -1,6 +1,8 @@
 package com.smarterfit.modules.ai.controller;
 
+import com.smarterfit.common.util.MarkdownUtils;
 import com.smarterfit.modules.ai.generator.WorkoutPlanAIGenerator;
+import com.smarterfit.modules.training.dto.response.workoutplan.WorkoutPlanResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,9 +32,7 @@ public class ChatController {
    }
 
    @PostMapping("/ask/training")
-   public String askGroqTraining(@RequestHeader("X-User-Id") UUID requesterId) {
-      var plan = workoutPlanAIGenerator.generatePlan(requesterId);
-
-      return String.format("🏋️  Plano de exercícios gerado:\n\n*%s*\n\n%s", plan.getTitle(), plan.getDescription());
+   public WorkoutPlanResponseDTO askGroqTraining(@RequestHeader("X-User-Id") UUID requesterId) {
+      return workoutPlanAIGenerator.generatePlan(requesterId);
    }
 }

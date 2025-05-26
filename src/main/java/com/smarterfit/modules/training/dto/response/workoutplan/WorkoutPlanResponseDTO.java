@@ -1,5 +1,6 @@
 package com.smarterfit.modules.training.dto.response.workoutplan;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -14,5 +15,7 @@ public class WorkoutPlanResponseDTO {
     private UUID id;
     private String title;
     private String description;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdAt;
 }

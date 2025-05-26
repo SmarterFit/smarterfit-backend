@@ -1,6 +1,5 @@
 package com.smarterfit.modules.ai.config;
 
-import com.smarterfit.modules.ai.tools.ToolsFaced;
 import com.smarterfit.modules.ai.tools.classes.ClassPlansTools;
 import com.smarterfit.modules.ai.tools.classes.ClassSessionTools;
 import com.smarterfit.modules.ai.tools.classes.ClassTools;
@@ -13,11 +12,9 @@ import com.smarterfit.modules.ai.tools.user.UserTools;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.Resource;
 

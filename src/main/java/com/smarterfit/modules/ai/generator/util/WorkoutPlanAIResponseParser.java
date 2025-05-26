@@ -56,9 +56,17 @@ public class WorkoutPlanAIResponseParser {
     }
 
     private String sanitizeJson(String raw) {
-        // Remove blocos de código Markdown (```json ... ```)
-        return raw.replaceAll("^```(json)?", "")
-                .replaceAll("```$", "")
+        String cleaned = raw.replaceAll("(?s)^```(json)?\\s*", "")
+                .replaceAll("\\s*```$", "")
                 .trim();
+        cleaned = cleaned.replace("\r", "");
+
+        cleaned = cleaned.replace("\\\\n", "\\n");
+
+        cleaned = cleaned.replace("\\\"", "\"");
+
+        return cleaned;
     }
+
+
 }
