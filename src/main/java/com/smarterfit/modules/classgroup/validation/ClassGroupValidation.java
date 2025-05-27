@@ -3,6 +3,7 @@ package com.smarterfit.modules.classgroup.validation;
 import com.smarterfit.common.exceptions.BusinessException;
 import com.smarterfit.common.exceptions.ResourceAlreadyExistsException;
 import com.smarterfit.common.exceptions.ResourceNotFoundException;
+import com.smarterfit.common.util.SlugUtils;
 import com.smarterfit.common.validation.DateValidation;
 import com.smarterfit.modules.billing.repository.SubscriptionRepository;
 import com.smarterfit.modules.classgroup.entity.ClassGroup;
@@ -73,4 +74,17 @@ public class ClassGroupValidation {
             throw new BusinessException("Class group is not active");
         }
     }
+
+    public String generateUniqueSlug(String title) {
+        String baseSlug = SlugUtils.slugify(title);
+        String slug = baseSlug;
+        int counter = 1;
+
+        while (classGroupRepository.existsBySlug(slug)) {
+            slug = baseSlug + "-" + counter++;
+        }
+
+        return slug;
+    }
+
 }

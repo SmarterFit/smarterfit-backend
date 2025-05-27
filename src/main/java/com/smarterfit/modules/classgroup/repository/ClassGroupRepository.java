@@ -32,4 +32,6 @@ public interface ClassGroupRepository extends JpaRepository<ClassGroup, UUID>, J
             """)
     List<ClassGroup> findAvailableClassGroupsByUser(@Param("userId") UUID userId);
 
+    boolean existsBySlug(String slug);
+
 }

@@ -48,6 +48,7 @@ public class ClassGroupService {
         Modality modality = validationFaced.modalityValidation.validateModalityById(requestDTO.getModalityId());
 
         ClassGroup classGroup = ClassGroupMapper.toEntity(requestDTO, modality, creatorUser);
+        classGroup.setSlug(validationFaced.classGroupValidation.generateUniqueSlug(classGroup.getTitle()));
         classGroupRepository.save(classGroup);
 
         return ClassGroupMapper.toResponse(classGroup, creatorUser.getProfile().getFullName());
@@ -85,6 +86,7 @@ public class ClassGroupService {
         Modality modality = validationFaced.modalityValidation.validateModalityById(requestDTO.getModalityId());
 
         classGroup = ClassGroupMapper.toEntity(requestDTO, modality, classGroup.getCreatedByUser(), classGroup);
+        classGroup.setSlug(validationFaced.classGroupValidation.generateUniqueSlug(classGroup.getTitle()));
         classGroupRepository.save(classGroup);
 
         return ClassGroupMapper.toResponse(classGroup, classGroup.getCreatedByUser().getProfile().getFullName());

@@ -2,6 +2,7 @@ package com.smarterfit.modules.classgroup.mapper;
 
 import com.smarterfit.common.exceptions.ResourceNotFoundException;
 import com.smarterfit.common.mapper.GenericMapper;
+import com.smarterfit.common.util.SlugUtils;
 import com.smarterfit.modules.classgroup.dto.request.classgroup.ClassGroupRequestDTO;
 import com.smarterfit.modules.classgroup.dto.response.ClassGroupResponseDTO;
 import com.smarterfit.modules.classgroup.dto.response.ClassGroupScheduleResponseDTO;

@@ -10,7 +10,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-/// TODO: Retornar horários agendados?
 
 @Getter
 @Setter
@@ -28,5 +27,6 @@ public class ClassGroupResponseDTO {
     private LocalDate endDate;
     private String nameCreator;
     private List<ClassGroupScheduleResponseDTO> schedulesDTO;
+    private String slug;
     
 }

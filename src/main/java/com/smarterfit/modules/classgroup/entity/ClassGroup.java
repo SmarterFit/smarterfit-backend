@@ -63,6 +63,8 @@ public class ClassGroup implements Serializable {
     @OneToMany(mappedBy = "classGroup", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<ClassGroupSchedule> schedules = new ArrayList<>();
 
+    private String slug;
+
     @Column(name = "dt_created_at", nullable = false, updatable = false)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdAt;

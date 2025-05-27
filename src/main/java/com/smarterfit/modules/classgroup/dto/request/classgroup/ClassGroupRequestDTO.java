@@ -19,9 +19,6 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder(toBuilder = true)
 public class ClassGroupRequestDTO {
-    @NotNull(message = "User ID (creator) is required")
-    private UUID userCreatorId;
-
     @NotBlank(message = "Name is required")
     private String title;
 
