@@ -34,12 +34,12 @@ public class WorkoutPlanAIResponseParser {
         }
     }
 
-    public WorkoutPlanUpdateRequestDTO parse(String aiResponse) {
+    public WorkoutPlanRequestDTO parse(String aiResponse) {
         try {
             String cleanJson = sanitizeJson(aiResponse);
 
             JsonNode root = objectMapper.readTree(cleanJson);
-            WorkoutPlanUpdateRequestDTO dto = new WorkoutPlanUpdateRequestDTO();
+            WorkoutPlanRequestDTO dto = new WorkoutPlanRequestDTO();
 
             if (root.has("title")) {
                 dto.setTitle(root.get("title").asText());

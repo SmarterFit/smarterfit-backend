@@ -1,6 +1,5 @@
 package com.smarterfit.modules.training.service;
 
-
 import com.smarterfit.modules.training.dto.request.workoutplans.WorkoutPlanRequestDTO;
 import com.smarterfit.modules.training.dto.request.workoutplans.WorkoutPlanUpdateRequestDTO;
 import com.smarterfit.modules.training.dto.response.workoutplan.WorkoutPlanResponseDTO;
@@ -23,13 +22,12 @@ public class WorkoutPlanService {
     private final TrainingGoalValidation trainingGoalValidation;
 
     public WorkoutPlanService(WorkoutPlanRepository workoutPlanRepository,
-                              WorkoutPlanValidation workoutPlanValidation,
-                              TrainingGoalValidation trainingGoalValidation) {
+            WorkoutPlanValidation workoutPlanValidation,
+            TrainingGoalValidation trainingGoalValidation) {
         this.workoutPlanRepository = workoutPlanRepository;
         this.workoutPlanValidation = workoutPlanValidation;
         this.trainingGoalValidation = trainingGoalValidation;
     }
-
 
     @Transactional
     public WorkoutPlanResponseDTO createWorkoutPlan(WorkoutPlanRequestDTO dto) {
@@ -48,10 +46,15 @@ public class WorkoutPlanService {
         return WorkoutPlanMapper.toResponse(plan);
     }
 
+    @Transactional(readOnly = true)
+    public WorkoutPlanResponseDTO getWorkoutPlanById(UUID id) {
+        WorkoutPlan plan = workoutPlanValidation.validateWorkoutPlanById(id);
+        return WorkoutPlanMapper.toResponse(plan);
+    }
 
     @Transactional
-    public WorkoutPlanResponseDTO updateWorkoutPlan(UUID userId, WorkoutPlanUpdateRequestDTO dto) {
-        WorkoutPlan plan = workoutPlanValidation.validateWorkoutPlanById(userId);
+    public WorkoutPlanResponseDTO updateWorkoutPlan(WorkoutPlanRequestDTO dto) {
+        WorkoutPlan plan = workoutPlanValidation.validateWorkoutPlanById(dto.getTrainingGoalId());
 
         WorkoutPlan updated = workoutPlanRepository.save(WorkoutPlanMapper.toEntity(dto, plan));
         return WorkoutPlanMapper.toResponse(updated);

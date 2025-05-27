@@ -19,10 +19,9 @@ public class TrainingGoalService {
     private final TrainingGoalValidation trainingGoalValidation;
     private final UserValidation userValidation;
 
-
     public TrainingGoalService(TrainingGoalRepository trainingGoalRepository,
-                               TrainingGoalValidation trainingGoalValidation,
-                               UserValidation userValidation) {
+            TrainingGoalValidation trainingGoalValidation,
+            UserValidation userValidation) {
         this.trainingGoalRepository = trainingGoalRepository;
         this.trainingGoalValidation = trainingGoalValidation;
         this.userValidation = userValidation;
@@ -30,23 +29,24 @@ public class TrainingGoalService {
 
     @Transactional
     public TrainingGoalResponseDTO createTrainingGoal(TrainingGoalRequestDTO requestDTO, UUID userId) {
-        trainingGoalValidation.existsTrainingGoalById(userId);
+        trainingGoalValidation.existsTrainingGoalByUserId(userId);
         User user = userValidation.validateUserById(userId);
-        TrainingGoal trainingGoal = TrainingGoalMapper.toEntity(requestDTO, user);
 
+        TrainingGoal trainingGoal = TrainingGoalMapper.toEntity(requestDTO, user);
         trainingGoalRepository.save(trainingGoal);
+
         return TrainingGoalMapper.toResponse(trainingGoal);
     }
 
     @Transactional(readOnly = true)
     public TrainingGoalResponseDTO getTrainingGoalByUserId(UUID userId) {
-        TrainingGoal trainingGoal = trainingGoalValidation.validateTrainingGoalById(userId);
+        TrainingGoal trainingGoal = trainingGoalValidation.validateTrainingGoalByUserId(userId);
         return TrainingGoalMapper.toResponse(trainingGoal);
     }
 
     @Transactional
     public TrainingGoalResponseDTO updateTrainingGoal(UUID userId, TrainingGoalRequestDTO requestDTO) {
-        TrainingGoal trainingGoal = trainingGoalValidation.validateTrainingGoalById(userId);
+        TrainingGoal trainingGoal = trainingGoalValidation.validateTrainingGoalByUserId(userId);
 
         trainingGoal = TrainingGoalMapper.toEntity(requestDTO, trainingGoal);
         trainingGoalRepository.save(trainingGoal);

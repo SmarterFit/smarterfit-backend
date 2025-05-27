@@ -58,13 +58,14 @@ public class WorkoutPlanAIGenerator {
                 .call()
                 .content();
 
-        if (workoutPlanValidation.noExistsWorkoutPlanById(requesterId)) {
-            var requestDto = responseParser.parse(aiResponse, requesterId);
+        if (workoutPlanValidation.noExistsWorkoutPlanById(goalDto.getId())) {
+            var requestDto = responseParser.parse(aiResponse, goalDto.getId());
             return workoutPlanService.createWorkoutPlan(requestDto);
         }
 
         var requestDto = responseParser.parse(aiResponse);
-        return workoutPlanService.updateWorkoutPlan(requesterId, requestDto);
+        requestDto.setTrainingGoalId(goalDto.getId());
+        return workoutPlanService.updateWorkoutPlan(requestDto);
 
     }
 

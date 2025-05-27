@@ -1,6 +1,5 @@
 package com.smarterfit.modules.training.controller;
 
-
 import com.smarterfit.modules.training.dto.request.workoutplans.WorkoutPlanRequestDTO;
 import com.smarterfit.modules.training.dto.request.workoutplans.WorkoutPlanUpdateRequestDTO;
 import com.smarterfit.modules.training.dto.response.workoutplan.WorkoutPlanResponseDTO;
@@ -23,7 +22,7 @@ public class WorkoutPlanController {
     }
 
     @PostMapping("/cadastrar")
-    public ResponseEntity<WorkoutPlanResponseDTO> create(@RequestBody @Valid WorkoutPlanRequestDTO dto){
+    public ResponseEntity<WorkoutPlanResponseDTO> create(@RequestBody @Valid WorkoutPlanRequestDTO dto) {
         WorkoutPlanResponseDTO created = workoutPlanService.createWorkoutPlan(dto);
         return ResponseEntity.status(201).body(created);
     }
@@ -34,13 +33,17 @@ public class WorkoutPlanController {
         return ResponseEntity.ok(dto);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<WorkoutPlanResponseDTO> getById(@PathVariable UUID id) {
+        WorkoutPlanResponseDTO dto = workoutPlanService.getWorkoutPlanById(id);
+        return ResponseEntity.ok(dto);
+    }
 
     @PutMapping
     public ResponseEntity<WorkoutPlanResponseDTO> update(
-            @RequestHeader("X-User-Id") UUID requesterId,
-            @Valid @RequestBody WorkoutPlanUpdateRequestDTO dto) {
+            @Valid @RequestBody WorkoutPlanRequestDTO dto) {
 
-        WorkoutPlanResponseDTO updated = workoutPlanService.updateWorkoutPlan(requesterId, dto);
+        WorkoutPlanResponseDTO updated = workoutPlanService.updateWorkoutPlan(dto);
         return ResponseEntity.ok(updated);
     }
 

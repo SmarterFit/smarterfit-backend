@@ -3,11 +3,9 @@ package com.smarterfit.modules.training.mapper;
 import com.smarterfit.common.exceptions.ResourceNotFoundException;
 import com.smarterfit.common.mapper.GenericMapper;
 import com.smarterfit.modules.training.dto.request.workoutplans.WorkoutPlanRequestDTO;
-import com.smarterfit.modules.training.dto.request.workoutplans.WorkoutPlanUpdateRequestDTO;
 import com.smarterfit.modules.training.dto.response.workoutplan.WorkoutPlanResponseDTO;
 import com.smarterfit.modules.training.entity.TrainingGoal;
 import com.smarterfit.modules.training.entity.WorkoutPlan;
-
 
 public class WorkoutPlanMapper {
 
@@ -30,7 +28,7 @@ public class WorkoutPlanMapper {
         return workoutPlan;
     }
 
-    public static WorkoutPlan toEntity(WorkoutPlanUpdateRequestDTO dto, WorkoutPlan workoutPlan) {
+    public static WorkoutPlan toEntity(WorkoutPlanRequestDTO dto, WorkoutPlan workoutPlan) {
         if (workoutPlan == null) {
             throw new ResourceNotFoundException("WorkoutPlan not found");
         }
@@ -39,8 +37,6 @@ public class WorkoutPlanMapper {
 
         return workoutPlan;
     }
-
-
 
     public static WorkoutPlanResponseDTO toResponse(WorkoutPlan workoutPlan) {
         if (workoutPlan == null) {

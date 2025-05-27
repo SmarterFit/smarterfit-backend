@@ -21,15 +21,15 @@ public class PlanTools {
 
    @Tool(description = "Buscar planos. Só preencha os parâmetros que forem explicitamente informados pelo usuário.")
    public List<CreatedPlanResponseDTO> searchPlans(
-         @ToolParam(required = false, description = "Termo presente no nome") String nameTerm,
-         @ToolParam(required = false, description = "Preço mínimo") Double minPrice,
-         @ToolParam(required = false, description = "Preço máximo") Double maxPrice,
-         @ToolParam(required = false, description = "Duração mínima em dias.") Integer minDuration,
-         @ToolParam(required = false, description = "Duração máxima em dias.") Integer maxDuration,
-         @ToolParam(required = false, description = "Quantidade mínima de participantes em assinatura.") Integer minMaxUsers,
-         @ToolParam(required = false, description = "Quantidade máxima de participantes em assinatura.") Integer maxMaxUsers,
-         @ToolParam(required = false, description = "Quantidade mínima de turmas em assinatura.") Integer minMaxClasses,
-         @ToolParam(required = false, description = "Quantidade máxima de turmas em assinatura.") Integer maxMaxClasses) {
+         @ToolParam(required = false, description = "Termo presente no nome (string)") String nameTerm,
+         @ToolParam(required = false, description = "Preço mínimo (double)") Double minPrice,
+         @ToolParam(required = false, description = "Preço máximo (double)") Double maxPrice,
+         @ToolParam(required = false, description = "Duração mínima em dias (int)") Integer minDuration,
+         @ToolParam(required = false, description = "Duração máxima em dias (int)") Integer maxDuration,
+         @ToolParam(required = false, description = "Quantidade mínima de participantes em assinatura (int)") Integer minMaxUsers,
+         @ToolParam(required = false, description = "Quantidade máxima de participantes em assinatura (int)") Integer maxMaxUsers,
+         @ToolParam(required = false, description = "Quantidade mínima de turmas em assinatura (int)") Integer minMaxClasses,
+         @ToolParam(required = false, description = "Quantidade máxima de turmas em assinatura (int)") Integer maxMaxClasses) {
 
       SearchPlanRequestDTO request = new SearchPlanRequestDTO();
 
