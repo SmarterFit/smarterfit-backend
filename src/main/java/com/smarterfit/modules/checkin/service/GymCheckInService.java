@@ -51,6 +51,7 @@ public class GymCheckInService {
     public GymCheckInResponseDTO doCheckIn(GymCheckInAndCheckOutRequestDTO requestDTO) {
         User user = userValidation.validateUserById(requestDTO.getUserId());
 
+        gymCheckInValidation.validateIsCommercialTime();
         subscriptionValidation.validateHasCurrentSubscription(user.getId());
         gymCheckInValidation.validateOpenCheckInNotExists(requestDTO.getUserId());
 
@@ -76,6 +77,11 @@ public class GymCheckInService {
     @Transactional
     public void doCheckOutInAll() {
         gymCheckInRepository.updateAllCheckOutTime(LocalDateTime.now());
+    }
+
+    @Transactional(readOnly = true)
+    public Boolean hasOpenCheckInByUserId(UUID userId) {
+        return gymCheckInRepository.existsByUserIdAndCheckOutTimeIsNull(userId);
     }
 
     /// TODO: Implemente filtros de data

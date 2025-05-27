@@ -20,6 +20,8 @@ import java.util.UUID;
 public interface GymCheckInRepository extends JpaRepository<GymCheckIn, UUID> {
         Optional<GymCheckIn> findFirstByUserIdAndCheckOutTimeIsNullOrderByCheckInTimeDesc(UUID userId);
 
+        Boolean existsByUserIdAndCheckOutTimeIsNull(UUID userId);
+
         List<GymCheckIn> findByUserId(UUID userId);
 
         @Modifying

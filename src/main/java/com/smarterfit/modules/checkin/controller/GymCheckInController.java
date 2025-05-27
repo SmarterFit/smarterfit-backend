@@ -50,6 +50,11 @@ public class GymCheckInController {
         return ResponseEntity.ok(responseDTO);
     }
 
+    @GetMapping("open/{userId}")
+    public ResponseEntity<Boolean> hasOpenCheckInByUserId(@RequestParam UUID userId) {
+        return ResponseEntity.ok(gymCheckInService.hasOpenCheckInByUserId(userId));
+    }
+
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<GymCheckInResponseDTO>> getAllByUserId(@RequestParam UUID userId) {
         List<GymCheckInResponseDTO> responseDTO = gymCheckInService.getAllByUserId(userId);
