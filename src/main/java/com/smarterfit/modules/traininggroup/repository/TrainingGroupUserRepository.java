@@ -19,6 +19,13 @@ public interface TrainingGroupUserRepository extends JpaRepository<TrainingGroup
 
    List<TrainingGroupUser> findByUserId(UUID userId);
 
+   @Query("""
+   SELECT t FROM training_group_user t 
+      WHERE t.user.id = :userId AND
+      (t.trainingGroup.endDate IS NULL OR t.trainingGroup.endDate >= CURRENT_DATE)
+   """)
+   List<TrainingGroupUser> findByUserIdAndTrainingGroupNotEnded(UUID userId);
+
    Boolean existsByTrainingGroupIdAndUserId(UUID trainingGroupId, UUID userId);
 
    Boolean existsByTrainingGroupIdAndIsAdmin(UUID trainingGroupId, boolean isAdmin);

@@ -8,6 +8,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.smarterfit.modules.traininggroup.dto.request.AddMemberByEmailRequestDTO;
 import com.smarterfit.modules.traininggroup.dto.response.TrainingGroupResponseDTO;
 import com.smarterfit.modules.traininggroup.dto.response.TrainingGroupUserResponseDTO;
 import com.smarterfit.modules.traininggroup.entity.TrainingGroup;
@@ -25,147 +26,163 @@ import com.smarterfit.modules.useraccess.validation.UserValidation;
 
 @Service
 public class TrainingGroupUserService {
-   private final TrainingGroupUserRepository trainingGroupUserRepository;
-   private final TrainingGroupValidation trainingGroupValidation;
-   private final UserValidation userValidation;
-   private final TrainingGroupUserValidation trainingGroupUserValidation;
-   private final SensitiveTrainingGroupDataDecryptor sensitiveTrainingGroupDataDecryptor;
-   private final ApplicationEventPublisher publisher;
+      private final TrainingGroupUserRepository trainingGroupUserRepository;
+      private final TrainingGroupValidation trainingGroupValidation;
+      private final UserValidation userValidation;
+      private final TrainingGroupUserValidation trainingGroupUserValidation;
+      private final SensitiveTrainingGroupDataDecryptor sensitiveTrainingGroupDataDecryptor;
+      private final ApplicationEventPublisher publisher;
 
-   @Autowired
-   public TrainingGroupUserService(TrainingGroupUserRepository trainingGroupUserRepository,
-         TrainingGroupValidation trainingGroupValidation, UserValidation userValidation,
-         TrainingGroupUserValidation trainingGroupUserValidation,
-         SensitiveTrainingGroupDataDecryptor sensitiveTrainingGroupDataDecryptor,
-         ApplicationEventPublisher publisher) {
-      this.trainingGroupUserRepository = trainingGroupUserRepository;
-      this.trainingGroupValidation = trainingGroupValidation;
-      this.userValidation = userValidation;
-      this.trainingGroupUserValidation = trainingGroupUserValidation;
-      this.sensitiveTrainingGroupDataDecryptor = sensitiveTrainingGroupDataDecryptor;
-      this.publisher = publisher;
-   }
-
-   @Transactional
-   public TrainingGroupUserResponseDTO addUserToTrainingGroup(UUID groupId, UUID userId) {
-      TrainingGroup trainingGroup = trainingGroupValidation.validateTrainingGroupById(groupId);
-      User user = userValidation.validateUserById(userId);
-
-      trainingGroupUserValidation.validateUserNotInTrainingGroup(trainingGroup, user);
-
-      TrainingGroupUser trainingGroupUser = new TrainingGroupUser();
-      trainingGroupUser.setUser(user);
-      trainingGroupUser.setTrainingGroup(trainingGroup);
-
-      trainingGroupUser = trainingGroupUserRepository.save(trainingGroupUser);
-
-      return sensitiveTrainingGroupDataDecryptor.decrypt(TrainingGroupUserMapper.toResponse(trainingGroupUser));
-   }
-
-   @Transactional
-   public void removeUserFromTrainingGroup(UUID groupId, UUID userId) {
-      TrainingGroupUser trainingGroupUser = trainingGroupUserValidation
-            .validateTrainingGroupUserById(new TrainingGroupUserId(groupId, userId));
-
-      TrainingGroup trainingGroup = trainingGroupUser.getTrainingGroup();
-      trainingGroup.getParticipants().remove(trainingGroupUser);
-
-      if (trainingGroup.getParticipants().isEmpty()) {
-         publisher.publishEvent(new LastParticipantRemovedEvent(trainingGroup));
-      } else {
-         trainingGroupUserValidation.validateAtLeastOneAdmin(trainingGroup);
+      @Autowired
+      public TrainingGroupUserService(TrainingGroupUserRepository trainingGroupUserRepository,
+                  TrainingGroupValidation trainingGroupValidation, UserValidation userValidation,
+                  TrainingGroupUserValidation trainingGroupUserValidation,
+                  SensitiveTrainingGroupDataDecryptor sensitiveTrainingGroupDataDecryptor,
+                  ApplicationEventPublisher publisher) {
+            this.trainingGroupUserRepository = trainingGroupUserRepository;
+            this.trainingGroupValidation = trainingGroupValidation;
+            this.userValidation = userValidation;
+            this.trainingGroupUserValidation = trainingGroupUserValidation;
+            this.sensitiveTrainingGroupDataDecryptor = sensitiveTrainingGroupDataDecryptor;
+            this.publisher = publisher;
       }
-   }
 
-   @Transactional(readOnly = true)
-   public TrainingGroupUserResponseDTO getTrainingGroupUser(UUID groupId, UUID userId) {
-      TrainingGroupUser trainingGroupUser = trainingGroupUserValidation
-            .validateTrainingGroupUserById(new TrainingGroupUserId(groupId, userId));
+      @Transactional
+      public TrainingGroupUserResponseDTO addUserToTrainingGroup(UUID groupId, UUID userId) {
+            TrainingGroup trainingGroup = trainingGroupValidation.validateTrainingGroupById(groupId);
+            User user = userValidation.validateUserById(userId);
 
-      return TrainingGroupUserMapper.toResponse(trainingGroupUser);
-   }
+            trainingGroupUserValidation.validateUserNotInTrainingGroup(trainingGroup, user);
 
-   @Transactional(readOnly = true)
-   public List<TrainingGroupUserResponseDTO> getAllTrainingGroupUser() {
-      return trainingGroupUserRepository.findAll().stream()
-            .map(trainingGroupUser -> sensitiveTrainingGroupDataDecryptor
-                  .decrypt(TrainingGroupUserMapper.toResponse(trainingGroupUser)))
-            .toList();
-   }
+            TrainingGroupUser trainingGroupUser = new TrainingGroupUser();
+            trainingGroupUser.setUser(user);
+            trainingGroupUser.setTrainingGroup(trainingGroup);
 
-   @Transactional(readOnly = true)
-   public List<TrainingGroupUserResponseDTO> getAllUsersByTrainingGroupId(UUID groupId) {
-      List<TrainingGroupUser> trainingGroupUsers = trainingGroupUserRepository
-            .findByTrainingGroupId(groupId);
+            trainingGroupUser = trainingGroupUserRepository.save(trainingGroupUser);
 
-      return trainingGroupUsers.stream().map(trainingGroupUser -> sensitiveTrainingGroupDataDecryptor
-            .decrypt(TrainingGroupUserMapper.toResponse(trainingGroupUser))).toList();
-   }
+            return sensitiveTrainingGroupDataDecryptor.decrypt(TrainingGroupUserMapper.toResponse(trainingGroupUser));
+      }
 
-   @Transactional(readOnly = true)
-   public List<TrainingGroupResponseDTO> getAllTrainingGroupsByUserId(UUID userId) {
-      List<TrainingGroupUser> trainingGroupUsers = trainingGroupUserRepository
-            .findByUserId(userId);
+      @Transactional
+      public TrainingGroupUserResponseDTO addMemberByEmail(AddMemberByEmailRequestDTO requestDTO) {
+            TrainingGroup group = trainingGroupValidation.validateTrainingGroupById(requestDTO.getTrainingGroupId());
+            User user = userValidation.validateUserByEmail(requestDTO.getEmail());
 
-      return trainingGroupUsers.stream()
-            .map(trainingGroupUser -> TrainingGroupMapper.toResponse(trainingGroupUser.getTrainingGroup()))
-            .toList();
-   }
+            trainingGroupUserValidation.validateUserNotInTrainingGroup(group, user);
 
-   @Transactional
-   public TrainingGroupUserResponseDTO setUserAsAdmin(UUID groupId, UUID userId) {
-      TrainingGroupUser trainingGroupUser = trainingGroupUserValidation
-            .validateTrainingGroupUserById(new TrainingGroupUserId(groupId, userId));
+            TrainingGroupUser trainingGroupUser = new TrainingGroupUser();
+            trainingGroupUser.setUser(user);
+            trainingGroupUser.setTrainingGroup(group);
 
-      trainingGroupUserValidation.validateTrainingGroupUserByIsAdmin(trainingGroupUser, false);
+            trainingGroupUser = trainingGroupUserRepository.save(trainingGroupUser);
 
-      trainingGroupUser.setIsAdmin(true);
-      trainingGroupUserRepository.save(trainingGroupUser);
+            return sensitiveTrainingGroupDataDecryptor.decrypt(TrainingGroupUserMapper.toResponse(trainingGroupUser));
+      }
 
-      return sensitiveTrainingGroupDataDecryptor
-            .decrypt(TrainingGroupUserMapper.toResponse(trainingGroupUser));
-   }
+      @Transactional
+      public void removeUserFromTrainingGroup(UUID groupId, UUID userId) {
+            TrainingGroupUser trainingGroupUser = trainingGroupUserValidation
+                        .validateTrainingGroupUserById(new TrainingGroupUserId(groupId, userId));
 
-   @Transactional
-   public TrainingGroupUserResponseDTO removeUserAsAdmin(UUID groupId, UUID userId) {
-      TrainingGroupUser trainingGroupUser = trainingGroupUserValidation
-            .validateTrainingGroupUserById(new TrainingGroupUserId(groupId, userId));
+            TrainingGroup trainingGroup = trainingGroupUser.getTrainingGroup();
+            trainingGroup.getParticipants().remove(trainingGroupUser);
 
-      trainingGroupUserValidation.validateTrainingGroupUserByIsAdmin(trainingGroupUser, true);
+            if (trainingGroup.getParticipants().isEmpty()) {
+                  publisher.publishEvent(new LastParticipantRemovedEvent(trainingGroup));
+            } else {
+                  trainingGroupUserValidation.validateAtLeastOneAdmin(trainingGroup);
+            }
+      }
 
-      trainingGroupUser.setIsAdmin(false);
-      trainingGroupUserRepository.save(trainingGroupUser);
+      @Transactional(readOnly = true)
+      public TrainingGroupUserResponseDTO getTrainingGroupUser(UUID groupId, UUID userId) {
+            TrainingGroupUser trainingGroupUser = trainingGroupUserValidation
+                        .validateTrainingGroupUserById(new TrainingGroupUserId(groupId, userId));
 
-      return sensitiveTrainingGroupDataDecryptor
-            .decrypt(TrainingGroupUserMapper.toResponse(trainingGroupUser));
-   }
+            return TrainingGroupUserMapper.toResponse(trainingGroupUser);
+      }
 
-   @Transactional
-   public void resetPointsByTrainingGroupId(UUID trainingGroupId) {
-      trainingGroupUserRepository.resetPointsByTrainingGroupId(trainingGroupId);
-   }
+      @Transactional(readOnly = true)
+      public List<TrainingGroupUserResponseDTO> getAllTrainingGroupUser() {
+            return trainingGroupUserRepository.findAll().stream()
+                        .map(trainingGroupUser -> sensitiveTrainingGroupDataDecryptor
+                                    .decrypt(TrainingGroupUserMapper.toResponse(trainingGroupUser)))
+                        .toList();
+      }
 
-   @Transactional
-   public void updatePoints(UUID userId, Integer addPoints) {
-      List<TrainingGroupUser> trainingGroupUsers = trainingGroupUserRepository
-            .findByUserId(userId);
+      @Transactional(readOnly = true)
+      public List<TrainingGroupUserResponseDTO> getAllUsersByTrainingGroupId(UUID groupId) {
+            List<TrainingGroupUser> trainingGroupUsers = trainingGroupUserRepository
+                        .findByTrainingGroupId(groupId);
 
-      trainingGroupUsers.stream().map(trainingGroupUser1 -> {
-         trainingGroupUser1.setPoints(trainingGroupUser1.getPoints() + addPoints);
-         return trainingGroupUser1;
-      }).toList();
+            return trainingGroupUsers.stream().map(trainingGroupUser -> sensitiveTrainingGroupDataDecryptor
+                        .decrypt(TrainingGroupUserMapper.toResponse(trainingGroupUser))).toList();
+      }
 
-      trainingGroupUserRepository.saveAll(trainingGroupUsers);
-   }
+      @Transactional(readOnly = true)
+      public List<TrainingGroupResponseDTO> getAllTrainingGroupsByUserId(UUID userId) {
+            List<TrainingGroupUser> trainingGroupUsers = trainingGroupUserRepository
+                        .findByUserId(userId);
 
-   @Transactional(readOnly = true)
-   public List<TrainingGroupUserResponseDTO> getRankByTrainingGroupId(UUID trainingGroupId) {
-      List<TrainingGroupUser> trainingGroupUsers = trainingGroupUserRepository
-            .findByTrainingGroupIdOrderByPointsDesc(trainingGroupId);
+            return trainingGroupUsers.stream()
+                        .map(trainingGroupUser -> TrainingGroupMapper.toResponse(trainingGroupUser.getTrainingGroup()))
+                        .toList();
+      }
 
-      return trainingGroupUsers.stream()
-            .map(trainingGroupUser -> sensitiveTrainingGroupDataDecryptor
-                  .decrypt(TrainingGroupUserMapper.toResponse(trainingGroupUser)))
-            .toList();
-   }
+      @Transactional
+      public TrainingGroupUserResponseDTO setUserAsAdmin(UUID groupId, UUID userId) {
+            TrainingGroupUser trainingGroupUser = trainingGroupUserValidation
+                        .validateTrainingGroupUserById(new TrainingGroupUserId(groupId, userId));
+
+            trainingGroupUserValidation.validateTrainingGroupUserByIsAdmin(trainingGroupUser, false);
+
+            trainingGroupUser.setIsAdmin(true);
+            trainingGroupUserRepository.save(trainingGroupUser);
+
+            return sensitiveTrainingGroupDataDecryptor
+                        .decrypt(TrainingGroupUserMapper.toResponse(trainingGroupUser));
+      }
+
+      @Transactional
+      public TrainingGroupUserResponseDTO removeUserAsAdmin(UUID groupId, UUID userId) {
+            TrainingGroupUser trainingGroupUser = trainingGroupUserValidation
+                        .validateTrainingGroupUserById(new TrainingGroupUserId(groupId, userId));
+
+            trainingGroupUserValidation.validateTrainingGroupUserByIsAdmin(trainingGroupUser, true);
+
+            trainingGroupUser.setIsAdmin(false);
+            trainingGroupUserRepository.save(trainingGroupUser);
+
+            return sensitiveTrainingGroupDataDecryptor
+                        .decrypt(TrainingGroupUserMapper.toResponse(trainingGroupUser));
+      }
+
+      @Transactional
+      public void resetPointsByTrainingGroupId(UUID trainingGroupId) {
+            trainingGroupUserRepository.resetPointsByTrainingGroupId(trainingGroupId);
+      }
+
+      @Transactional
+      public void updatePoints(UUID userId, Integer addPoints) {
+            List<TrainingGroupUser> trainingGroupUsers = trainingGroupUserRepository
+                        .findByUserIdAndTrainingGroupNotEnded(userId);
+
+            trainingGroupUsers.stream().map(trainingGroupUser1 -> {
+                  trainingGroupUser1.setPoints(trainingGroupUser1.getPoints() + addPoints);
+                  return trainingGroupUser1;
+            }).toList();
+
+            trainingGroupUserRepository.saveAll(trainingGroupUsers);
+      }
+
+      @Transactional(readOnly = true)
+      public List<TrainingGroupUserResponseDTO> getRankByTrainingGroupId(UUID trainingGroupId) {
+            List<TrainingGroupUser> trainingGroupUsers = trainingGroupUserRepository
+                        .findByTrainingGroupIdOrderByPointsDesc(trainingGroupId);
+
+            return trainingGroupUsers.stream()
+                        .map(trainingGroupUser -> sensitiveTrainingGroupDataDecryptor
+                                    .decrypt(TrainingGroupUserMapper.toResponse(trainingGroupUser)))
+                        .toList();
+      }
 }

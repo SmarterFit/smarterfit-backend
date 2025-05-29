@@ -14,13 +14,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.smarterfit.modules.traininggroup.dto.request.AddMemberByEmailRequestDTO;
 import com.smarterfit.modules.traininggroup.dto.response.TrainingGroupResponseDTO;
 import com.smarterfit.modules.traininggroup.dto.response.TrainingGroupUserResponseDTO;
 import com.smarterfit.modules.traininggroup.service.TrainingGroupUserService;
 
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/grupos-de-treinamento/usuarios")
-@CrossOrigin
+@CrossOrigin("*")
 public class TrainingGroupUserController {
    private final TrainingGroupUserService trainingGroupUserService;
 
@@ -33,6 +37,13 @@ public class TrainingGroupUserController {
    public ResponseEntity<TrainingGroupUserResponseDTO> addUserToTrainingGroup(@PathVariable("groupId") UUID groupId,
          @PathVariable("userId") UUID userId) {
       TrainingGroupUserResponseDTO response = trainingGroupUserService.addUserToTrainingGroup(groupId, userId);
+      return ResponseEntity.status(201).body(response);
+   }
+
+   @PostMapping("/adicionar")
+   public ResponseEntity<TrainingGroupUserResponseDTO> addMemberByEmail(
+         @RequestBody @Valid AddMemberByEmailRequestDTO request) {
+      TrainingGroupUserResponseDTO response = trainingGroupUserService.addMemberByEmail(request);
       return ResponseEntity.status(201).body(response);
    }
 

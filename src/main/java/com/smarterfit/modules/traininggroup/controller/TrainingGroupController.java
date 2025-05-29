@@ -27,7 +27,7 @@ import com.smarterfit.modules.traininggroup.service.TrainingGroupService;
 
 @RestController
 @RequestMapping("/grupos-de-treinamento")
-@CrossOrigin
+@CrossOrigin("*")
 public class TrainingGroupController {
    private final TrainingGroupService trainingGroupService;
 
