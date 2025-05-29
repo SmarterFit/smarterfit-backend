@@ -24,6 +24,11 @@ public interface GymCheckInRepository extends JpaRepository<GymCheckIn, UUID> {
 
         List<GymCheckIn> findByUserId(UUID userId);
 
+        Boolean existsByUserIdAndCheckInTimeBetween(
+                        UUID userId,
+                        LocalDateTime startOfDay,
+                        LocalDateTime endOfDay);
+
         @Modifying
         @Query("UPDATE GymCheckIn g SET g.checkOutTime = :checkOutTime WHERE g.checkOutTime IS NULL")
         int updateAllCheckOutTime(@Param("checkOutTime") LocalDateTime checkOutTime);

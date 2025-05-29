@@ -4,7 +4,9 @@
  */
 package com.smarterfit.modules.checkin.service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
 
 import com.smarterfit.modules.billing.validation.SubscriptionValidation;
@@ -49,19 +51,30 @@ public class GymCheckInService {
 
     @Transactional
     public GymCheckInResponseDTO doCheckIn(GymCheckInAndCheckOutRequestDTO requestDTO) {
-        User user = userValidation.validateUserById(requestDTO.getUserId());
+        UUID userId = requestDTO.getUserId();
+        User user = userValidation.validateUserById(userId);
 
         gymCheckInValidation.validateIsCommercialTime();
-        subscriptionValidation.validateHasCurrentSubscription(user.getId());
-        gymCheckInValidation.validateOpenCheckInNotExists(requestDTO.getUserId());
+        subscriptionValidation.validateHasCurrentSubscription(userId);
+        gymCheckInValidation.validateOpenCheckInNotExists(userId);
 
         GymCheckIn gymCheckIn = GymCheckInMapper.toEntity(requestDTO, user);
         gymCheckIn = gymCheckInRepository.save(gymCheckIn);
 
-        Integer points = gymPoints.calculateDailyConsecutivePoints(user.getId());
-        publisher.publishEvent(new CalculatePointsUserEvent(user.getId(), points));
+        LocalDate today = LocalDate.now();
+        LocalDateTime startOfDay = today.atStartOfDay();
+        LocalDateTime endOfDay = today.atTime(LocalTime.MAX);
 
-        return sensitiveCheckInDataDecryptor.decrypt(GymCheckInMapper.toResponse(gymCheckIn));
+        boolean isFirstCheckInToday = !gymCheckInRepository
+                .existsByUserIdAndCheckInTimeBetween(userId, startOfDay, endOfDay);
+
+        if (isFirstCheckInToday) {
+            Integer points = gymPoints.calculateDailyConsecutivePoints(userId);
+            publisher.publishEvent(new CalculatePointsUserEvent(userId, points));
+        }
+
+        return sensitiveCheckInDataDecryptor.decrypt(
+                GymCheckInMapper.toResponse(gymCheckIn));
     }
 
     @Transactional
