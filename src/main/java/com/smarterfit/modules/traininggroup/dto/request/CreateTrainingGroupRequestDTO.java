@@ -1,6 +1,6 @@
 package com.smarterfit.modules.traininggroup.dto.request;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import com.smarterfit.common.enums.TrainingGroupType;
@@ -31,6 +31,6 @@ public class CreateTrainingGroupRequestDTO {
    @NotNull(message = "Owner ID cannot be null")
    private UUID ownerId;
 
-   private LocalDate startDate;
-   private LocalDate endDate;
+   private LocalDateTime startDate;
+   private LocalDateTime endDate;
 }

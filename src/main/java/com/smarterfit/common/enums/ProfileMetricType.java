@@ -1,7 +1,7 @@
 package com.smarterfit.common.enums;
 
 public enum ProfileMetricType {
-   HEIGHT, // altura (cm)
+   HEIGHT, // altura (m)
    WEIGHT, // peso (kg)
    BODY_FAT, // percentual de gordura (%)
    MUSCLE_MASS, // massa muscular (kg)

@@ -1,6 +1,6 @@
 package com.smarterfit.modules.traininggroup.dto.request;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import com.smarterfit.common.enums.TrainingGroupType;
 
@@ -27,6 +27,6 @@ public class UpdateTrainingGroupRequestDTO {
       @NotNull(message = "Group type cannot be null")
       private TrainingGroupType type;
 
-      private LocalDate startDate;
-      private LocalDate endDate;
+      private LocalDateTime startDate;
+      private LocalDateTime endDate;
 }

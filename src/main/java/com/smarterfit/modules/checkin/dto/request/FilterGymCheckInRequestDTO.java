@@ -1,10 +1,9 @@
-package com.smarterfit.modules.traininggroup.dto.response;
+package com.smarterfit.modules.checkin.dto.request;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import com.smarterfit.common.enums.TrainingGroupType;
-
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,11 +15,11 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(toBuilder = true)
-public class TrainingGroupResponseDTO {
-   private UUID id;
-   private String name;
-   private String slug;
-   private TrainingGroupType type;
+public class FilterGymCheckInRequestDTO {
+   @NotNull(message = "userId cannot be null")
+   private UUID userId;
+   @NotNull(message = "startDate cannot be null")
    private LocalDateTime startDate;
+   @NotNull(message = "endDate cannot be null")
    private LocalDateTime endDate;
 }

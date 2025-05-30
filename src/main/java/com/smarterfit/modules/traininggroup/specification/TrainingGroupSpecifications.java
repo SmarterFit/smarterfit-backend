@@ -1,6 +1,6 @@
 package com.smarterfit.modules.traininggroup.specification;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,13 +36,13 @@ public class TrainingGroupSpecifications {
          // Filtro para incluir grupos que já terminaram (padrão é não incluir)
          if (requestDTO.getIncludeEnded() == null || !requestDTO.getIncludeEnded()) {
             predicates.add(criteriaBuilder.or(criteriaBuilder.isNull(root.get("endDate")),
-                  criteriaBuilder.greaterThanOrEqualTo(root.get("endDate"), LocalDate.now())));
+                  criteriaBuilder.greaterThanOrEqualTo(root.get("endDate"), LocalDateTime.now())));
          }
 
          // Filtro para incluir grupos que ainda não iniciaram (padrão é não incluir)
          if (requestDTO.getIncludeNotStarted() == null || !requestDTO.getIncludeNotStarted()) {
             predicates.add(criteriaBuilder.or(criteriaBuilder.isNull(root.get("startDate")),
-                  criteriaBuilder.lessThanOrEqualTo(root.get("startDate"), LocalDate.now())));
+                  criteriaBuilder.lessThanOrEqualTo(root.get("startDate"), LocalDateTime.now())));
          }
 
          // Convertendo a lista de predicados em uma condição final

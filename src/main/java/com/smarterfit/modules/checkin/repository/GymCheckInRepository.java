@@ -24,6 +24,9 @@ public interface GymCheckInRepository extends JpaRepository<GymCheckIn, UUID> {
 
         List<GymCheckIn> findByUserId(UUID userId);
 
+        List<GymCheckIn> findByUserIdAndCheckInTimeBetween(UUID userId, LocalDateTime startOfDay,
+                        LocalDateTime endOfDay);
+
         Boolean existsByUserIdAndCheckInTimeBetween(
                         UUID userId,
                         LocalDateTime startOfDay,

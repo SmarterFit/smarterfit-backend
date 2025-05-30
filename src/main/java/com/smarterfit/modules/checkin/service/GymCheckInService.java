@@ -16,6 +16,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.smarterfit.modules.checkin.dto.request.FilterGymCheckInRequestDTO;
 import com.smarterfit.modules.checkin.dto.request.GymCheckInAndCheckOutRequestDTO;
 import com.smarterfit.modules.checkin.dto.response.GymCheckInResponseDTO;
 import com.smarterfit.modules.checkin.entity.GymCheckIn;
@@ -58,15 +59,15 @@ public class GymCheckInService {
         subscriptionValidation.validateHasCurrentSubscription(userId);
         gymCheckInValidation.validateOpenCheckInNotExists(userId);
 
-        GymCheckIn gymCheckIn = GymCheckInMapper.toEntity(requestDTO, user);
-        gymCheckIn = gymCheckInRepository.save(gymCheckIn);
-
         LocalDate today = LocalDate.now();
         LocalDateTime startOfDay = today.atStartOfDay();
         LocalDateTime endOfDay = today.atTime(LocalTime.MAX);
 
         boolean isFirstCheckInToday = !gymCheckInRepository
                 .existsByUserIdAndCheckInTimeBetween(userId, startOfDay, endOfDay);
+
+        GymCheckIn gymCheckIn = GymCheckInMapper.toEntity(requestDTO, user);
+        gymCheckIn = gymCheckInRepository.save(gymCheckIn);
 
         if (isFirstCheckInToday) {
             Integer points = gymPoints.calculateDailyConsecutivePoints(userId);
@@ -97,7 +98,6 @@ public class GymCheckInService {
         return gymCheckInRepository.existsByUserIdAndCheckOutTimeIsNull(userId);
     }
 
-    /// TODO: Implemente filtros de data
     @Transactional(readOnly = true)
     public List<GymCheckInResponseDTO> getAllByUserId(UUID userId) {
         List<GymCheckIn> gymCheckIns = gymCheckInRepository.findByUserId(userId);
@@ -107,4 +107,15 @@ public class GymCheckInService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
+    public List<GymCheckInResponseDTO> filterByUserIdAndDate(FilterGymCheckInRequestDTO requestDTO) {
+        List<GymCheckIn> gymCheckIns = gymCheckInRepository.findByUserIdAndDateBetween(
+                requestDTO.getUserId(),
+                requestDTO.getStartDate(),
+                requestDTO.getEndDate());
+
+        return gymCheckIns.stream()
+                .map(gymCheckIn -> sensitiveCheckInDataDecryptor.decrypt(GymCheckInMapper.toResponse(gymCheckIn)))
+                .toList();
+    }
 }

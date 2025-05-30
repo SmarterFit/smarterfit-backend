@@ -13,7 +13,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.smarterfit.modules.checkin.entity.PresenceSnapshot;
 
 public interface PresenceSnapshotRepository extends JpaRepository<PresenceSnapshot, UUID> {
-   List<PresenceSnapshot> findByCreatedAtBetween(LocalDateTime startDate, LocalDateTime endDate);
+   List<PresenceSnapshot> findByCreatedAtBetweenOrderByCreatedAt(LocalDateTime startDate, LocalDateTime endDate);
 
    PresenceSnapshot findTopByOrderByCreatedAtDesc();
 }

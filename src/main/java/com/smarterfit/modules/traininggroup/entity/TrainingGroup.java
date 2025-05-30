@@ -1,6 +1,5 @@
 package com.smarterfit.modules.traininggroup.entity;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -44,6 +43,9 @@ public class TrainingGroup {
    @Column(name = "name", nullable = false)
    private String name;
 
+   @Column(name = "slug", nullable = false, unique = true)
+   private String slug;
+
    @Column(name = "group_type", nullable = false)
    @Enumerated(EnumType.STRING)
    private TrainingGroupType type;
@@ -53,12 +55,12 @@ public class TrainingGroup {
    private Set<TrainingGroupUser> participants = new HashSet<>();
 
    @Column(name = "dt_start")
-   @JsonFormat(pattern = "yyyy-MM-dd")
-   private LocalDate startDate;
+   @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+   private LocalDateTime startDate;
 
    @Column(name = "dt_end")
-   @JsonFormat(pattern = "yyyy-MM-dd")
-   private LocalDate endDate;
+   @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+   private LocalDateTime endDate;
 
    @Column(name = "dt_created_at", nullable = false, updatable = false)
    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")

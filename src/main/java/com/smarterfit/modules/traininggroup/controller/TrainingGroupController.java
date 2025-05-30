@@ -48,6 +48,11 @@ public class TrainingGroupController {
       return ResponseEntity.ok(trainingGroupService.getTrainingGroupById(id));
    }
 
+   @GetMapping("/slug/{slug}")
+   public ResponseEntity<TrainingGroupResponseDTO> getTrainingGroupBySlug(@PathVariable("slug") String slug) {
+      return ResponseEntity.ok(trainingGroupService.getTrainingGroupBySlug(slug));
+   }
+
    @GetMapping
    public ResponseEntity<List<TrainingGroupResponseDTO>> getAllTrainingGroups() {
       return ResponseEntity.ok(trainingGroupService.getAllTrainingGroups());

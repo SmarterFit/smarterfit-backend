@@ -153,6 +153,9 @@ public class TrainingGroupUserService {
             trainingGroupUser.setIsAdmin(false);
             trainingGroupUserRepository.save(trainingGroupUser);
 
+            TrainingGroup trainingGroup = trainingGroupUser.getTrainingGroup();
+            trainingGroupUserValidation.validateAtLeastOneAdmin(trainingGroup);
+
             return sensitiveTrainingGroupDataDecryptor
                         .decrypt(TrainingGroupUserMapper.toResponse(trainingGroupUser));
       }

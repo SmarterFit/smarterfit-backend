@@ -71,7 +71,7 @@ public class PresenceSnapshotService {
    @Transactional(readOnly = true)
    public List<PresenceSnapshotResponseDTO> filterByDate(FilterPresenceSnapshotRequestDTO requestDTO) {
       List<PresenceSnapshot> presenceSnapshots = presenceSnapshotRepository
-            .findByCreatedAtBetween(requestDTO.getStartDate(), requestDTO.getEndDate());
+            .findByCreatedAtBetweenOrderByCreatedAt(requestDTO.getStartDate(), requestDTO.getEndDate());
       return presenceSnapshots.stream().map(PresenceSnapshotMapper::toResponse).toList();
    }
 }

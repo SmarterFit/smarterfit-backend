@@ -1,6 +1,6 @@
 package com.smarterfit.modules.traininggroup.service;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,6 +22,7 @@ import com.smarterfit.modules.traininggroup.mapper.TrainingGroupMapper;
 import com.smarterfit.modules.traininggroup.repository.TrainingGroupRepository;
 import com.smarterfit.modules.traininggroup.repository.TrainingGroupUserRepository;
 import com.smarterfit.modules.traininggroup.specification.TrainingGroupSpecifications;
+import com.smarterfit.modules.traininggroup.util.DateTimeAdjustmentUtil;
 import com.smarterfit.modules.traininggroup.validation.TrainingGroupValidation;
 import com.smarterfit.modules.useraccess.entity.User;
 import com.smarterfit.modules.useraccess.validation.UserValidation;
@@ -47,10 +48,15 @@ public class TrainingGroupService {
 
    @Transactional
    public TrainingGroupResponseDTO createTrainingGroup(CreateTrainingGroupRequestDTO requestDTO) {
+      DateTimeAdjustmentUtil.adjustTrainingGroupDateRange(requestDTO);
       trainingGroupValidation.validateFutureDateRange(requestDTO.getStartDate(), requestDTO.getEndDate());
 
       User user = userValidation.validateUserById(requestDTO.getOwnerId());
       TrainingGroup trainingGroup = TrainingGroupMapper.toEntity(requestDTO, user);
+
+      String slug = trainingGroupValidation.generateUniqueSlug(trainingGroup.getName());
+      trainingGroup.setSlug(slug);
+
       trainingGroup = trainingGroupRepository.save(trainingGroup);
 
       return TrainingGroupMapper.toResponse(trainingGroup);
@@ -59,6 +65,12 @@ public class TrainingGroupService {
    @Transactional(readOnly = true)
    public TrainingGroupResponseDTO getTrainingGroupById(UUID id) {
       TrainingGroup trainingGroup = trainingGroupValidation.validateTrainingGroupById(id);
+      return TrainingGroupMapper.toResponse(trainingGroup);
+   }
+
+   @Transactional(readOnly = true)
+   public TrainingGroupResponseDTO getTrainingGroupBySlug(String slug) {
+      TrainingGroup trainingGroup = trainingGroupValidation.validateTrainingGroupBySlug(slug);
       return TrainingGroupMapper.toResponse(trainingGroup);
    }
 
@@ -85,6 +97,7 @@ public class TrainingGroupService {
    public TrainingGroupResponseDTO updateTrainingGroup(UUID id,
          UpdateTrainingGroupRequestDTO requestDTO) {
       TrainingGroup trainingGroup = trainingGroupValidation.validateTrainingGroupById(id);
+      DateTimeAdjustmentUtil.adjustTrainingGroupDateRange(requestDTO);
 
       trainingGroup = TrainingGroupMapper.toEntity(requestDTO, trainingGroup);
       trainingGroupValidation.validateTrainingGroupDateRange(trainingGroup);
@@ -112,7 +125,7 @@ public class TrainingGroupService {
       trainingGroupValidation.validateTrainingGroupNotActive(trainingGroup);
 
       if (!trainingGroupValidation.validateTrainingGroupStarted(trainingGroup)) {
-         trainingGroup.setStartDate(LocalDate.now());
+         trainingGroup.setStartDate(LocalDateTime.now());
       }
 
       if (trainingGroupValidation.validateTrainingGroupEnded(trainingGroup)) {
@@ -130,7 +143,7 @@ public class TrainingGroupService {
 
       trainingGroupValidation.validateTrainingGroupActive(trainingGroup);
 
-      trainingGroup.setEndDate(LocalDate.now());
+      trainingGroup.setEndDate(LocalDateTime.now());
       trainingGroupRepository.save(trainingGroup);
 
       return TrainingGroupMapper.toResponse(trainingGroup);
@@ -140,7 +153,7 @@ public class TrainingGroupService {
    public TrainingGroupResponseDTO restartTrainingGroup(UUID groupId) {
       TrainingGroup trainingGroup = trainingGroupValidation.validateTrainingGroupById(groupId);
 
-      trainingGroup.setStartDate(LocalDate.now());
+      trainingGroup.setStartDate(LocalDateTime.now());
       trainingGroup.setEndDate(null);
       trainingGroupRepository.save(trainingGroup);
 
