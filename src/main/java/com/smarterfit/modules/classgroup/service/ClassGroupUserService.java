@@ -8,14 +8,17 @@ import com.smarterfit.modules.billing.validation.SubscriptionValidation;
 import com.smarterfit.modules.classgroup.dto.request.classgroupuser.EmployeeClassGroupUserDTO;
 import com.smarterfit.modules.classgroup.dto.request.classgroupuser.MemberClassGroupUserDTO;
 import com.smarterfit.modules.classgroup.dto.response.ClassGroupResponseDTO;
+import com.smarterfit.modules.classgroup.dto.response.classgroupuser.ClassUsersResponseDTO;
 import com.smarterfit.modules.classgroup.entity.ClassGroup;
 import com.smarterfit.modules.classgroup.entity.ClassGroupUser;
 import com.smarterfit.modules.classgroup.mapper.ClassGroupMapper;
+import com.smarterfit.modules.classgroup.mapper.ClassGroupUserMapper;
 import com.smarterfit.modules.classgroup.repository.ClassGroupUserRepository;
 import com.smarterfit.modules.classgroup.validation.ValidationFaced;
 import com.smarterfit.modules.useraccess.dto.response.UserResponseDTO;
 import com.smarterfit.modules.useraccess.entity.User;
 import com.smarterfit.modules.useraccess.mapper.UserMapper;
+import groovy.transform.Undefined;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -70,7 +73,7 @@ public class ClassGroupUserService {
                 subscription));
 
         incrementGroupMembers(classGroup);
-        saveUserToGroup(classGroup, user);
+        saveUserToGroup(classGroup, user, false);
     }
 
     @Transactional
@@ -83,15 +86,23 @@ public class ClassGroupUserService {
 
         User user = validationFaced.userValidation.validateUserById(userId);
 
-        saveUserToGroup(classGroup, user);
+        saveUserToGroup(classGroup, user, true);
     }
 
     @Transactional(readOnly = true)
-    public List<UserResponseDTO> getUsersByClassGroupId(UUID classGroupId) {
-        return classGroupUserRepository.findAllUsersByClassGroupId(classGroupId).stream()
-                .map(user -> sensitiveDataDecryptor.decrypt(UserMapper.toResponse(user)))
-                .toList();
+    public List<ClassUsersResponseDTO> getStudentsByClassGroupId(UUID classGroupId) {
+        return classGroupUserRepository.findStudentsByClassGroupId(classGroupId).stream()
+                .map(ClassGroupUserMapper::toResponse).toList();
     }
+
+    @Transactional(readOnly = true)
+    public List<ClassUsersResponseDTO> getTeacherByClassGroupId(UUID classGroupId) {
+        return classGroupUserRepository.findTeachersByClassGroupId(classGroupId).stream()
+                .map(ClassGroupUserMapper::toResponse).toList();
+
+
+    }
+
 
     @Transactional(readOnly = true)
     public List<ClassGroupResponseDTO> getClassGroupsByUserId(UUID userId) {
@@ -128,10 +139,11 @@ public class ClassGroupUserService {
         classGroup.setTotalMembers(classGroup.getTotalMembers() - 1);
     }
 
-    private void saveUserToGroup(ClassGroup classGroup, User user) {
+    private void saveUserToGroup(ClassGroup classGroup, User user, boolean isTeacher) {
         ClassGroupUser classGroupUser = new ClassGroupUser();
         classGroupUser.setClassGroup(classGroup);
         classGroupUser.setUser(user);
+        classGroupUser.setTeacher(isTeacher);
         classGroupUserRepository.save(classGroupUser);
     }
 }

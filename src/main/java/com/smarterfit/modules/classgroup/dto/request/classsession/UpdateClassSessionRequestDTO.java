@@ -18,6 +18,8 @@ import java.util.UUID;
 @Builder(toBuilder = true)
 public class UpdateClassSessionRequestDTO {
 
+    private String description;
+
     @NotNull(message = "Start time is required.")
     @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
     private LocalDateTime startTime;

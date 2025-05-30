@@ -34,6 +34,9 @@ public class ClassGroupUser {
     @JoinColumn(name = "subscription_id")
     private Subscription subscription;
 
+    @Column(name = "is_teacher", nullable = false)
+    private boolean isTeacher = false;
+
     @Column(name = "dt_expired_at")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime expiredAt;

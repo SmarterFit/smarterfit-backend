@@ -14,6 +14,7 @@ import com.smarterfit.modules.useraccess.validation.UserValidation;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -50,6 +51,19 @@ public class ClassGroupScheduleService {
         ClassGroupSchedule classGroupSchedule = classGroupScheduleValidation.validateClassGroupScheduleById(id);
         return ClassGroupScheduleMapper.toResponse(classGroupSchedule);
     }
+
+    @Transactional(readOnly = true)
+    public List<ClassGroupScheduleResponseDTO> getAllClassGroupSchedulesById(UUID classGroupId) {
+        classGroupValidation.validateClassGroupById(classGroupId);
+
+        List<ClassGroupSchedule> schedules = classGroupScheduleRepository.findAllByClassGroupId(classGroupId);
+
+        return schedules.stream()
+                .map(ClassGroupScheduleMapper::toResponse)
+                .toList();
+    }
+
+
 
     @Transactional
     public ClassGroupScheduleResponseDTO updateClassGroupScheduleById(UUID id,

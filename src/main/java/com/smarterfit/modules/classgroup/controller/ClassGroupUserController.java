@@ -5,6 +5,7 @@ import com.smarterfit.common.security.RequireRole;
 import com.smarterfit.modules.classgroup.dto.request.classgroupuser.EmployeeClassGroupUserDTO;
 import com.smarterfit.modules.classgroup.dto.request.classgroupuser.MemberClassGroupUserDTO;
 import com.smarterfit.modules.classgroup.dto.response.ClassGroupResponseDTO;
+import com.smarterfit.modules.classgroup.dto.response.classgroupuser.ClassUsersResponseDTO;
 import com.smarterfit.modules.classgroup.service.ClassGroupUserService;
 import com.smarterfit.modules.useraccess.dto.response.UserResponseDTO;
 import jakarta.validation.Valid;
@@ -26,7 +27,7 @@ public class ClassGroupUserController {
     }
 
     @RequireRole(RoleType.EMPLOYEE)
-    @PostMapping("/funcionarios/cadastrar")
+    @PostMapping("/professor/cadastrar")
     public ResponseEntity<Void> addEmployeeToClassGroup(@RequestBody @Valid EmployeeClassGroupUserDTO requestDTO,
                                                         @RequestHeader("X-User-Id") UUID requesterId) {
         classGroupUserService.addEmployeeToClassGroup(requestDTO, requesterId);
@@ -40,9 +41,15 @@ public class ClassGroupUserController {
     }
 
 
-    @GetMapping("/{classGroupId}/usuarios")
-    public ResponseEntity<List<UserResponseDTO>> getUsersByClassGroupId(@PathVariable UUID classGroupId) {
-        List<UserResponseDTO> users = classGroupUserService.getUsersByClassGroupId(classGroupId);
+    @GetMapping("/{classGroupId}/alunos")
+    public ResponseEntity<List<ClassUsersResponseDTO>> getStudentsByClassGroupId(@PathVariable UUID classGroupId) {
+        List<ClassUsersResponseDTO> users = classGroupUserService.getStudentsByClassGroupId(classGroupId);
+        return ResponseEntity.ok(users);
+    }
+
+    @GetMapping("/{classGroupId}/professores")
+    public ResponseEntity<List<ClassUsersResponseDTO>> getTeacherByClassGroupId(@PathVariable UUID classGroupId) {
+        List<ClassUsersResponseDTO> users = classGroupUserService.getTeacherByClassGroupId(classGroupId);
         return ResponseEntity.ok(users);
     }
 

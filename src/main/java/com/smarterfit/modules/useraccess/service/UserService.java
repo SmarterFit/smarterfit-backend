@@ -20,6 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -69,6 +70,14 @@ public class UserService {
     public UserResponseDTO getUserById(UUID id) {
         User user = userValidation.validateUserById(id);
         return sensitiveDataDecryptor.decrypt(UserMapper.toResponse(user));
+    }
+
+    @Transactional(readOnly = true)
+    public List<UserResponseDTO> searchUsersByEmail(String emailPart) {
+        return userRepository.findByEmailContainingIgnoreCase(emailPart).stream()
+                .map(UserMapper::toResponse)
+                .map(sensitiveDataDecryptor::decrypt)
+                .toList();
     }
 
     @Transactional

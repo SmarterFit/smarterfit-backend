@@ -32,5 +32,14 @@ public interface ClassGroupUserRepository  extends JpaRepository<ClassGroupUser,
 
     List<ClassGroupUser> findAllByClassGroupId(UUID classGroupId);
 
+    // Retorna os alunos (isTeacher = false)
+    @Query("SELECT c FROM ClassGroupUser c WHERE c.classGroup.id = :classGroupId AND c.isTeacher = false")
+    List<ClassGroupUser> findStudentsByClassGroupId(@Param("classGroupId") UUID classGroupId);
+
+    // Retorna os professores (isTeacher = true)
+    @Query("SELECT c FROM ClassGroupUser c WHERE c.classGroup.id = :classGroupId AND c.isTeacher = true")
+    List<ClassGroupUser> findTeachersByClassGroupId(@Param("classGroupId") UUID classGroupId);
+
+
 
 }

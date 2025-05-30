@@ -37,4 +37,6 @@ public interface ClassGroupScheduleRepository extends JpaRepository<ClassGroupSc
     """)
     List<ClassGroupSchedule> findValidSchedules(@Param("today") LocalDate today);
 
+    List<ClassGroupSchedule> findAllByClassGroupId(UUID classGroupId);
+
 }

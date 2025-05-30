@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @CrossOrigin
@@ -33,11 +34,14 @@ public class ClassGroupScheduleController {
         return ResponseEntity.status(201).body(responseDTO);
     }
 
+
+
     @GetMapping("/{id}")
-    public ResponseEntity<ClassGroupScheduleResponseDTO> getClassGroupScheduleById(@PathVariable UUID id) {
-        ClassGroupScheduleResponseDTO responseDTO = classGroupScheduleService.getClassGroupScheduleById(id);
+    public ResponseEntity<List<ClassGroupScheduleResponseDTO>> getAllClassGroupSchedulesById(@PathVariable UUID id) {
+        List<ClassGroupScheduleResponseDTO> responseDTO = classGroupScheduleService.getAllClassGroupSchedulesById(id);
         return ResponseEntity.ok(responseDTO);
     }
+
 
     @RequireRole(RoleType.EMPLOYEE)
     @PutMapping("alterar/{id}")

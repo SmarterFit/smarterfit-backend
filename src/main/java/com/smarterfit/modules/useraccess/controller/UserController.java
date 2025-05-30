@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 /// TODO: Para criar, editar e deletar usuários é necessário verificar algumas permissões
@@ -36,6 +37,13 @@ public class UserController {
     @GetMapping("/{id}")
     public ResponseEntity<UserResponseDTO> getUserById(@PathVariable UUID id) {
         return ResponseEntity.ok(userService.getUserById(id));
+    }
+
+
+
+    @GetMapping("/email/{email}")
+    public ResponseEntity<List<UserResponseDTO>> searchUsersByEmail(@PathVariable String email) {
+        return ResponseEntity.ok(userService.searchUsersByEmail(email));
     }
 
     @PatchMapping("/{id}/email")

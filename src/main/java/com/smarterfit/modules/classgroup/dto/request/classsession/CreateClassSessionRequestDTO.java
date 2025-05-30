@@ -23,6 +23,8 @@ public class CreateClassSessionRequestDTO {
     @NotNull(message = "Class group ID is required.")
     private UUID classGroupId;
 
+    private String description;
+
     @NotNull(message = "Start time is required.")
     @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
     private LocalDateTime startTime;

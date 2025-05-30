@@ -132,7 +132,7 @@ public class SubscriptionUserService {
 
       @Transactional(readOnly = true)
       public List<SubscriptionResponseDTO> getAllSubscriptionsByUserId(UUID userId) {
-            List<SubscriptionUser> subscriptionUsers = subscriptionUserRepository.findByUserId(userId);
+            List<SubscriptionUser> subscriptionUsers = subscriptionUserRepository.findActiveSubscriptionByUserId(userId);
             return subscriptionUsers.stream()
                         .map(subscriptionUser -> sensitiveBillingDataDecryptor
                                     .decrypt(SubscriptionMapper.toResponse(subscriptionUser.getSubscription())))

@@ -25,6 +25,9 @@ public class ClassSession {
     @JoinColumn(name = "class_group_id", nullable = false)
     private ClassGroup classGroup;
 
+    @Column(nullable = false)
+    private String description = null;
+
     @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
     @Column(nullable = false)
     private LocalDateTime startTime;

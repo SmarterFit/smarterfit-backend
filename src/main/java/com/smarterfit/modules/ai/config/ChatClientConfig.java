@@ -5,7 +5,6 @@ import com.smarterfit.modules.ai.tools.classes.ClassPlansTools;
 import com.smarterfit.modules.ai.tools.classes.ClassSessionTools;
 import com.smarterfit.modules.ai.tools.classes.ClassTools;
 import com.smarterfit.modules.ai.tools.classes.UserClassTools;
-import com.smarterfit.modules.ai.tools.training.WorkoutPlanTool;
 import com.smarterfit.modules.ai.tools.user.ProfileMetricTools;
 import com.smarterfit.modules.ai.tools.user.ProfileTools;
 import com.smarterfit.modules.ai.tools.user.UserTools;
@@ -38,13 +37,12 @@ public class ChatClientConfig {
    private final UserTools userTools;
    private final ProfileTools profileTools;
    private final ProfileMetricTools profileMetricTools;
-   private final WorkoutPlanTool workoutPlanTool;
 
    @Autowired
    public ChatClientConfig( PlanTools planTools, ClassTools classTools, UserClassTools userClassTools,
                             ClassSessionTools classSessionTools, ClassPlansTools classPlansTools, UserTools userTools,
                             ProfileTools profileTools, ProfileMetricTools profileMetricTools,
-                            MessageChatMemoryAdvisor memoryAdvisor, WorkoutPlanTool workoutPlanTool){
+                            MessageChatMemoryAdvisor memoryAdvisor){
       this.planTools = planTools;
       this.classTools = classTools;
       this.userClassTools = userClassTools;
@@ -53,7 +51,6 @@ public class ChatClientConfig {
       this.userTools = userTools;
       this.profileTools = profileTools;
       this.profileMetricTools = profileMetricTools;
-      this.workoutPlanTool = workoutPlanTool;
       this.memoryAdvisor = memoryAdvisor;
    }
 
@@ -73,7 +70,7 @@ public class ChatClientConfig {
                       .param("conversationId", conversationId)
                       .param("memoryAdvisor", memoryAdvisor)
               )
-              .defaultTools(workoutPlanTool, planTools, classTools, userClassTools,
+              .defaultTools(planTools, classTools, userClassTools,
                       classSessionTools, classPlansTools, userTools, profileTools, profileMetricTools)
               .build();
    }
