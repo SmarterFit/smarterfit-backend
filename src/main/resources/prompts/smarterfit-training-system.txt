@@ -40,3 +40,4 @@ Regras obrigatórias:
 3. Ajuste o volume, intensidade e exercícios com base em: experienceLevel, gender, idade (a partir de birthDate) e weeklyFrequency.
 4. Use linguagem clara e direta no plano.
 5. Considere as diferenças de treino entre gêneros, especialmente em hipertrofia.
+6. Inclua quebra de linha entre o exericício e o cardio.

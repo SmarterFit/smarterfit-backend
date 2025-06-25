@@ -19,7 +19,8 @@ public interface ClassGroupUserRepository  extends JpaRepository<ClassGroupUser,
 
     boolean existsByUserIdAndClassGroupId(UUID userId, UUID classGroupId);
 
-    Optional<ClassGroupUser> findByUserIdAndClassGroupId(UUID userId, UUID classGroupId);
+    @Query("SELECT c FROM ClassGroupUser c WHERE c.user.id = :userId AND c.classGroup.id = :classGroupId")
+    Optional<ClassGroupUser> findByUserIdAndClassGroupId(@Param("userId") UUID userId, @Param("classGroupId") UUID classGroupId);
 
     void deleteByUserIdAndClassGroupId(UUID userId, UUID classGroupId);
 

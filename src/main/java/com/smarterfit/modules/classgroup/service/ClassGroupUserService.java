@@ -112,8 +112,8 @@ public class ClassGroupUserService {
 
     @Transactional
     public void removeUserFromClassGroup(UUID classGroupId, UUID userId) {
-        ClassGroupUser classGroupUser = validationFaced.classGroupUserValidation.validateClassGroupUserId(classGroupId,
-                userId);
+        System.out.println("Removendo usuário: " + userId + " da turma: " + classGroupId);
+        ClassGroupUser classGroupUser = validationFaced.classGroupUserValidation.validateClassGroupUserId(userId, classGroupId);
 
         decrementGroupMembers(classGroupUser.getClassGroup());
         publisher.publishEvent(new SubscriptionEvent(SubscriptionTypeEvent.INCREMENT_AVAILABLE_CLASSES,
